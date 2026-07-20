@@ -1,0 +1,322 @@
+---
+import Button from '../ui/Button.astro';
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  ctaLabel = 'Започни оттук',
+  ctaHref = '/kontakti/',
+} = Astro.props;
+
+const navItems: NavItem[] = [
+  { label: 'Начало', href: '/' },
+  { label: 'Решения', href: '/resheniya/' },
+  { label: 'За нас', href: '/za-nas/' },
+  { label: 'Доказателства', href: '/dokazatelstva/' },
+  { label: 'Експертна мрежа', href: '/ekspertna-mrezha/' },
+  { label: 'Портфолио', href: '/portfolio/' },
+  { label: 'Блог', href: '/blog/' },
+  { label: 'Контакт', href: '/kontakti/' },
+];
+
+const currentPath = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? currentPath === href : currentPath.startsWith(href);
+---
+
+<div class="site-header">
+  <div class="site-header__inner">
+    <a class="site-header__logo" href="/" aria-label="VAMO, начало">
+      <span class="site-header__mark" aria-hidden="true">V</span>
+      <span class="site-header__wordmark" aria-hidden="true">VAMO</span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Основна навигация">
+      <ul>
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <Button class="site-header__cta" href={ctaHref} size="sm">
+      {ctaLabel}
+    </Button>
+
+    <details class="mobile-nav">
+      <summary>
+        <span class="mobile-nav__label">Меню</span>
+        <span class="mobile-nav__icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+      </summary>
+
+      <nav class="mobile-nav__panel" aria-label="Мобилна навигация">
+        <ul>
+          {
+            navItems.map((item) => (
+              <li>
+                <a
+                  class="mobile-nav__link"
+                  href={item.href}
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <Button class="mobile-nav__cta" href={ctaHref}>
+          {ctaLabel}
+        </Button>
+      </nav>
+    </details>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 10;
+    border-block-end: 1px solid var(--color-border);
+    background-color: var(--color-white);
+  }
+
+  .site-header__inner {
+    position: relative;
+    display: flex;
+    width: min(100% - (2 * var(--space-4)), 80rem);
+    min-height: var(--space-16);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-inline: auto;
+  }
+
+  .site-header__logo {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    text-decoration: none;
+  }
+
+  .site-header__mark {
+    display: grid;
+    width: var(--space-8);
+    height: var(--space-8);
+    place-items: center;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-vamo-red);
+    color: var(--color-white);
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.08em;
+  }
+
+  .site-header__wordmark {
+    font-size: 1.375rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .desktop-nav,
+  :global(.site-header__cta) {
+    display: none;
+  }
+
+  .mobile-nav summary {
+    display: flex;
+    min-width: 4.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .mobile-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-nav summary:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .mobile-nav__label {
+    font-size: 0.9375rem;
+  }
+
+  .mobile-nav__icon {
+    position: relative;
+    display: grid;
+    width: var(--space-6);
+    height: var(--space-6);
+    place-content: center;
+    gap: var(--space-2);
+  }
+
+  .mobile-nav__icon span {
+    display: block;
+    width: var(--space-5);
+    height: 2px;
+    background-color: currentColor;
+    transition: transform 160ms ease;
+  }
+
+  .mobile-nav[open] .mobile-nav__icon span:first-child {
+    transform: translateY(0.3125rem) rotate(45deg);
+  }
+
+  .mobile-nav[open] .mobile-nav__icon span:last-child {
+    transform: translateY(-0.3125rem) rotate(-45deg);
+  }
+
+  .mobile-nav__panel {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: calc(-1 * var(--space-4));
+    padding: var(--space-5) var(--space-4) var(--space-6);
+    border-block: 1px solid var(--color-border);
+    background-color: var(--color-white);
+  }
+
+  .mobile-nav__panel ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mobile-nav__link {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    border-block-end: 1px solid var(--color-border);
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+
+  .mobile-nav__panel a[aria-current='page'] {
+    color: var(--color-primary-hover);
+  }
+
+  :global(.mobile-nav__cta) {
+    width: 100%;
+    margin-block-start: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    .site-header__inner {
+      width: min(100% - (2 * var(--space-8)), 80rem);
+      gap: var(--space-4);
+    }
+
+    .desktop-nav {
+      display: block;
+      min-width: 0;
+      margin-inline-start: auto;
+    }
+
+    .desktop-nav ul {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      white-space: nowrap;
+    }
+
+    .desktop-nav a {
+      position: relative;
+      display: flex;
+      min-height: 2.75rem;
+      align-items: center;
+      color: var(--color-vamo-red);
+      font-family: var(--font-heading);
+      font-size: 0.875rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+
+    .desktop-nav a::after {
+      position: absolute;
+      inset: auto 0 0;
+      height: 2px;
+      background-color: var(--color-primary);
+      content: '';
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 160ms ease;
+    }
+
+    .desktop-nav a:hover,
+    .desktop-nav a[aria-current='page'] {
+      color: var(--color-primary-hover);
+    }
+
+    .desktop-nav a:hover::after,
+    .desktop-nav a[aria-current='page']::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    :global(.site-header__cta) {
+      display: inline-flex;
+      flex: 0 0 auto;
+      min-block-size: 2.75rem;
+      padding-inline: var(--space-5);
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+    }
+
+    .mobile-nav {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav__icon span,
+    .desktop-nav a,
+    .desktop-nav a::after {
+      transition: none;
+    }
+  }
+</style>

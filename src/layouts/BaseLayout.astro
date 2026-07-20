@@ -1,0 +1,96 @@
+---
+import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: URL | string;
+  image?: URL | string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url,
+  image,
+  noindex = false,
+} = Astro.props;
+
+const siteName = import.meta.env.PUBLIC_SITE_NAME ?? 'VAMO';
+const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
+const canonicalUrl = new URL(canonical, Astro.site ?? Astro.url);
+const socialImageUrl = image ? new URL(image, Astro.site ?? Astro.url) : undefined;
+const hasHeader = Astro.slots.has('header');
+const hasFooter = Astro.slots.has('footer');
+---
+
+<!doctype html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=PT+Sans:wght@400;700&display=swap"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="bg_BG" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {socialImageUrl && <meta property="og:image" content={socialImageUrl} />}
+
+    <meta name="twitter:card" content={socialImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
+
+    <title>{pageTitle}</title>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Към основното съдържание</a>
+    <header>
+      {hasHeader ? <slot name="header" /> : <Header />}
+    </header>
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    {hasFooter && (
+      <footer>
+        <slot name="footer" />
+      </footer>
+    )}
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    z-index: 9999;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+    font-family: var(--font-ui);
+    transform: translateY(-110%);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+</style>

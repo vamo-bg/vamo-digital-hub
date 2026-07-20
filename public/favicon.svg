@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="VAMO">
+  <!-- TODO: Replace with the approved VAMO favicon. -->
+  <rect width="64" height="64" fill="white" />
+  <path d="M12 16h10l10 28 10-28h10L37 52H27L12 16Z" fill="black" />
+</svg>

@@ -1,0 +1,287 @@
+---
+import { getCollection } from 'astro:content';
+
+import Button from '../../components/ui/Button.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const solutions = (await getCollection('resheniya', ({ data }) => !data.draft)).sort(
+  (a, b) =>
+    (a.data.order ?? Number.MAX_SAFE_INTEGER) -
+      (b.data.order ?? Number.MAX_SAFE_INTEGER) ||
+    a.data.title.localeCompare(b.data.title, 'bg'),
+);
+---
+
+<BaseLayout
+  title="Решения"
+  description="Практични дигитални решения от VAMO, съобразени с целите на бизнеса и нуждите на неговите клиенти."
+>
+  <div class="page-shell">
+    <header class="page-intro">
+      <div class="page-intro__heading">
+        <span class="page-intro__eyebrow">Решения</span>
+        <h1>Решения за устойчиво дигитално развитие</h1>
+      </div>
+      <p class="page-intro__summary">
+        От стратегията до реализацията: свързваме съдържание, дизайн и
+        технологии в решения с ясна бизнес цел.
+      </p>
+    </header>
+
+    {
+      solutions.length > 0 ? (
+        <ul class="solutions-grid" aria-label="Решения на VAMO">
+          {solutions.map((solution, index) => (
+            <li>
+              <article
+                class="solution-card"
+                aria-labelledby={`solution-${solution.id}`}
+                style={`--solution-index: '${String(index + 1).padStart(2, '0')}'`}
+              >
+                <div class="solution-card__content">
+                  <h2 id={`solution-${solution.id}`}>{solution.data.title}</h2>
+                  <p>{solution.data.description}</p>
+                </div>
+                <Button
+                  href={`/resheniya/${solution.id}/`}
+                  variant="ghost"
+                  class="solution-card__link"
+                  aria-label={`Виж решението: ${solution.data.title}`}
+                >
+                  Виж решението
+                </Button>
+              </article>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty-state">В момента подготвяме нашите решения.</p>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .page-shell {
+    width: min(100% - (2 * var(--space-4)), 80rem);
+    margin-inline: auto;
+    padding-block: var(--space-16) var(--space-24);
+  }
+
+  .page-intro {
+    display: grid;
+    gap: var(--space-10);
+    padding-block-end: var(--space-16);
+    border-block-end: 1px solid var(--color-border-strong);
+  }
+
+  .page-intro__heading {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .page-intro__eyebrow {
+    color: var(--color-vamo-red);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .page-intro h1 {
+    max-width: 13ch;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .page-intro__summary {
+    max-width: 34rem;
+    padding-inline-start: var(--space-5);
+    border-inline-start: 1px solid var(--color-border-strong);
+    color: var(--color-neutral-800);
+    font-size: 1rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    counter-reset: solution;
+    gap: var(--space-6);
+    margin: var(--space-16) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .solutions-grid > li {
+    min-width: 0;
+    counter-increment: solution;
+  }
+
+  .solution-card {
+    position: relative;
+    display: flex;
+    min-height: 22rem;
+    overflow: hidden;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-12);
+    padding: var(--space-10) var(--space-8) var(--space-8);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+    transition:
+      border-color 200ms ease,
+      background-color 200ms ease,
+      transform 200ms ease;
+  }
+
+  .solution-card::before {
+    position: absolute;
+    inset-block-start: var(--space-6);
+    inset-inline-end: var(--space-6);
+    color: var(--color-neutral-300);
+    content: var(--solution-index);
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    transition: color 200ms ease;
+  }
+
+  .solution-card::after {
+    position: absolute;
+    inset: auto var(--space-6) var(--space-6) auto;
+    width: var(--space-6);
+    height: var(--space-6);
+    border-inline-end: 1px solid var(--color-border-strong);
+    border-block-end: 1px solid var(--color-border-strong);
+    content: '';
+  }
+
+  .solution-card__content {
+    position: relative;
+    z-index: 1;
+    padding-block-start: var(--space-12);
+  }
+
+  .solution-card h2 {
+    max-width: 16ch;
+    font-size: 1.625rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .solution-card p {
+    max-width: 45ch;
+    margin-block-start: var(--space-5);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  :global(.solution-card__link) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .empty-state {
+    margin-block-start: var(--space-12);
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .page-shell {
+      width: min(100% - (2 * var(--space-8)), 80rem);
+      padding-block: var(--space-20) var(--space-32);
+    }
+
+    .page-intro {
+      grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+      align-items: end;
+      gap: var(--space-12);
+      padding-block-end: var(--space-20);
+    }
+
+    .page-intro h1 {
+      font-size: 3.5rem;
+    }
+
+    .page-intro__summary,
+    .solution-card p {
+      font-size: 1.0625rem;
+    }
+
+    .solution-card {
+      min-height: 24rem;
+      padding: var(--space-10);
+    }
+
+    .solution-card h2 {
+      font-size: 1.875rem;
+    }
+
+    .solution-card::before {
+      inset-block-start: var(--space-8);
+      inset-inline-end: var(--space-8);
+      font-size: 3.5rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .page-intro h1 {
+      font-size: 4.5rem;
+    }
+
+    .page-intro__summary {
+      font-size: 1.125rem;
+    }
+
+    .solutions-grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--space-8);
+      margin-block-start: var(--space-24);
+    }
+
+    .solutions-grid > li {
+      grid-column: span 7;
+    }
+
+    .solutions-grid > li:nth-child(even) {
+      grid-column: span 5;
+      margin-block-start: var(--space-16);
+    }
+
+    .solution-card h2 {
+      font-size: 2.25rem;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .solution-card:hover {
+      border-color: var(--color-border-strong);
+      background-color: var(--color-surface-strong);
+      transform: translateY(-0.25rem);
+    }
+
+    .solution-card:hover::before {
+      color: var(--color-neutral-400);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .solution-card {
+      transition: none;
+    }
+  }
+</style>

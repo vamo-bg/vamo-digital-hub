@@ -1,0 +1,29 @@
+---
+import Button from '../components/ui/Button.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="VAMO"
+  description="Новият уебсайт на VAMO е в процес на разработка."
+>
+  <section aria-labelledby="page-title">
+    <p>VAMO</p>
+    <h1 id="page-title">Новият ни уебсайт идва скоро.</h1>
+    <p>В момента изграждаме по-бързо и по-достъпно дигитално преживяване.</p>
+    <div class="actions" aria-label="Примери за бутони">
+      <Button href="#" variant="primary">Основно действие</Button>
+      <Button variant="secondary">Вторично действие</Button>
+      <Button variant="ghost" size="sm">Текстово действие</Button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-6);
+  }
+</style>

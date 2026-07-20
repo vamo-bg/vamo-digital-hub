@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Astro build output and generated types
+dist/
+.astro/
+
+# Environment files (keep documented examples)
+.env
+.env.*
+!.env.example
+
+# Test and tool output
+coverage/
+.cache/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*

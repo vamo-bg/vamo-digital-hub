@@ -1,0 +1,112 @@
+/**
+ * VAMO Design Tokens
+ *
+ * Primitive tokens contain the source values from the Design System.
+ * Semantic tokens describe how those values are used in the interface.
+ */
+
+:root {
+  /* ======================================================================
+   * Brand colours
+   * =================================================================== */
+  --color-vamo-red: #e3061a;
+  --color-vamo-black: #111111;
+  --color-white: #ffffff;
+
+  /* ======================================================================
+   * Red scale
+   * =================================================================== */
+  --color-red-50: #fef2f2;
+  --color-red-100: #fecaca;
+  --color-red-300: #f87171;
+  --color-red-500: #e3061a;
+  --color-red-700: #b91c1c;
+  --color-red-900: #7f1d1d;
+
+  /* ======================================================================
+   * Neutral scale — warm greys
+   * =================================================================== */
+  --color-cream: #faf9f7;
+  --color-neutral-100: #f3f2ee;
+  --color-neutral-200: #e5e4df;
+  --color-neutral-300: #c9c8c2;
+  --color-neutral-400: #9a9994;
+  --color-neutral-600: #57564f;
+  --color-neutral-800: #2b2a27;
+  --color-black: #111111;
+
+  /* ======================================================================
+   * Functional colours
+   * =================================================================== */
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-info: #2563eb;
+  --color-error: #e3061a;
+
+  /* ======================================================================
+   * Semantic colour aliases
+   * Keep components tied to purpose rather than palette values.
+   * =================================================================== */
+  --color-primary: var(--color-red-500);
+  --color-primary-hover: var(--color-red-700);
+  --color-primary-subtle: var(--color-red-50);
+
+  --color-background: var(--color-cream);
+  --color-surface: var(--color-neutral-100);
+  --color-surface-strong: var(--color-neutral-200);
+
+  --color-text: var(--color-vamo-black);
+  --color-text-muted: var(--color-neutral-600);
+  --color-text-inverse: var(--color-cream);
+
+  --color-border: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-300);
+  --color-focus: var(--color-info);
+
+  /* ======================================================================
+   * Typography
+   * Font files and @font-face declarations are loaded separately.
+   * =================================================================== */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'PT Sans', sans-serif;
+  --font-ui: var(--font-body);
+
+  /* ======================================================================
+   * Spacing
+   * Provisional 4px-based scale; refine against the Design System.
+   * =================================================================== */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ======================================================================
+   * Border radius
+   * Provisional values; replace when exact Design System values are set.
+   * =================================================================== */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* ======================================================================
+   * Breakpoints
+   * Documentation tokens for JS/container-query use. CSS custom properties
+   * cannot be referenced directly inside traditional @media conditions.
+   * =================================================================== */
+  --breakpoint-mobile: 0rem;
+  --breakpoint-tablet: 48rem;
+  --breakpoint-desktop: 64rem;
+}
