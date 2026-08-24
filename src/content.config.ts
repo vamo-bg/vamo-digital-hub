@@ -26,10 +26,31 @@ const portfolio = defineCollection({
     z.object({
       title: z.string().min(1),
       client: z.string().min(1),
+      clientDescription: z.string().min(1).optional(),
       description: shortDescription,
       services: z.array(z.string().min(1)).min(1),
       coverImage: image().optional(),
+      coverAlt: z.string().min(1).optional(),
       year,
+      location: z.string().min(1).optional(),
+      projectType: z.string().min(1).optional(),
+      gallery: z
+        .array(
+          z.object({
+            image: image(),
+            alt: z.string().min(1),
+            caption: z.string().min(1).optional(),
+          }),
+        )
+        .default([]),
+      externalLinks: z
+        .array(
+          z.object({
+            label: z.string().min(1),
+            url: z.url(),
+          }),
+        )
+        .default([]),
       draft,
     }),
 });

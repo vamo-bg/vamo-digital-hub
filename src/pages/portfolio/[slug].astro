@@ -1,0 +1,457 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+
+import ProjectGallery from '../../components/sections/ProjectGallery.astro';
+import Button from '../../components/ui/Button.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('portfolio');
+
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const {
+  title,
+  client,
+  clientDescription,
+  description,
+  coverImage,
+  coverAlt,
+  year,
+  location,
+  projectType,
+  services,
+  gallery,
+  externalLinks,
+  draft,
+} = project.data;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={coverImage?.src}
+  noindex={draft}
+>
+  <article>
+    <header class="project-hero">
+      <div class="project-shell project-hero__inner">
+        <nav class="breadcrumbs" aria-label="Навигация">
+          <a href="/">Начало</a>
+          <span aria-hidden="true">/</span>
+          <a href="/resheniya/">Проекти</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{title}</span>
+        </nav>
+
+        <div class="project-hero__copy">
+          {projectType && <p class="eyebrow">{projectType}</p>}
+          <h1>{title}</h1>
+          <p class="project-hero__summary">{description}</p>
+          <div class="project-hero__actions">
+            <Button href="#za-proekta" size="lg">Разгледайте проекта</Button>
+            {externalLinks[0] && (
+              <Button
+                href={externalLinks[0].url}
+                variant="ghost"
+                size="lg"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {externalLinks[0].label}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <dl class="project-facts">
+          <div>
+            <dt>Клиент</dt>
+            <dd>{client}</dd>
+          </div>
+          {location && (
+            <div>
+              <dt>Място</dt>
+              <dd>{location}</dd>
+            </div>
+          )}
+          {year && (
+            <div>
+              <dt>Година</dt>
+              <dd>{year}</dd>
+            </div>
+          )}
+        </dl>
+      </div>
+
+      {coverImage && (
+        <div class="project-cover">
+          <Image
+            src={coverImage}
+            alt={coverAlt ?? ''}
+            widths={[640, 960, 1440, 1920]}
+            sizes="100vw"
+            loading="eager"
+          />
+        </div>
+      )}
+    </header>
+
+    <div class="project-shell">
+      <div class="project-body" id="za-proekta">
+        <div class="project-story">
+          <Content />
+        </div>
+
+        <aside class="project-services" aria-labelledby="services-title">
+          <p class="eyebrow">Обхват</p>
+          <h2 id="services-title">Какво включва проектът</h2>
+          <ul>
+            {services.map((service) => <li>{service}</li>)}
+          </ul>
+        </aside>
+      </div>
+
+      <ProjectGallery items={gallery} />
+    </div>
+
+    <section class="client-section" aria-labelledby="client-title">
+      <div class="project-shell client-section__inner">
+        <p class="eyebrow">Клиент</p>
+        <div>
+          <h2 id="client-title">{client}</h2>
+          {clientDescription && <p>{clientDescription}</p>}
+        </div>
+      </div>
+    </section>
+
+    <section class="project-next">
+      <div class="project-shell project-next__inner">
+        <div>
+          <p class="eyebrow">Следващ проект</p>
+          <h2>Имате история, която заслужава силна реализация?</h2>
+        </div>
+        <Button href="/kontakt/" size="lg">Разкажете ни за нея</Button>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-shell {
+    width: min(100% - (2 * var(--space-4)), 80rem);
+    margin-inline: auto;
+  }
+
+  .project-hero {
+    padding-block-start: var(--space-8);
+    background-color: var(--color-cream);
+  }
+
+  .project-hero__inner {
+    display: grid;
+    gap: var(--space-10);
+    padding-block-end: var(--space-12);
+  }
+
+  .breadcrumbs {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  .breadcrumbs a {
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--color-vamo-red);
+  }
+
+  .breadcrumbs span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .project-hero__copy {
+    display: grid;
+    max-width: 69rem;
+    gap: var(--space-5);
+  }
+
+  .eyebrow {
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .project-hero h1 {
+    max-width: 16ch;
+    font-size: clamp(2.75rem, 9vw, 6.5rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+  }
+
+  .project-hero__summary {
+    max-width: 45rem;
+    color: var(--color-neutral-800);
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .project-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-3);
+  }
+
+  .project-facts {
+    display: grid;
+    gap: var(--space-6);
+    margin: 0;
+    padding-block-start: var(--space-6);
+    border-block-start: 1px solid var(--color-border-strong);
+  }
+
+  .project-facts div {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .project-facts dt {
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .project-facts dd {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .project-cover {
+    overflow: hidden;
+    width: 100%;
+    max-height: 52rem;
+    background-color: var(--color-surface-strong);
+  }
+
+  .project-cover :global(img) {
+    width: 100%;
+    height: clamp(25rem, 62vw, 52rem);
+    object-fit: cover;
+  }
+
+  .project-body {
+    display: grid;
+    gap: var(--space-16);
+    padding-block: var(--space-20);
+  }
+
+  .project-story {
+    min-width: 0;
+  }
+
+  .project-story :global(h2) {
+    max-width: 18ch;
+    margin-block: var(--space-16) var(--space-6);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .project-story :global(h2:first-child) {
+    margin-block-start: 0;
+  }
+
+  .project-story :global(h3) {
+    margin-block: var(--space-10) var(--space-3);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .project-story :global(p),
+  .project-story :global(li) {
+    color: var(--color-neutral-800);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  .project-story :global(p + p) {
+    margin-block-start: var(--space-5);
+  }
+
+  .project-story :global(ul) {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-6) 0 0;
+    padding-inline-start: var(--space-6);
+  }
+
+  .project-services {
+    align-self: start;
+    padding: var(--space-8);
+    border-block-start: 3px solid var(--color-vamo-black);
+    background-color: var(--color-surface);
+  }
+
+  .project-services h2 {
+    max-width: 18ch;
+    margin-block-start: var(--space-3);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  .project-services ul {
+    display: grid;
+    gap: var(--space-4);
+    margin: var(--space-8) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: services;
+  }
+
+  .project-services li {
+    display: grid;
+    grid-template-columns: var(--space-8) 1fr;
+    gap: var(--space-3);
+    padding-block-end: var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+    color: var(--color-neutral-800);
+    counter-increment: services;
+    line-height: 1.45;
+  }
+
+  .project-services li::before {
+    color: var(--color-neutral-400);
+    content: counter(services, decimal-leading-zero);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .client-section {
+    padding-block: var(--space-20);
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .client-section__inner {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .client-section h2 {
+    max-width: 21ch;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+
+  .client-section__inner > div > p {
+    max-width: 40rem;
+    margin-block-start: var(--space-5);
+    color: var(--color-neutral-300);
+    font-size: 1.0625rem;
+  }
+
+  .project-next {
+    padding-block: var(--space-20);
+    background-color: var(--color-surface);
+  }
+
+  .project-next__inner {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .project-next h2 {
+    max-width: 22ch;
+    margin-block-start: var(--space-3);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 48rem) {
+    .project-shell {
+      width: min(100% - (2 * var(--space-8)), 80rem);
+    }
+
+    .project-hero {
+      padding-block-start: var(--space-10);
+    }
+
+    .project-hero__inner {
+      gap: var(--space-12);
+      padding-block-end: var(--space-16);
+    }
+
+    .project-facts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .project-body {
+      padding-block: var(--space-24);
+    }
+
+    .client-section,
+    .project-next {
+      padding-block: var(--space-24);
+    }
+
+    .client-section__inner {
+      grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr);
+    }
+
+    .project-next__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .project-body {
+      grid-template-columns: minmax(0, 1.3fr) minmax(20rem, 0.7fr);
+      gap: var(--space-20);
+      align-items: start;
+    }
+
+    .project-services {
+      position: sticky;
+      inset-block-start: var(--space-24);
+    }
+  }
+</style>
