@@ -31,7 +31,7 @@ const organizationSchema = {
   '@type': 'Organization',
   name: site.legalName,
   url: new URL('/', Astro.site ?? Astro.url).href,
-  logo: new URL('/favicon.svg', Astro.site ?? Astro.url).href,
+  logo: new URL('/favicon-192.png', Astro.site ?? Astro.url).href,
   description: site.description,
   contactPoint: {
     '@type': 'ContactPoint',
@@ -53,8 +53,10 @@ const organizationSchema = {
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <link rel="canonical" href={canonicalUrl} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.png" type="image/png" sizes="550x550" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
