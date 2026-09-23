@@ -9,7 +9,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const process = await getEntry('process', 'kak-rabotim');
 if (!process) throw new Error('Липсва съдържание за страницата „Как работим“.');
 
-const { title, description, heroTitle, heroSummary, steps, collaboration, draft } = process.data;
+const { title, description, heroTitle, heroSummary, steps, collaboration } = process.data;
 const pageUrl = new URL('/kak-rabotim/', Astro.site ?? Astro.url).href;
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -21,7 +21,16 @@ const breadcrumbSchema = {
 };
 ---
 
-<BaseLayout title={title} description={description} noindex={draft}>
+{/*
+  Тази страница се индексира винаги, дори докато текстът ѝ се дописва.
+  `noindex` е само за правните страници, където го изисква юристът.
+
+  Тук стоеше `noindex={draft}`: сложеше ли някой `draft: true`, за да скрие
+  страницата, докато работи по нея, тя тихо изпадаше от индекса и после никой
+  не се сещаше да я върне. Недовършен текст в индекса е по-малка загуба от
+  страница, която липсва месеци.
+*/}
+<BaseLayout title={title} description={description}>
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   </Fragment>

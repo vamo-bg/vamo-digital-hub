@@ -9,7 +9,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const about = await getEntry('about', 'za-nas');
 if (!about) throw new Error('Липсва съдържание за страницата „За нас“.');
 
-const { title, description, heroTitle, heroSummary, story, principles, audiences, draft } = about.data;
+const { title, description, heroTitle, heroSummary, story, principles, audiences } = about.data;
 const ecosystemLinks = [
   { name: 'VAMO.bg', description: 'Стратегически център и вход към работа.', href: 'https://vamo.bg/' },
   { name: 'Balkanite.net', description: 'Медия, истории и регионално съдържание.', href: 'https://balkanite.net/' },
@@ -27,7 +27,16 @@ const breadcrumbSchema = {
 };
 ---
 
-<BaseLayout title={title} description={description} noindex={draft}>
+{/*
+  Тази страница се индексира винаги, дори докато текстът ѝ се дописва.
+  `noindex` е само за правните страници, където го изисква юристът.
+
+  Тук стоеше `noindex={draft}`: сложеше ли някой `draft: true`, за да скрие
+  страницата, докато работи по нея, тя тихо изпадаше от индекса и после никой
+  не се сещаше да я върне. Недовършен текст в индекса е по-малка загуба от
+  страница, която липсва месеци.
+*/}
+<BaseLayout title={title} description={description}>
   <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
   <article class="about-page">
     <div class="about-crumbs"><nav class="about-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav></div>
