@@ -3,10 +3,8 @@ name: Deploy
 # Всеки push към main билдва сайта и качва само променените файлове към хостинга.
 # "Run workflow" в раздела Actions пуска същото ръчно, без нов commit.
 on:
-  # ВРЕМЕННО ИЗКЛЮЧЕНО до първото успешно пробно пускане.
-  # Разкоментирай двата реда, за да тръгва деплоят автоматично при всеки push.
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       dry_run:
