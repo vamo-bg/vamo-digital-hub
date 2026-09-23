@@ -1,0 +1,21 @@
+---
+import LegalPagePlaceholder from '../../components/sections/LegalPagePlaceholder.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntry, render } from 'astro:content';
+
+const title = 'Бисквитки';
+const entry = await getEntry('legal', 'biskvitki');
+const { Content } = await render(entry!);
+---
+
+<BaseLayout
+  title={title}
+  description="Информация за използваните бисквитки в сайта на VAMO."
+  noindex
+>
+  <LegalPagePlaceholder
+    title={title}
+    summary="Работен текст за преглед от юрист. Страницата е с noindex до окончателно одобрение."
+    requirements={[]}
+  ><Content /></LegalPagePlaceholder>
+</BaseLayout>

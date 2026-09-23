@@ -1,0 +1,139 @@
+---
+// Group the standard expert Markdown headings at build time, without client JS.
+// Unknown headings and unstructured biographies keep their original reading order.
+const html = await Astro.slots.render('default');
+const headings = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)];
+const sections = headings.map((heading, index) => ({
+  title: heading[1].replace(/<[^>]+>/g, '').trim(),
+  html: html.slice(heading.index! + heading[0].length, headings[index + 1]?.index ?? html.length),
+}));
+const standard = sections.length === 4 && sections.map((section) => section.title).join('|') ===
+  'Какво прави|Как помага|Опит и експертиза|Подход към работата';
+const focusSection = sections.find((section) => section.title === 'В какво съм най-силна');
+const isFounderProfile = Boolean(focusSection);
+const profileSections = sections.filter((section) => section !== focusSection);
+---
+
+<div class:list={['expert-biography', { 'expert-biography--editorial': standard, 'expert-biography--founder': isFounderProfile }]}> 
+  {standard ? (
+    <>
+      <div class="expert-biography__help">
+        <h3>Как помага</h3>
+        <Fragment set:html={sections[0].html + sections[1].html} />
+      </div>
+      <div class="expert-biography__experience">
+        <h3>Опит и експертиза</h3>
+        <Fragment set:html={sections[2].html} />
+      </div>
+      <div class="expert-biography__approach">
+        <h3>Подход към работата</h3>
+        <div set:html={sections[3].html} />
+      </div>
+    </>
+  ) : isFounderProfile ? (
+    <>
+      <div class="expert-biography__main">
+        {profileSections.map((section) => (
+          <section>
+            <h3>{section.title}</h3>
+            <Fragment set:html={section.html} />
+          </section>
+        ))}
+      </div>
+      <aside class="expert-biography__focus">
+        <h3>{focusSection?.title}</h3>
+        <Fragment set:html={focusSection?.html ?? ''} />
+      </aside>
+    </>
+  ) : <Fragment set:html={html} />}
+</div>
+
+<style>
+  .expert-biography {
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .expert-biography--editorial {
+    display: grid;
+    gap: var(--space-10);
+  }
+  .expert-biography :global(h2),
+  .expert-biography :global(h3) {
+    margin: 0 0 var(--space-5);
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: var(--type-feature-title);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+  .expert-biography :global(p + p) { margin-block-start: var(--space-4); }
+  .expert-biography :global(p) { max-width: 70ch; }
+  .expert-biography__help :global(p:first-of-type) { color: var(--color-text); }
+  .expert-biography :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin-block: var(--space-5) 0;
+  }
+  .expert-biography :global(li) {
+    display: grid;
+    grid-template-columns: var(--space-3) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-block-start: 1px dotted var(--color-border-strong);
+  }
+  .expert-biography :global(li::before) {
+    content: '';
+    box-sizing: border-box;
+    width: var(--space-3);
+    height: var(--space-3);
+    margin-block-start: 0.4em;
+    border: 3px solid var(--color-surface);
+    background: var(--color-vamo-red);
+    border-radius: var(--radius-full);
+    outline: 1px solid var(--color-border-strong);
+  }
+  .expert-biography__approach {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-8);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-vamo-black);
+    color: var(--color-neutral-300);
+  }
+  .expert-biography__approach h3 {
+    margin: 0;
+    color: var(--color-text-inverse);
+  }
+  .expert-biography__approach :global(p) {
+    max-width: 62ch;
+  }
+  .expert-biography__approach :global(p + p) {
+    margin-block-start: var(--space-3);
+  }
+  .expert-biography.expert-biography--founder { display: grid; gap: var(--space-10); }
+  .expert-biography--founder .expert-biography__main { display: grid; gap: var(--space-10); min-width: 0; }
+  .expert-biography__main section { display: grid; gap: var(--space-2); }
+  .expert-biography__main h3,
+  .expert-biography__focus h3 { margin-block-end: var(--space-4); }
+  .expert-biography--founder .expert-biography__focus { align-self: start; padding: var(--space-8); border: 1px solid var(--color-border-strong); border-radius: var(--radius-surface); background: var(--color-cream); }
+  .expert-biography__focus :global(ul) { margin-block-start: var(--space-2); }
+  @media (min-width: 64rem) {
+    .expert-biography--editorial {
+      grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+      column-gap: var(--space-16);
+      align-items: start;
+    }
+    .expert-biography__approach {
+      grid-column: 1 / -1;
+      grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+      column-gap: var(--space-16);
+      padding: var(--space-10);
+    }
+    .expert-biography.expert-biography--founder { grid-template-columns: minmax(0, 1fr) minmax(18rem, .58fr); column-gap: var(--space-16); align-items: start; }
+    .expert-biography--founder .expert-biography__focus { position: sticky; top: var(--space-8); }
+  }
+</style>

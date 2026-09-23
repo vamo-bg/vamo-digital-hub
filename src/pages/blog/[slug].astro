@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntries, getEntry, render } from 'astro:content';
+
+import ArticleShare from '../../components/ui/ArticleShare.astro';
+import ArticleAuthor from '../../components/ui/ArticleAuthor.astro';
+import BlogTeaser from '../../components/ui/BlogTeaser.astro';
+import Button from '../../components/ui/Button.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id } }));
+}
+
+const slug = Astro.params.slug;
+if (!slug) {
+  throw new Error('Липсва адрес на блог статията.');
+}
+const post = await getEntry('blog', slug);
+if (!post) {
+  throw new Error(`Не е намерена блог статия: ${slug}`);
+}
+const { Content, headings } = await render(post);
+const { title, description, pubDate, updatedDate, authorName, cover, coverAlt, readingTime, highlight } = post.data;
+const displayDate = updatedDate ?? pubDate;
+const formatDate = (date: Date) => new Intl.DateTimeFormat('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+const tableOfContents = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const relatedSolutions = await getEntries(post.data.relatedSolutions);
+const articleAuthor = post.data.authorId
+  ? await getEntry('eksperti', post.data.authorId)
+  : undefined;
+const allPosts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
+  .filter((article) => article.id !== post.id)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+;
+const currentPostIndex = allPosts.findIndex((article) => article.data.pubDate < post.data.pubDate);
+const previousPost = currentPostIndex >= 0 ? allPosts[currentPostIndex] : undefined;
+const nextPost = currentPostIndex < allPosts.length - 1 && currentPostIndex >= 0 ? allPosts[currentPostIndex + 1] : undefined;
+const relatedArticles = allPosts.slice(0, 3);
+const breadcrumbSchema = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: 'Блог', item: new URL('/blog/', Astro.url).href },
+    { '@type': 'ListItem', position: 3, name: title, item: Astro.url.href },
+  ],
+};
+const articleSchema = {
+  '@context': 'https://schema.org', '@type': 'Article', headline: title, description,
+  ...(cover ? { image: new URL(cover.src, Astro.url).href } : {}),
+  datePublished: pubDate.toISOString(), dateModified: displayDate.toISOString(),
+  author: { '@type': 'Organization', name: authorName }, publisher: { '@type': 'Organization', name: 'VAMO' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': Astro.url.href },
+};
+---
+
+<BaseLayout title={title} description={description} image={cover?.src}>
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(articleSchema)}></script>
+  <article aria-labelledby="article-title">
+    <div class="article-breadcrumbs-bar"><nav class="article-shell article-breadcrumbs" aria-label="Навигация"><a href="/">Начало</a><span aria-hidden="true">/</span><a href="/blog/">Блог</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav></div>
+    <header class="article-hero"><div class="article-shell article-hero__grid"><div class="article-hero__intro"><p class="article-hero__eyebrow">Практична статия</p><h1 id="article-title">{title}</h1><p class="article-hero__summary">{description}</p></div><aside class="article-hero__meta" aria-label="Информация за статията"><dl><div><dt>Публикувано</dt><dd><time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time></dd></div><div><dt>Автор</dt><dd>{authorName}</dd></div>{updatedDate && <div><dt>Обновено</dt><dd><time datetime={updatedDate.toISOString()}>{formatDate(displayDate)}</time></dd></div>}{readingTime && <div><dt>Време за четене</dt><dd>{readingTime}</dd></div>}</dl></aside></div></header>
+    {cover && <figure class="article-shell article-cover"><Image src={cover} alt={coverAlt ?? title} widths={[768, 1200, 1600]} sizes="(min-width: 75rem) 75rem, calc(100vw - 2rem)" loading="eager" /></figure>}
+    {highlight && <section class="article-shell article-highlight" aria-label={highlight.label}><span class="article-highlight__value">{highlight.value}</span><div><p class="article-highlight__label">{highlight.label}</p>{highlight.description && <p class="article-highlight__description">{highlight.description}</p>}</div></section>}
+    <div class="article-shell article-reading-layout">{tableOfContents.length > 0 && <aside class="article-toc" aria-label="В тази статия"><p>В тази статия</p><nav><ol>{tableOfContents.map((heading) => <li class:list={{ 'article-toc__subitem': heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></aside>}<div class="article-body"><Content /></div></div>
+    <div class="article-shell article-share-row"><ArticleShare title={title} url={Astro.url.href} /></div>
+    {articleAuthor && <section class="article-author-section"><div class="article-shell article-author-shell"><ArticleAuthor id={articleAuthor.id} name={articleAuthor.data.name} role={articleAuthor.data.role} shortBio={articleAuthor.data.shortBio} photo={articleAuthor.data.photo} photoAlt={articleAuthor.data.photoAlt} /></div></section>}
+    {(previousPost || nextPost) && <nav class="article-shell article-post-nav" aria-label="Навигация между статиите"><div>{previousPost && <a href={`/blog/${previousPost.id}/`}><span>Предишна статия</span><strong>{previousPost.data.title}</strong></a>}</div><div>{nextPost && <a href={`/blog/${nextPost.id}/`}><span>Следваща статия</span><strong>{nextPost.data.title}</strong></a>}</div></nav>}
+    {relatedArticles.length > 0 && <section class="article-related" aria-labelledby="related-articles-title"><div class="article-shell"><div class="article-related__heading"><h2 id="related-articles-title">Още по темата</h2><p>Практични материали, които дават още контекст за посланието, съдържанието и реалната работа.</p></div><div class="article-related__list">{relatedArticles.map((article) => <BlogTeaser id={article.id} title={article.data.title} description={article.data.description} pubDate={article.data.pubDate} cover={article.data.cover} coverAlt={article.data.coverAlt} />)}</div></div></section>}
+    {relatedSolutions.length > 0 && <section class="article-connections" aria-labelledby="connections-title"><div class="article-shell"><div class="article-connections__heading"><h2 id="connections-title">Продължете по темата</h2><p>Вижте как превръщаме тези принципи в реална работа.</p></div><ul>{relatedSolutions.map((solution) => <li><a href={`/resheniya/${solution.id}/`}><span>Решение</span><strong>{solution.data.title}</strong><small>{solution.data.description}</small><b aria-hidden="true">→</b></a></li>)}</ul></div></section>}
+    <footer class="article-close"><div class="article-shell article-close__inner"><div><p>Следваща стъпка</p><h2>Да подредим следващата ви стъпка</h2><span>Ако темата е важна за вашата организация, ще започнем с кратък разговор и ще уточним кое има най-голям смисъл да направим първо.</span></div><div class="article-close__actions"><Button href="/kontakti/" size="md">Започнете разговор</Button></div></div></footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-shell{width:min(calc(100% - 2 * var(--layout-gutter-mobile)),var(--layout-content-max));margin-inline:auto}
+  .article-breadcrumbs-bar{background:var(--color-surface);border-block:1px solid var(--color-border)}
+  .article-breadcrumbs{display:flex;min-height:2.75rem;align-items:center;gap:var(--space-2);overflow:hidden;color:var(--color-text-muted);font-family:var(--font-ui);font-size:.875rem;white-space:nowrap}
+  .article-breadcrumbs a{color:inherit;font-weight:500;text-decoration-color:transparent;text-underline-offset:var(--space-1)}
+  .article-breadcrumbs a:hover{color:var(--color-vamo-red);text-decoration-color:currentColor}
+  .article-breadcrumbs a:focus-visible,.article-connections a:focus-visible{border-radius:var(--radius-control);outline:2px solid var(--color-focus);outline-offset:2px}
+  .article-breadcrumbs span[aria-hidden='true']{color:var(--color-neutral-400)}
+  .article-breadcrumbs span[aria-current='page']{overflow:hidden;color:var(--color-text);font-weight:600;text-overflow:ellipsis}
+  .article-hero{padding-block:var(--layout-anchor-padding-mobile) var(--space-12)}
+  .article-hero__grid{display:grid;gap:var(--space-10)}
+  .article-hero__eyebrow,.article-close p{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+  .article-hero h1{max-width:22ch;margin-block-start:var(--space-4);font-size:var(--type-page-title);font-weight:700;line-height:1.1;letter-spacing:-.02em;text-wrap:balance}
+  .article-hero__summary{max-width:55ch;margin-block-start:var(--space-6);color:var(--color-text-muted);font-size:1.125rem;line-height:1.65;text-wrap:pretty}
+  .article-hero__meta{display:grid;align-content:start;padding-block-start:var(--space-6);border-block-start:1px solid var(--color-border-strong)}
+  .article-hero__meta dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-5)}
+  .article-hero__meta dt{color:var(--color-text-muted);font-size:.8125rem}
+  .article-hero__meta dd{margin:var(--space-1) 0 0;color:var(--color-text);font-weight:700;line-height:1.35}
+  .article-cover{overflow:hidden;aspect-ratio:16 / 8;margin-block-end:var(--space-8);border-radius:var(--radius-surface);background:var(--color-surface-strong)}
+  .article-cover :global(img){width:100%;height:100%;object-fit:cover}
+  .article-highlight{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-5);align-items:center;margin-block-end:var(--layout-section-padding-mobile);padding:var(--space-6);border-block:1px dotted var(--color-border-strong);background:var(--color-surface)}
+  .article-highlight__value{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:clamp(3.25rem,8vw,5rem);font-weight:700;line-height:.85;letter-spacing:-.04em}
+  .article-highlight__label{color:var(--color-text);font-family:var(--font-heading);font-size:var(--type-card-title);font-weight:600;line-height:1.25}
+  .article-highlight__description{margin-block-start:var(--space-2);color:var(--color-text-muted);font-size:1rem;line-height:1.55}
+  .article-reading-layout{display:grid;gap:var(--space-10);padding-block-end:var(--space-8)}
+  .article-toc{padding-block:var(--space-5);border-block:1px dotted var(--color-border-strong)}
+  .article-toc>p{margin-block-end:var(--space-3);font-family:var(--font-heading);font-size:.8125rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .article-toc ol{display:grid;gap:var(--space-2);margin:0;padding:0;list-style:none}
+  .article-toc li{position:relative;display:grid;grid-template-columns:var(--space-4) minmax(0,1fr);gap:var(--space-2);align-items:start}
+  .article-toc li::before{width:var(--space-3);height:var(--space-3);margin-block-start:.35rem;border:1px solid var(--color-neutral-400);border-radius:var(--radius-full);content:''}
+  .article-toc li::after{position:absolute;top:.54rem;left:.19rem;width:.3rem;height:.3rem;border-radius:var(--radius-full);background:var(--color-vamo-red);content:''}
+  .article-toc a{color:var(--color-text-muted);font-size:.9375rem;line-height:1.45;text-decoration-color:var(--color-border-strong);text-underline-offset:var(--space-1)}
+  .article-toc a:hover{color:var(--color-vamo-red)}
+  .article-toc__subitem{margin-inline-start:var(--space-4)}
+  .article-body{max-width:46rem}
+  .article-body :global(h2){margin-block:var(--space-12) var(--space-4);color:var(--color-text);font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
+  .article-body :global(h2:first-child){margin-block-start:0}
+  .article-body :global(h3){margin-block:var(--space-8) var(--space-3);font-size:var(--type-card-title);font-weight:600;line-height:1.3;letter-spacing:-.02em}
+  .article-body :global(p),.article-body :global(li){color:var(--color-text-muted);font-size:1.125rem;line-height:1.7}
+  .article-body :global(h2 + p){max-width:none;margin-block-start:var(--space-5);padding:var(--space-4) var(--space-5);border-inline-start:3px solid var(--color-vamo-red);border-radius:0 var(--radius-control) var(--radius-control) 0;background:var(--color-surface);color:var(--color-text);font-size:clamp(1.125rem,2vw,1.25rem);line-height:1.6}
+  .article-body :global(p+p){margin-block-start:var(--space-5)}
+  .article-body :global(ul){display:grid;gap:var(--space-4);margin-block:var(--space-6);padding:0;list-style:none}
+  .article-body :global(ul li){display:grid;grid-template-columns:var(--space-6) minmax(0,1fr);gap:var(--space-3);align-items:start}
+  .article-body :global(ul li::before){width:.5rem;height:.5rem;margin-block-start:.65rem;border-radius:var(--radius-full);background:var(--color-vamo-red);content:''}
+  .article-body :global(ol){display:grid;gap:var(--space-3);margin-block:var(--space-6);padding-inline-start:var(--space-6)}
+  .article-body :global(ol li::marker){color:var(--color-vamo-red);font-weight:700}
+  .article-body :global(blockquote){margin:var(--space-10) 0;padding:var(--space-8);border-inline-start:1px solid var(--color-vamo-red);border-radius:0 var(--radius-surface) var(--radius-surface) 0;background:var(--color-surface);color:var(--color-text);font-family:var(--font-heading);font-size:clamp(1.25rem,2.5vw,1.75rem);line-height:1.35;letter-spacing:-.02em}
+  .article-body :global(a){color:var(--color-text);font-weight:700;text-decoration-color:var(--color-vamo-red);text-underline-offset:var(--space-1)}
+  .article-share-row{padding-block:var(--space-8);border-block-start:1px solid var(--color-border)}
+  .article-author-shell{max-width:46rem}
+  .article-post-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);padding-block:var(--space-8);border-block-start:1px solid var(--color-border)}
+  .article-post-nav>div:last-child{text-align:end}
+  .article-post-nav a{display:grid;gap:var(--space-2);color:var(--color-text);text-decoration:none}
+  .article-post-nav span{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .article-post-nav strong{font-family:var(--font-heading);font-size:1rem;font-weight:600;line-height:1.35}
+  .article-post-nav a:hover strong{text-decoration:underline;text-decoration-color:var(--color-vamo-red);text-underline-offset:var(--space-1)}
+  .article-post-nav a:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px;border-radius:var(--radius-control)}
+  .article-related{padding-block:var(--layout-section-padding-mobile);background:var(--color-surface)}
+  .article-related__heading,.article-connections__heading{display:grid;gap:var(--space-3);padding-block-end:var(--space-6);border-block-end:1px dotted var(--color-border-strong)}
+  .article-related h2,.article-connections h2{font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em}
+  .article-related__heading p,.article-connections__heading p{max-width:56ch;color:var(--color-text-muted);font-size:1rem;line-height:1.6}
+  .article-related__list{display:grid;gap:var(--space-6);margin-block-start:var(--space-6)}
+  .article-related :global(.blog-teaser__preview-content){padding-block:0}
+  .article-related :global(.blog-teaser__preview-label){color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .article-related :global(.blog-teaser h3){font-weight:600}
+  .article-related :global(.blog-teaser__pending){margin-block-start:var(--space-4);font-weight:700}
+  .article-connections{padding-block:var(--layout-section-padding-mobile);background:var(--color-cream)}
+  .article-connections ul{display:grid;margin:0;padding:0;list-style:none}
+  .article-connections li+li{border-block-start:1px solid var(--color-border)}
+  .article-connections a{display:grid;grid-template-columns:1fr auto;gap:var(--space-2) var(--space-6);padding-block:var(--space-6);color:var(--color-text);text-decoration:none}
+  .article-connections a>span{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .article-connections strong{grid-column:1;color:var(--color-text);font-family:var(--font-heading);font-size:var(--type-card-title);font-weight:600;line-height:1.25}
+  .article-connections small{grid-column:1;color:var(--color-text-muted);font-size:.9375rem;line-height:1.55}
+  .article-connections b{grid-column:2;grid-row:1 / span 3;align-self:center;color:var(--color-vamo-red);font-size:1.25rem;transition:transform var(--dur-2) var(--ease-out-quart)}
+  .article-connections a:hover b{transform:translateX(var(--space-1))}
+  .article-author-section{padding-block:var(--layout-section-padding-mobile);background:var(--color-surface)}
+  .article-close{padding-block:var(--layout-section-padding-mobile);background:var(--color-vamo-black);color:var(--color-text-inverse)}
+  .article-close__inner{display:grid;gap:var(--space-8)}
+  .article-close h2{max-width:22ch;margin-block:var(--space-3);font-size:var(--type-cta-title);line-height:1.15;letter-spacing:-.02em}
+  .article-close span{display:block;max-width:56ch;color:var(--color-neutral-300);font-size:1rem;line-height:1.6}
+  .article-close__actions{display:grid;gap:var(--space-6);align-content:start}
+  @media(min-width:48rem){.article-shell{width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max))}.article-hero{padding-block:var(--layout-anchor-padding-desktop) var(--space-16)}.article-hero__grid{grid-template-columns:minmax(0,1.3fr) minmax(17rem,.7fr);align-items:start}.article-hero h1{font-size:clamp(2.5rem,3.3vw,2.625rem)}.article-hero__meta{margin-block-start:var(--space-10);padding-block-start:0}.article-highlight{grid-template-columns:minmax(9rem,.35fr) minmax(0,1fr);margin-block-end:var(--layout-section-padding-desktop);padding:var(--space-8)}.article-reading-layout{grid-template-columns:minmax(11rem,.42fr) minmax(0,1fr);gap:var(--space-16);padding-block-end:var(--space-10)}.article-toc{position:sticky;top:calc(3.5rem + var(--space-6));align-self:start}.article-related,.article-connections,.article-author-section{padding-block:var(--layout-section-padding-desktop)}.article-related__list{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-8)}.article-related :global(.blog-teaser + .blog-teaser){padding-inline-start:var(--space-8);border-inline-start:1px solid var(--color-border)}.article-close{padding-block:var(--layout-section-padding-desktop)}.article-close__inner{grid-template-columns:minmax(0,1fr) minmax(15rem,.45fr);align-items:end}}
+</style>

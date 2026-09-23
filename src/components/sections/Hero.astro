@@ -1,0 +1,261 @@
+---
+import { Image } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import gerganaPhoto from '../../assets/experts/gergana-ivanova.jpg';
+
+interface Props {
+  title?: string;
+  lead?: string;
+  description?: string;
+  primaryHref?: string;
+  primaryLabel?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+}
+
+const {
+  title,
+  lead = 'Без да гадаете какво работи и къде изтича бюджетът ви.',
+  description = 'Подреждаме стратегия, съдържание и публичност в ясна система, която води до реални резултати — не до хаотичен маркетинг.',
+  primaryHref = '/kontakti/',
+  primaryLabel = 'Започни с безплатна диагностика',
+  secondaryHref = '/resheniya/',
+  secondaryLabel = 'Виж решенията',
+} = Astro.props;
+---
+
+<section class="hero" aria-label="Начало">
+  <div class="hero__inner">
+    <div class="hero__grid">
+      <div class="hero__left">
+        <div class="hero__content">
+          <h1 class="hero__title">
+            {title ? (
+              title
+            ) : (
+              <>
+                <span class="hero__title-line">
+                  Привличате <span class="hero__title-accent">реални запитвания</span>
+                </span>
+                <span class="hero__title-line">
+                  и изграждате ясна <span class="hero__title-accent">система за растеж</span>
+                </span>
+              </>
+            )}
+          </h1>
+          <p class="hero__lead">{lead}</p>
+          <p class="hero__description">{description}</p>
+
+          <div class="hero__actions">
+            <Button href={primaryHref} variant="primary" size="lg">
+              {primaryLabel}
+            </Button>
+            <Button href={secondaryHref} variant="ghost" size="lg">
+              {secondaryLabel}
+            </Button>
+          </div>
+        </div>
+
+        <div class="hero__meta" aria-hidden="true">
+          <span class="hero__path">Кратка диагностика</span>
+          <span class="hero__arrow">→</span>
+          <span class="hero__path">Яснота</span>
+          <span class="hero__arrow">→</span>
+          <span class="hero__path">Конкретни следващи стъпки</span>
+        </div>
+      </div>
+
+      <aside class="hero__right" aria-label="Основател на VAMO">
+        <a class="hero__founder" href="/ekspertna-mrezha/gergana-ivanova/">
+          <Image
+            src={gerganaPhoto}
+            alt="Гергана Иванова, основател на VAMO"
+            widths={[280, 560]}
+            sizes="(min-width: 64rem) 15rem, (min-width: 48rem) 18rem, 100vw"
+            loading="eager"
+          />
+          <span class="hero__founder-copy">
+            <strong>Гергана Иванова</strong>
+            <span>Основател на VAMO</span>
+            <q>Работите директно с мен — от диагнозата до изпълнението.</q>
+          </span>
+        </a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-cream);
+  }
+
+  .hero__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--space-12);
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: var(--space-10);
+  }
+
+  .hero__left {
+    min-width: 0;
+  }
+
+  .hero__content {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .hero__title {
+    font-size: clamp(2rem, 3.3vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  .hero__title-line {
+    display: block;
+  }
+
+  .hero__title .hero__title-accent {
+    color: var(--color-vamo-red);
+  }
+
+  .hero__lead {
+    color: var(--color-text);
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .hero__description {
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-block-start: var(--space-4);
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-start: var(--space-12);
+    color: var(--color-neutral-400);
+    font-size: 0.9375rem;
+  }
+
+  .hero__path {
+    line-height: 1.5;
+  }
+
+  .hero__arrow {
+    color: var(--color-vamo-red);
+    font-weight: 700;
+    opacity: 0.65;
+  }
+
+  .hero__right { display: grid; align-self: stretch; }
+
+  .hero__founder {
+    display: grid;
+    overflow: hidden;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-surface);
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .hero__founder :global(img) { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; transition: transform var(--dur-3) var(--ease-out-cubic); }
+  .hero__founder-copy { display: grid; gap: var(--space-2); padding: var(--space-5); }
+  .hero__founder-copy strong { font-size: 1.25rem; }
+  .hero__founder-copy > span { color: var(--color-vamo-red); font-size: .85rem; font-weight: 700; }
+  .hero__founder-copy q { max-width: 26ch; color: var(--color-text-muted); font-size: .95rem; line-height: 1.45; }
+  .hero__founder:hover :global(img), .hero__founder:focus-visible :global(img) { transform: scale(1.03); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__content { animation: hero-enter var(--dur-5) var(--ease-out-quart) both; }
+    .hero__meta { animation: hero-meta-enter var(--dur-4) var(--ease-out-cubic) 120ms both; }
+  }
+
+  @keyframes hero-enter {
+    from { opacity: 0; transform: translateY(var(--space-4)); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes hero-meta-enter {
+    from { opacity: 0; transform: translateY(var(--space-2)); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (min-width: 48rem) {
+    .hero__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--space-16);
+    }
+
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero__title-line {
+      white-space: nowrap;
+    }
+
+    .hero__content {
+      gap: var(--space-8);
+    }
+
+    .hero__description {
+      font-size: 1.125rem;
+    }
+
+    .hero__actions {
+      gap: var(--space-5);
+      margin-block-start: var(--space-6);
+    }
+
+    .hero__meta {
+      margin-block-start: var(--space-16);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .hero__inner {
+      padding-block: var(--space-20);
+    }
+
+    .hero__lead {
+      line-height: 1.3;
+    }
+
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr) 19rem;
+    }
+  }
+</style>

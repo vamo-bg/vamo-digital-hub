@@ -1,8 +1,30 @@
 ---
 import { getCollection } from 'astro:content';
 
-import Button from '../../components/ui/Button.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CapacitySection from '../../components/sections/CapacitySection.astro';
+import ProcessSection from '../../components/sections/ProcessSection.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import { Image } from 'astro:assets';
+import communicationPrImage from '../../assets/service-komunikatsii-pr.png';
+import digitalStrategyImage from '../../assets/service-digitalna-strategiya.png';
+import designMaterialsImage from '../../assets/service-dizayn-reklamni-materiali.png';
+import euVisibilityImage from '../../assets/service-eu-visibility-compliance.png';
+import podcastInterviewImage from '../../assets/service-podcast-interview.png';
+import eventsLogisticsImage from '../../assets/service-sabitiya-logistika.png';
+import videoFilmImage from '../../assets/service-video-filmovo-proizvodstvo.png';
+import webDevelopmentImage from '../../assets/service-ueb-razrabotka.png';
+
+const solutionImages = {
+  'komunikatsii-i-pr': communicationPrImage,
+  'digitalna-strategiya': digitalStrategyImage,
+  'dizayn-i-reklamni-materiali': designMaterialsImage,
+  'eu-visibility-compliance': euVisibilityImage,
+  'podkast-i-intervyu-formati': podcastInterviewImage,
+  'sabitiya-i-logistika': eventsLogisticsImage,
+  'video-i-filmovo-proizvodstvo': videoFilmImage,
+  'ueb-razrabotka': webDevelopmentImage,
+} as const;
 
 const solutions = (await getCollection('resheniya', ({ data }) => !data.draft)).sort(
   (a, b) =>
@@ -10,70 +32,85 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft)).
       (b.data.order ?? Number.MAX_SAFE_INTEGER) ||
     a.data.title.localeCompare(b.data.title, 'bg'),
 );
+const pageUrl = new URL('/resheniya/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+  { '@type': 'ListItem', position: 2, name: 'Решения', item: pageUrl },
+] };
 ---
 
 <BaseLayout
   title="Решения"
   description="Практични дигитални решения от VAMO, съобразени с целите на бизнеса и нуждите на неговите клиенти."
 >
-  <div class="page-shell">
-    <header class="page-intro">
-      <div class="page-intro__heading">
-        <span class="page-intro__eyebrow">Решения</span>
-        <h1>Решения за устойчиво дигитално развитие</h1>
+  <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
+  <div class="solutions-archive">
+    <div class="page-shell breadcrumbs-shell"><nav class="breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">Решения</span></nav></div>
+    <section class="solutions-hero">
+      <div class="page-shell">
+        <header class="page-intro">
+          <NetworkPattern />
+          <div class="page-intro__heading"><span class="page-intro__eyebrow">Решения</span><h1>Решения за устойчиво дигитално развитие</h1></div>
+          <p class="page-intro__summary">От стратегията до реализацията: свързваме съдържание, дизайн и технологии в решения с ясна бизнес цел.</p>
+        </header>
       </div>
-      <p class="page-intro__summary">
-        От стратегията до реализацията: свързваме съдържание, дизайн и
-        технологии в решения с ясна бизнес цел.
-      </p>
-    </header>
-
-    {
+    </section>
+    <div class="page-shell solutions-content">
+      {
       solutions.length > 0 ? (
         <ul class="solutions-grid" aria-label="Решения на VAMO">
-          {solutions.map((solution, index) => (
+          {solutions.map((solution) => (
             <li>
-              <article
-                class="solution-card"
-                aria-labelledby={`solution-${solution.id}`}
-                style={`--solution-index: '${String(index + 1).padStart(2, '0')}'`}
-              >
-                <div class="solution-card__content">
+              <a class="solution-grid-item" href={`/resheniya/${solution.id}/`} aria-labelledby={`solution-${solution.id}`}>
+                <div class="solution-grid-item__media">{solutionImages[solution.id as keyof typeof solutionImages] && <Image src={solutionImages[solution.id as keyof typeof solutionImages]} alt="" width={720} height={720} loading="lazy" />}</div>
+                <div class="solution-grid-item__overlay">
                   <h2 id={`solution-${solution.id}`}>{solution.data.title}</h2>
                   <p>{solution.data.description}</p>
+                  <span class="solution-grid-item__action">Вижте услугата <span aria-hidden="true">→</span></span>
                 </div>
-                <Button
-                  href={`/resheniya/${solution.id}/`}
-                  variant="ghost"
-                  class="solution-card__link"
-                  aria-label={`Виж решението: ${solution.data.title}`}
-                >
-                  Виж решението
-                </Button>
-              </article>
+              </a>
             </li>
           ))}
         </ul>
       ) : (
         <p class="empty-state">В момента подготвяме нашите решения.</p>
       )
-    }
+      }
+    </div>
+    <CapacitySection title="Капацитет, който свързва стратегия и реализация." closing="Избирате решение с ясна цел, правилен обхват и измерим следващ ход." />
+    <ProcessSection title="Как превръщаме решението в резултат" description="Подреждаме правилните стъпки, хора и съдържание около реалната задача." />
   </div>
 </BaseLayout>
 
 <style>
   .page-shell {
-    width: min(100% - (2 * var(--space-4)), 80rem);
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
     margin-inline: auto;
-    padding-block: var(--space-16) var(--space-24);
+    padding-block: 0;
   }
 
+  .breadcrumbs-shell { background: var(--color-cream); }
+  .solutions-hero { background: var(--color-vamo-black); color: var(--color-text-inverse); }
+  .solutions-content { padding-block-end: var(--space-24); }
+
   .page-intro {
+    position: relative;
+    isolation: isolate;
     display: grid;
     gap: var(--space-10);
-    padding-block-end: var(--space-16);
-    border-block-end: 1px solid var(--color-border-strong);
+    padding-block: var(--space-12) var(--space-16);
   }
+
+  .breadcrumbs { position:relative; z-index:2; display:flex; align-items:center; gap:var(--space-3); padding-block:var(--space-4); color:var(--color-text-muted); font-size:.875rem; line-height:1.4; }
+  .breadcrumbs a { color:inherit; text-decoration:none; }
+  .breadcrumbs a:hover { color:var(--color-text); }
+  .page-intro > :not(.network-pattern) { position:relative; z-index:1; }
+  .page-intro .network-pattern { opacity:.18; }
+  .page-intro__eyebrow { color: var(--color-vamo-red); }
+  .page-intro .page-intro__summary { color: var(--color-neutral-300); border-inline-color: var(--color-neutral-700); }
 
   .page-intro__heading {
     display: grid;
@@ -111,89 +148,25 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft)).
   .solutions-grid {
     display: grid;
     grid-template-columns: 1fr;
-    counter-reset: solution;
-    gap: var(--space-6);
+    gap: .75rem;
     margin: var(--space-16) 0 0;
     padding: 0;
     list-style: none;
   }
 
-  .solutions-grid > li {
-    min-width: 0;
-    counter-increment: solution;
-  }
-
-  .solution-card {
-    position: relative;
-    display: flex;
-    min-height: 22rem;
-    overflow: hidden;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--space-12);
-    padding: var(--space-10) var(--space-8) var(--space-8);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background-color: var(--color-surface);
-    transition:
-      border-color 200ms ease,
-      background-color 200ms ease,
-      transform 200ms ease;
-  }
-
-  .solution-card::before {
-    position: absolute;
-    inset-block-start: var(--space-6);
-    inset-inline-end: var(--space-6);
-    color: var(--color-neutral-300);
-    content: var(--solution-index);
-    font-family: var(--font-heading);
-    font-size: 3rem;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    transition: color 200ms ease;
-  }
-
-  .solution-card::after {
-    position: absolute;
-    inset: auto var(--space-6) var(--space-6) auto;
-    width: var(--space-6);
-    height: var(--space-6);
-    border-inline-end: 1px solid var(--color-border-strong);
-    border-block-end: 1px solid var(--color-border-strong);
-    content: '';
-  }
-
-  .solution-card__content {
-    position: relative;
-    z-index: 1;
-    padding-block-start: var(--space-12);
-  }
-
-  .solution-card h2 {
-    max-width: 16ch;
-    font-size: 1.625rem;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-  }
-
-  .solution-card p {
-    max-width: 45ch;
-    margin-block-start: var(--space-5);
-    color: var(--color-text-muted);
-    font-size: 0.9375rem;
-    line-height: 1.7;
-    text-wrap: pretty;
-  }
-
-  :global(.solution-card__link) {
-    position: relative;
-    z-index: 1;
-  }
+  .solutions-grid > li { min-width: 0; }
+  .solution-grid-item { position:relative; display:grid; min-height:30rem; align-content:end; overflow:hidden; padding:0; color:var(--color-text-inverse); text-decoration:none; transition:background-color var(--dur-2) ease; }
+  .solution-grid-item__media { position:absolute; inset:0; background:var(--color-neutral-100); }
+  .solution-grid-item__media img { width:100%; height:100%; object-fit:cover; transition:transform var(--dur-3) var(--ease-out-quad); }
+  .solution-grid-item::after { position:absolute; inset:0; background:linear-gradient(180deg, transparent 18%, color-mix(in srgb, var(--color-vamo-black) 82%, transparent) 100%); content:''; }
+  .solution-grid-item__overlay { position:relative; z-index:1; display:grid; gap:var(--space-2); padding:var(--space-5); }
+  .solution-grid-item h2 { max-width:22ch; font-size:1.35rem; font-weight:600; line-height:1.15; letter-spacing:-.02em; text-wrap:balance; }
+  .solution-grid-item p { max-width:38ch; color:var(--color-neutral-300); font-size:.875rem; line-height:1.45; text-wrap:pretty; }
+  .solution-grid-item__action { color:var(--color-white); font-size:.875rem; font-weight:700; }
+  .solution-grid-item__action span { color:var(--color-vamo-red); font-size:1.1em; }
+  .solution-grid-item:hover { background:var(--color-neutral-100); }
+  .solution-grid-item:hover .solution-grid-item__media img { transform:scale(1.03); }
+  .solution-grid-item:focus-visible { outline:2px solid var(--color-focus); outline-offset:-2px; }
 
   .empty-state {
     margin-block-start: var(--space-12);
@@ -202,85 +175,49 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft)).
 
   @media (min-width: 48rem) {
     .page-shell {
-      width: min(100% - (2 * var(--space-8)), 80rem);
-      padding-block: var(--space-20) var(--space-32);
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: 0;
     }
+
+    .solutions-content { padding-block-end: var(--space-32); }
 
     .page-intro {
       grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
       align-items: end;
       gap: var(--space-12);
-      padding-block-end: var(--space-20);
+      padding-block: var(--space-20);
     }
 
     .page-intro h1 {
       font-size: 3.5rem;
     }
 
-    .page-intro__summary,
-    .solution-card p {
+    .page-intro__summary {
       font-size: 1.0625rem;
     }
 
-    .solution-card {
-      min-height: 24rem;
-      padding: var(--space-10);
-    }
-
-    .solution-card h2 {
-      font-size: 1.875rem;
-    }
-
-    .solution-card::before {
-      inset-block-start: var(--space-8);
-      inset-inline-end: var(--space-8);
-      font-size: 3.5rem;
-    }
+    .solutions-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; }
+    .solution-grid-item { min-height:28rem; }
+    .solution-grid-item h2 { font-size:1.35rem; }
   }
 
   @media (min-width: 64rem) {
     .page-intro h1 {
-      font-size: 4.5rem;
+      font-size: 3.5rem;
     }
 
     .page-intro__summary {
       font-size: 1.125rem;
     }
 
-    .solutions-grid {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: var(--space-8);
-      margin-block-start: var(--space-24);
-    }
-
-    .solutions-grid > li {
-      grid-column: span 7;
-    }
-
-    .solutions-grid > li:nth-child(even) {
-      grid-column: span 5;
-      margin-block-start: var(--space-16);
-    }
-
-    .solution-card h2 {
-      font-size: 2.25rem;
-    }
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .solution-card:hover {
-      border-color: var(--color-border-strong);
-      background-color: var(--color-surface-strong);
-      transform: translateY(-0.25rem);
-    }
-
-    .solution-card:hover::before {
-      color: var(--color-neutral-400);
-    }
+    .solutions-grid { margin-block-start:var(--space-20); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .solution-card {
+    .solution-grid-item {
       transition: none;
     }
   }

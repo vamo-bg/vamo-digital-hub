@@ -1,0 +1,120 @@
+---
+import type { HomeOutcome } from '../../data/home';
+
+interface Props {
+  items: readonly HomeOutcome[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="outcome-grid">
+  {items.map((item) => (
+    <a class="outcome" href={`/resheniya/${item.serviceId}/`}>
+      <i class:list={['outcome__icon', 'ph', `ph-${item.icon}`]} aria-hidden="true"></i>
+
+      <div class="outcome__content">
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+
+      <span class="outcome__arrow" aria-hidden="true">→</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .outcome-grid {
+    display: grid;
+    border-block: 1px solid var(--color-border);
+  }
+
+  .outcome {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: var(--space-6) minmax(0, 1fr) var(--space-6);
+    gap: var(--space-4);
+    align-items: start;
+    padding-block: var(--space-5);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background-color var(--dur-2) ease;
+  }
+
+  .outcome + .outcome {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .outcome__icon {
+    color: var(--color-neutral-800);
+    font-size: var(--space-6);
+    line-height: 1;
+  }
+
+  .outcome h3 {
+    color: var(--color-neutral-800);
+    font-size: var(--type-card-title);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+  }
+
+  .outcome p {
+    max-width: 42ch;
+    margin-block-start: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .outcome__arrow {
+    color: var(--color-neutral-400);
+    font-size: 1.25rem;
+    line-height: 1.2;
+    transition:
+      color var(--dur-1) ease,
+      transform var(--dur-2) var(--ease-out-quart);
+  }
+
+  .outcome:hover {
+    background-color: var(--color-neutral-100);
+  }
+
+  .outcome:hover .outcome__arrow,
+  .outcome:focus-visible .outcome__arrow {
+    color: var(--color-vamo-red);
+    transform: translateX(var(--space-1));
+  }
+
+  .outcome:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 48rem) {
+    .outcome-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .outcome {
+      min-height: 9.5rem;
+      padding: var(--space-6);
+    }
+
+    .outcome:nth-child(even) {
+      border-inline-start: 1px solid var(--color-border);
+    }
+
+    .outcome:nth-child(2) {
+      border-block-start: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .outcome,
+    .outcome__arrow {
+      transition: none;
+    }
+  }
+</style>

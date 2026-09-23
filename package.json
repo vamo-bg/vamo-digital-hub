@@ -16,6 +16,7 @@
   "dependencies": {
     "@astrojs/mdx": "latest",
     "@astrojs/sitemap": "latest",
+    "@phosphor-icons/web": "^2.1.2",
     "@tailwindcss/vite": "latest",
     "astro": "latest",
     "sharp": "latest",

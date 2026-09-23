@@ -1,0 +1,231 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  id?: string;
+  title: string;
+  clientName?: string;
+  projectType?: string;
+  year?: number | string;
+  coverImage?: ImageMetadata;
+  coverAlt?: string;
+  variant?: 'featured' | 'standard';
+  isPreview?: boolean;
+}
+
+const {
+  id,
+  title,
+  clientName,
+  projectType,
+  year,
+  coverImage,
+  coverAlt,
+  variant = 'standard',
+  isPreview = false,
+} = Astro.props;
+---
+
+<article class:list={['project-showcase', `project-showcase--${variant}`, { 'project-showcase--preview': isPreview }]}>
+  {id && !isPreview ? (
+    <a href={`/portfolio/${id}/`} aria-label={`Вижте проекта: ${title}`}>
+      <div class="project-showcase__media">
+        {coverImage ? (
+          <Image
+            src={coverImage}
+            alt={coverAlt ?? title}
+            widths={[640, 960, 1280]}
+            sizes={variant === 'featured' ? '(min-width: 64rem) 58vw, 100vw' : '(min-width: 64rem) 38vw, 100vw'}
+            loading="lazy"
+          />
+        ) : (
+          <span class="project-showcase__placeholder" aria-hidden="true">
+            <span>VAMO</span>
+          </span>
+        )}
+      </div>
+      <div class="project-showcase__content">
+        <div class="project-showcase__meta">
+          {clientName && <span>{clientName}</span>}
+          {projectType && <span>{projectType}</span>}
+          {year && <span>{year}</span>}
+        </div>
+        <h3>{title}</h3>
+        <span class="project-showcase__action">Вижте проекта <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
+  ) : (
+    <div class="project-showcase__preview-content">
+      <div class="project-showcase__media">
+        {coverImage ? (
+          <Image
+            src={coverImage}
+            alt={coverAlt ?? title}
+            widths={[640, 960, 1280]}
+            sizes={variant === 'featured' ? '(min-width: 64rem) 58vw, 100vw' : '(min-width: 64rem) 38vw, 100vw'}
+            loading="lazy"
+          />
+        ) : (
+          <span class="project-showcase__placeholder" aria-hidden="true">
+            <span>VAMO</span>
+          </span>
+        )}
+      </div>
+      <div class="project-showcase__content">
+        <span class="project-showcase__preview-label">Примерна визуализация</span>
+        <div class="project-showcase__meta">
+          {clientName && <span>{clientName}</span>}
+          {projectType && <span>{projectType}</span>}
+          {year && <span>{year}</span>}
+        </div>
+        <h3>{title}</h3>
+        <span class="project-showcase__pending">Страницата на проекта предстои</span>
+      </div>
+    </div>
+  )}
+</article>
+
+<style>
+  .project-showcase,
+  .project-showcase > a,
+  .project-showcase__preview-content {
+    min-width: 0;
+    height: 100%;
+  }
+
+  .project-showcase > a,
+  .project-showcase__preview-content {
+    display: grid;
+    grid-template-rows: minmax(15rem, 1fr) auto;
+    overflow: hidden;
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+    text-decoration: none;
+  }
+
+  .project-showcase__media {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background-color: var(--color-neutral-800);
+  }
+
+  .project-showcase__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-4) var(--ease-out-cubic);
+  }
+
+  .project-showcase__placeholder {
+    display: grid;
+    height: 100%;
+    min-height: 15rem;
+    place-items: center;
+    background-color: var(--color-neutral-800);
+  }
+
+  .project-showcase__placeholder span {
+    color: var(--color-neutral-600);
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  .project-showcase__content {
+    padding: var(--space-6);
+  }
+
+  .project-showcase__preview-label {
+    display: block;
+    margin-block-end: var(--space-3);
+    color: var(--color-neutral-400);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .project-showcase__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    color: var(--color-neutral-300);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .project-showcase__meta span + span::before {
+    margin-inline-end: var(--space-4);
+    color: var(--color-vamo-red);
+    content: '•';
+  }
+
+  .project-showcase h3 {
+    max-width: 23ch;
+    margin-block-start: var(--space-3);
+    font-size: var(--type-card-title);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .project-showcase__action,
+  .project-showcase__pending {
+    display: inline-flex;
+    gap: var(--space-2);
+    margin-block-start: var(--space-5);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .project-showcase__action {
+    font-weight: 700;
+  }
+
+  .project-showcase__action span {
+    color: var(--color-vamo-red);
+    transition: transform var(--dur-2) var(--ease-out-quart);
+  }
+
+  .project-showcase__pending {
+    color: var(--color-neutral-400);
+  }
+
+  .project-showcase > a:hover .project-showcase__media :global(img) {
+    transform: scale(1.025);
+  }
+
+  .project-showcase > a:hover .project-showcase__action span {
+    transform: translateX(var(--space-1));
+  }
+
+  .project-showcase > a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 64rem) {
+    .project-showcase--featured > a,
+    .project-showcase--featured .project-showcase__preview-content {
+      grid-template-rows: minmax(28rem, 1fr) auto;
+    }
+
+    .project-showcase--featured h3 {
+      font-size: var(--type-feature-title);
+    }
+
+    .project-showcase--standard > a,
+    .project-showcase--standard .project-showcase__preview-content {
+      grid-template-columns: minmax(12rem, 0.9fr) minmax(0, 1.1fr);
+      grid-template-rows: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-showcase__media :global(img),
+    .project-showcase__action span {
+      transition: none;
+    }
+  }
+</style>

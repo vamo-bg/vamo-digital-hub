@@ -1,0 +1,158 @@
+---
+interface Task {
+  summary: string;
+  goals: string[];
+}
+
+interface Deliverable {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  task?: Task;
+  deliverables: Deliverable[];
+  outcome?: string;
+}
+
+const { task, deliverables, outcome } = Astro.props;
+---
+
+{
+  task && (
+    <section class="narrative-block" aria-labelledby="project-task-title">
+      <h2 id="project-task-title">Задача и цели</h2>
+      <div class="narrative-block__content">
+        <p class="narrative-block__lead">{task.summary}</p>
+        {task.goals.length > 0 && (
+          <ul class="goals-list">
+            {task.goals.map((goal) => <li>{goal}</li>)}
+          </ul>
+        )}
+      </div>
+    </section>
+  )
+}
+
+{
+  deliverables.length > 0 && (
+    <section class="narrative-block narrative-block--deliverables" aria-labelledby="project-deliverables-title">
+      <h2 id="project-deliverables-title">Какво направихме</h2>
+      <div class="deliverables-list">
+        {deliverables.map((item) => (
+          <article>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+{
+  outcome && (
+    <section class="narrative-block narrative-block--outcome" aria-labelledby="project-outcome-title">
+      <h2 id="project-outcome-title">Резултат</h2>
+      <p class="narrative-block__lead">{outcome}</p>
+    </section>
+  )
+}
+
+<style>
+  .narrative-block {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--layout-section-padding-mobile);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .narrative-block h2 {
+    max-width: 15ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .narrative-block__content {
+    display: grid;
+    max-width: 46rem;
+    gap: var(--space-6);
+  }
+
+  .narrative-block__lead {
+    max-width: 65ch;
+    color: var(--color-neutral-800);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .goals-list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .goals-list li {
+    position: relative;
+    max-width: 65ch;
+    padding: var(--space-4) 0 var(--space-4) var(--space-6);
+    border-block-start: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .goals-list li::before {
+    position: absolute;
+    inset-block-start: 1.35rem;
+    inset-inline-start: 0;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-vamo-red);
+    content: '';
+  }
+
+  .deliverables-list {
+    display: grid;
+    max-width: 48rem;
+    border-block-start: 1px solid var(--color-border-strong);
+  }
+
+  .deliverables-list article {
+    display: grid;
+    gap: var(--space-3);
+    padding-block: var(--space-5);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .deliverables-list h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .deliverables-list p {
+    max-width: 65ch;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 48rem) {
+    .narrative-block {
+      grid-template-columns: minmax(12rem, 0.65fr) minmax(0, 1.35fr);
+      align-items: start;
+      gap: var(--space-16);
+      padding-block: var(--layout-section-padding-desktop);
+    }
+  }
+</style>

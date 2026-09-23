@@ -1,0 +1,95 @@
+---
+import { site } from '../../data/site';
+import Stats from '../ui/Stats.astro';
+
+interface Props {
+  title?: string;
+  closing?: string;
+}
+
+const {
+  title = 'Това е капацитетът, на който можете да разчитате.',
+  closing = 'Това означава, че не експериментирате с бюджета си, а инвестирате в действия с доказан ефект.',
+} = Astro.props;
+
+const metrics = [
+  site.metrics.experienceYears,
+  site.metrics.experts,
+  site.metrics.projects,
+  site.metrics.references,
+];
+---
+
+<section class="capacity" aria-labelledby="capacity-title">
+  <div class="capacity__inner">
+    <h2 id="capacity-title" class="capacity__title">{title}</h2>
+
+    <div class="capacity__stats">
+      <Stats items={metrics} columns={4} align="center" size="compact" />
+    </div>
+
+    <p class="capacity__closing">{closing}</p>
+  </div>
+</section>
+
+<style>
+  .capacity {
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .capacity__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .capacity__title {
+    max-width: 34ch;
+    margin: 0 auto;
+    color: var(--color-text-inverse);
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .capacity__stats {
+    --stats-divider-color: var(--color-neutral-800);
+    --stats-label-color: var(--color-neutral-300);
+    --stats-value-color: var(--color-vamo-red);
+    margin-block-start: var(--space-8);
+  }
+
+  .capacity__closing {
+    width: 80%;
+    margin: var(--space-8) auto 0;
+    color: var(--color-text-inverse);
+    font-family: var(--font-body);
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 48rem) {
+    .capacity__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .capacity__stats,
+    .capacity__closing {
+      margin-block-start: var(--space-10);
+    }
+  }
+</style>

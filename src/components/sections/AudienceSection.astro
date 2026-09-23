@@ -1,0 +1,117 @@
+---
+import Button from '../ui/Button.astro';
+
+interface Props {
+  title?: string;
+  positiveText?: string;
+  boundaryText?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  title = 'С кого работим?',
+  positiveText =
+    'Работим с бизнеси и организации, които искат яснота, структура и дългосрочен растеж.',
+  boundaryText =
+    'Не работим с такива, които търсят бързи решения или евтино изпълнение.',
+  ctaLabel = 'Разберете дали сме вашият партньор',
+  ctaHref = '/kontakti/',
+} = Astro.props;
+---
+
+<section class="audience" aria-labelledby="audience-title">
+  <div class="audience__inner">
+    <h2 id="audience-title" class="audience__title">{title}</h2>
+
+    <div class="audience__content">
+      <p class="audience__lead">{positiveText}</p>
+      <p class="audience__boundary">{boundaryText}</p>
+
+      <div class="audience__action">
+        <Button href={ctaHref} variant="primary" size="md">
+          {ctaLabel}
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .audience {
+    background-color: var(--color-cream);
+  }
+
+  .audience__inner {
+    display: grid;
+    gap: var(--space-8);
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .audience__title {
+    max-width: 14ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .audience__content {
+    min-width: 0;
+    max-width: 40rem;
+  }
+
+  .audience__lead {
+    max-width: 38ch;
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+
+  .audience__boundary {
+    max-width: 52ch;
+    margin-block-start: var(--space-5);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .audience__action {
+    margin-block-start: var(--space-6);
+  }
+
+  @media (min-width: 48rem) {
+    .audience__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .audience__inner {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+
+    .audience__content {
+      justify-self: end;
+    }
+  }
+</style>

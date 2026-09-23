@@ -1,0 +1,505 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface SheetResult {
+  value: string;
+  label: string;
+  detail?: string;
+}
+
+export interface SheetDeliverable {
+  title: string;
+  description: string;
+}
+
+export interface SheetService {
+  id: string;
+  title: string;
+}
+
+interface Props {
+  surface: 'cream' | 'muted';
+  title: string;
+  taskSummary?: string;
+  goals?: string[];
+  deliverables?: SheetDeliverable[];
+  outcome?: string;
+  resultSummary?: string;
+  results?: SheetResult[];
+  services?: SheetService[];
+  evidence?: { image: ImageMetadata; alt: string; caption?: string };
+  /** True when the page has no lead chapter and this must carry the page. */
+  anchor?: boolean;
+}
+
+const {
+  surface,
+  title,
+  taskSummary,
+  goals = [],
+  deliverables = [],
+  outcome,
+  resultSummary,
+  results = [],
+  services = [],
+  evidence,
+  anchor = false,
+} = Astro.props;
+
+const hasRail = services.length > 0 || goals.length > 0;
+const hasWorks = deliverables.length > 0;
+/* A portrait still must not be cropped into a letterbox, so the punctuation
+ * image keeps the orientation it was shot in. */
+const evidenceIsPortrait = evidence
+  ? evidence.image.height > evidence.image.width
+  : false;
+---
+
+<section
+  class:list={['sheet', `sheet--${surface}`, { 'sheet--anchor': anchor }]}
+  aria-labelledby="production-sheet-title"
+>
+  <div class="sheet__shell">
+    <div class="sheet__intro">
+      <h2 id="production-sheet-title">{title}</h2>
+      {taskSummary && <p class="sheet__summary">{taskSummary}</p>}
+    </div>
+
+    {results.length > 0 && (
+      <dl class="sheet__figures">
+        {results.map((result) => (
+          <div>
+            <dd>{result.value}</dd>
+            <dt>{result.label}</dt>
+            {result.detail && <p>{result.detail}</p>}
+          </div>
+        ))}
+      </dl>
+    )}
+
+    {(hasRail || hasWorks) && (
+      <div class:list={['sheet__spread', { 'sheet__spread--single': !hasRail || !hasWorks }]}>
+        {hasRail && (
+          <div class="sheet__rail">
+            {services.length > 0 && (
+              <div class="sheet__rail-group">
+                <h3>Обхват</h3>
+                <ul class="sheet__services">
+                  {services.map((service) => (
+                    <li>
+                      <a href={`/resheniya/${service.id}/`}>{service.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {goals.length > 0 && (
+              <div class="sheet__rail-group">
+                <h3>Цели</h3>
+                <ul class="sheet__goals">
+                  {goals.map((goal) => (
+                    <li>
+                      <span>{goal}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {hasWorks && (
+          <div class="sheet__works">
+            <h3 class="sheet__works-title">Изпълнено</h3>
+            <dl>
+              {deliverables.map((item) => (
+                <div class="sheet__work">
+                  <dt>{item.title}</dt>
+                  <dd>{item.description}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+      </div>
+    )}
+
+    <div class="sheet__body"><slot /></div>
+  </div>
+
+  {evidence && (
+    <div class="sheet__shell">
+      <figure
+        class:list={[
+          'sheet__evidence',
+          evidenceIsPortrait ? 'sheet__evidence--portrait' : 'sheet__evidence--landscape',
+        ]}
+      >
+        <Image
+          src={evidence.image}
+          alt={evidence.alt}
+          widths={[480, 720, 1080, 1440]}
+          sizes={evidenceIsPortrait ? '28rem' : '(min-width: 48rem) 75rem, 100vw'}
+          loading="lazy"
+        />
+        {evidence.caption && <figcaption>{evidence.caption}</figcaption>}
+      </figure>
+    </div>
+  )}
+
+  {(outcome || resultSummary) && (
+    <div class="sheet__shell">
+      <p class="sheet__closing">{outcome ?? resultSummary}</p>
+    </div>
+  )}
+</section>
+
+<style>
+  .sheet {
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .sheet--anchor {
+    padding-block: var(--layout-anchor-padding-mobile);
+  }
+
+  .sheet--cream {
+    --sheet-surface: var(--color-background);
+    background-color: var(--color-background);
+  }
+
+  .sheet--muted {
+    --sheet-surface: var(--color-surface);
+    background-color: var(--color-surface);
+  }
+
+  .sheet__shell {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+  }
+
+  .sheet h2 {
+    max-width: 18ch;
+    font-size: var(--type-section-title);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .sheet__intro {
+    display: grid;
+    gap: var(--space-5);
+    align-items: start;
+  }
+
+  .sheet__summary {
+    max-width: 58ch;
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  /* Production figures read as a specification line, not as a stat hero. */
+  .sheet__figures {
+    display: grid;
+    overflow: hidden;
+    gap: 0;
+    margin: var(--space-10) 0 0;
+    padding: var(--space-2) var(--space-6);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .sheet__figures div {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-5);
+  }
+
+  .sheet__figures div + div {
+    border-block-start: 1px dotted var(--color-neutral-600);
+  }
+
+  .sheet__figures dd {
+    order: -1;
+    margin: 0;
+    font-family: var(--font-heading);
+    color: var(--color-accent-on-dark);
+    font-size: var(--type-cta-title);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .sheet__figures dt {
+    color: var(--color-neutral-300);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .sheet__figures p {
+    color: var(--color-neutral-300);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .sheet__spread {
+    display: grid;
+    gap: var(--space-12);
+    margin-block-start: var(--space-12);
+  }
+
+  .sheet__rail {
+    display: grid;
+    gap: var(--space-10);
+  }
+
+  .sheet__rail h3,
+  .sheet__works-title {
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .sheet__services,
+  .sheet__goals {
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sheet__services li {
+    padding-block: var(--space-3);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .sheet__services li:first-child {
+    padding-block-start: 0;
+  }
+
+  .sheet__services a {
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--dur-2) ease;
+  }
+
+  .sheet__services a:hover {
+    color: var(--color-vamo-red);
+  }
+
+  .sheet__goals {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .sheet__goals li {
+    display: grid;
+    grid-template-columns: var(--space-3) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-3);
+    max-width: 42ch;
+    color: var(--color-neutral-800);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .sheet__goals li::before {
+    box-sizing: border-box;
+    width: var(--space-3);
+    height: var(--space-3);
+    margin-block-start: 0.4em;
+    border: 3px solid var(--sheet-surface);
+    border-radius: var(--radius-full);
+    outline: 1px solid var(--color-border-strong);
+    background: var(--color-vamo-red);
+    content: '';
+  }
+
+  /* The works list is an editorial record: numbered rows and hairlines, not cards. */
+  .sheet__works dl {
+    margin: var(--space-5) 0 0;
+    counter-reset: delivered-item;
+  }
+
+  .sheet__work {
+    display: grid;
+    grid-template-columns: var(--space-8) minmax(0, 1fr);
+    column-gap: var(--space-4);
+    padding-block: var(--space-6);
+    border-block-start: 1px dotted var(--color-border-strong);
+    counter-increment: delivered-item;
+  }
+
+  .sheet__work::before {
+    grid-row: 1 / 3;
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.65;
+    content: counter(delivered-item, decimal-leading-zero);
+  }
+
+  .sheet__work:last-child {
+    border-block-end: 1px dotted var(--color-border-strong);
+  }
+
+  .sheet__work dt {
+    grid-column: 2;
+    font-family: var(--font-heading);
+    font-size: var(--type-card-title);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .sheet__work dd {
+    grid-column: 2;
+    max-width: 62ch;
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .sheet__body:not(:empty) {
+    max-width: 68ch;
+    margin-block-start: var(--space-12);
+  }
+
+  .sheet__body :global(h2),
+  .sheet__body :global(h3) {
+    margin-block: var(--space-10) var(--space-4);
+    font-size: var(--type-feature-title);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .sheet__body :global(p) {
+    color: var(--color-neutral-800);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  .sheet__body :global(p + p) {
+    margin-block-start: var(--space-5);
+  }
+
+  .sheet__evidence {
+    margin: var(--space-16) 0 0;
+  }
+
+  .sheet__evidence :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: var(--color-surface-strong);
+    object-fit: cover;
+  }
+
+  .sheet__evidence--landscape :global(img) {
+    aspect-ratio: 3 / 2;
+  }
+
+  .sheet__evidence--portrait {
+    max-width: 28rem;
+  }
+
+  .sheet__evidence--portrait :global(img) {
+    aspect-ratio: 3 / 4;
+  }
+
+  .sheet__evidence figcaption {
+    margin-block-start: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .sheet__closing {
+    max-width: 46ch;
+    margin-block-start: var(--space-16);
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 48rem) {
+    .sheet {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .sheet--anchor {
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+
+    .sheet__shell,
+    .sheet__evidence figcaption {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+    }
+
+    .sheet__figures {
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      padding: var(--space-2) var(--space-8);
+    }
+
+    .sheet__figures div {
+      padding-inline: var(--space-6);
+    }
+
+    .sheet__figures div + div {
+      border-block-start: 0;
+      border-inline-start: 1px dotted var(--color-neutral-600);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .sheet__intro {
+      grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+      column-gap: var(--space-16);
+    }
+
+    .sheet__summary {
+      padding-block-start: var(--space-2);
+    }
+
+    .sheet__spread {
+      grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+
+    .sheet__spread--single {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 62rem;
+    }
+
+    .sheet__rail {
+      position: sticky;
+      inset-block-start: var(--space-16);
+    }
+  }
+</style>

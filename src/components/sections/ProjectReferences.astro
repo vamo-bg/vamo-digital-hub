@@ -1,0 +1,140 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface ReferenceDocument {
+  title: string;
+  previewImage: ImageMetadata;
+  previewAlt: string;
+}
+
+interface Props {
+  items: ReferenceDocument[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section class="project-references" aria-labelledby="project-references-title">
+      <div class="project-references__heading">
+        <h2 id="project-references-title">Референции и документи</h2>
+        <p>
+          Официални материали, които удостоверяват изпълнението и оценката на
+          проекта.
+        </p>
+      </div>
+
+      <ul>
+        {items.map((item) => (
+          <li>
+            <figure>
+              <Image
+                src={item.previewImage}
+                alt={item.previewAlt}
+                widths={[400, 640, 900]}
+                sizes="(min-width: 48rem) 40vw, 100vw"
+                loading="lazy"
+              />
+              <figcaption>{item.title}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .project-references {
+    display: grid;
+    gap: var(--space-10);
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .project-references__heading {
+    display: grid;
+    max-width: 44rem;
+    gap: var(--space-4);
+  }
+
+  .project-references h2 {
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .project-references__heading p {
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+  }
+
+  .project-references ul {
+    display: grid;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .project-references a,
+  .project-references figure {
+    display: grid;
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .project-references img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .project-references a > span {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5);
+  }
+
+  .project-references figcaption {
+    padding: var(--space-5);
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .project-references strong {
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .project-references strong + span {
+    color: var(--color-vamo-red);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+
+  .project-references a:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 48rem) {
+    .project-references {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .project-references ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExpertCard from '../../components/ui/ExpertCard.astro';
+import Button from '../../components/ui/Button.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import AudienceSection from '../../components/sections/AudienceSection.astro';
+import EvidenceSection from '../../components/sections/EvidenceSection.astro';
+
+const experts = (await getCollection('eksperti'))
+  .filter((expert) => expert.data.active && !expert.data.draft)
+  .sort((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER));
+const founder = experts.find((expert) => expert.id === 'gergana-ivanova');
+const listedExperts = experts.filter((expert) => expert.id !== 'gergana-ivanova').slice(0, 15);
+const expertDirections = [
+  { title: 'Видео и съдържание', text: 'Режисура, сценарий, заснемане, монтаж и формати за кампании и проекти.' },
+  { title: 'Комуникации и публичност', text: 'PR стратегии, медийно присъствие и съдържание за институции.' },
+  { title: 'Европейски проекти и стратегии', text: 'Разработване, управление, оценка, консултиране и публичност.' },
+  { title: 'Публичен сектор и администрация', text: 'Работа с общини и институции, планиране и развитие.' },
+  { title: 'Бизнес развитие и маркетинг', text: 'Позициониране, бранд и пазарно развитие според целта.' },
+  { title: 'Туризъм и устойчиво развитие', text: 'Дестинационен маркетинг, наследство и местни общности.' },
+];
+
+const pageUrl = new URL('/ekspertna-mrezha/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: 'Експертна мрежа', item: pageUrl },
+  ],
+};
+const collectionSchema = {
+  '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Експертна мрежа', url: pageUrl,
+  description: 'Експерти, които се включват според конкретната задача и нуждите на проекта.',
+  mainEntity: { '@type': 'ItemList', itemListElement: experts.map((expert, index) => ({ '@type': 'ListItem', position: index + 1, name: expert.data.name, url: new URL(`/ekspertna-mrezha/${expert.id}/`, Astro.site ?? Astro.url).href })) },
+};
+---
+
+<BaseLayout title="Експертна мрежа" description="Експерти, които се включват според конкретната задача и нуждите на проекта.">
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
+  </Fragment>
+  <div class="archive-page">
+    <nav class="archive-page__crumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">Експертна мрежа</span></nav>
+    <header class="archive-page__intro">
+      <NetworkPattern />
+      <div class="archive-page__intro-copy">
+        <p class="archive-page__eyebrow">Експертна мрежа</p>
+        <h1>Експертен капацитет, който превръща идеите в реални резултати</h1>
+        <p class="archive-page__lead">Работим с подбрана мрежа от доказани специалисти — от стратегия и проекти до съдържание, изпълнение и публичност.</p>
+        <p class="archive-page__microcopy">Правилният експерт за правилния резултат.</p>
+        <Button href="/kontakti/" variant="primary" size="md">Обсъдете вашия проект</Button>
+      </div>
+      <aside class="archive-page__intro-aside" aria-label="Как подбираме експертите">
+        <p class="archive-page__overline">Как подбираме</p>
+        <p>Не предлагаме фиксиран екип. Избираме хората според целта, мащаба и специфичната експертиза, която задачата изисква.</p>
+      </aside>
+    </header>
+    <section class="archive-page__system" aria-labelledby="system-title"><div class="archive-page__system-copy"><p class="archive-page__eyebrow">Какво стои зад VAMO</p><h2 id="system-title">Експертна система, а не фиксиран екип</h2></div><p>VAMO обединява специалисти от различни области и ги активира според конкретния проект. Всеки екип се подбира спрямо целите, обхвата и очаквания резултат.</p></section>
+    <section class="archive-page__directions" aria-labelledby="directions-title"><div class="archive-page__section-heading"><p class="archive-page__eyebrow">Основни направления</p><h2 id="directions-title">Експертиза според задачата</h2></div><ul>{expertDirections.map((direction) => <li><h3>{direction.title}</h3><p>{direction.text}</p></li>)}</ul></section>
+    <section class="archive-page__flow" aria-labelledby="flow-title"><div><p class="archive-page__eyebrow">Как работи системата</p><h2 id="flow-title">От диагнозата до резултата</h2></div><ol><li>Диагностика</li><li>Подбор на експерти</li><li>Реализация</li><li>Публичност</li><li>Резултат</li></ol></section>
+    {founder && <section class="archive-page__founder" aria-labelledby="founder-title"><div class="archive-page__founder-copy"><p class="archive-page__eyebrow">Основател и водещ експерт</p><h2 id="founder-title">{founder.data.name}</h2><p>{founder.data.shortBio}</p><Button href={`/ekspertna-mrezha/${founder.id}/`} variant="primary" size="md">Вижте профила</Button></div><div class="archive-page__founder-card"><ExpertCard expert={founder} /></div></section>}
+    <section class="archive-page__listing" aria-labelledby="experts-title">
+      <div class="archive-page__listing-head"><h2 id="experts-title">Подбрани експерти</h2><p>{listedExperts.length} профила</p></div>
+      <div class="archive-page__grid">
+        {listedExperts.map((expert) => <ExpertCard expert={expert} />)}
+      </div>
+    </section>
+    <section class="archive-page__cta" aria-labelledby="selection-title"><p class="archive-page__eyebrow">Персонален подбор</p><h2 id="selection-title">За всеки проект подбираме точния екип</h2><p>Не е нужно да познавате целия ни експертен състав. Според задачата, индустрията и целта ви активираме специалистите, които ще донесат най-силен резултат.</p><Button href="/kontakti/" variant="primary" size="md">Обсъдете вашия проект</Button></section>
+    <AudienceSection title="За кого е полезна експертната мрежа?" positiveText="За бизнеси, институции и проекти, които имат ясна задача, но се нуждаят от правилната комбинация от експерти." boundaryText="Не заместваме ясния обхват и отговорността с фиктивен екип или хаотично възлагане." />
+    <EvidenceSection />
+  </div>
+</BaseLayout>
+
+<style>
+  .archive-page { background: var(--color-cream); color: var(--color-text); }
+  .archive-page__crumbs, .archive-page__intro, .archive-page__listing { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .archive-page__crumbs { padding-block: var(--space-5); }
+  .archive-page__crumbs { display:flex; gap: var(--space-3); color: var(--color-text-muted); font-size:.875rem; }
+  .archive-page__crumbs a { color: inherit; text-decoration: none; }
+  .archive-page__crumbs a:hover { color: var(--color-text); }
+  .archive-page__intro { position: relative; isolation: isolate; display: grid; gap: var(--space-8); padding-block: var(--layout-anchor-padding-mobile); overflow: hidden; }
+  .archive-page__intro > :not(.network-pattern) { position: relative; z-index: 1; }
+  .archive-page__intro .network-pattern { opacity: .22; }
+  .archive-page__intro-copy { display: grid; gap: var(--space-4); align-content: start; }
+  .archive-page__eyebrow { color: var(--color-vamo-red); font: 700 0.75rem/1.4 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; }
+  h1 { max-width: 18ch; font: 700 var(--type-page-title)/1.08 var(--font-heading); letter-spacing: -.03em; text-wrap: balance; }
+  .archive-page__lead { max-width: 58ch; color: var(--color-text-muted); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
+  .archive-page__microcopy { color: var(--color-vamo-red); font-family: var(--font-heading); font-size: 1.125rem; font-weight: 600; letter-spacing: -.02em; }
+  .archive-page__intro-copy :global(.button) { justify-self: start; margin-block-start: var(--space-2); }
+  .archive-page__intro-aside { display: grid; align-content: start; gap: var(--space-3); max-width: 30rem; padding: var(--space-6); border-block: 1px dotted var(--color-border-strong); color: var(--color-text-muted); line-height: 1.65; }
+  .archive-page__overline { color: var(--color-neutral-600); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .archive-page__listing { padding-block: var(--space-10) var(--space-20); border-top: 1px solid var(--color-border); }
+  .archive-page__listing-head { display:flex; align-items: baseline; justify-content:space-between; gap: var(--space-4); }
+  h2 { font: 600 var(--type-section-title) / 1.15 var(--font-heading); letter-spacing: -.025em; }
+  .archive-page__listing-head p, .archive-page__note { color: var(--color-text-muted); font-size: .875rem; }
+  .archive-page__grid { display:grid; gap: var(--space-5); margin-block-start: var(--space-8); }
+  .archive-page__note { margin-block-start: var(--space-8); }
+  .archive-page__founder { display:grid; gap:var(--space-8); width:min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline:auto; padding-block:var(--space-12); }
+  .archive-page__founder-copy { align-self:center; }
+  .archive-page__founder-copy h2 { margin-block:var(--space-3) var(--space-4); }
+  .archive-page__founder-copy p:not(.archive-page__eyebrow) { max-width:48ch; margin-block-end:var(--space-6); color:var(--color-text-muted); font-size:1.1rem; line-height:1.6; }
+  .archive-page__founder-card { max-width:24rem; }
+  .archive-page__cta { width:min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline:auto; margin-block-end:var(--space-20); padding:var(--space-10); background:var(--color-vamo-black); color:var(--color-text-inverse); border-radius:var(--radius-surface); }
+  .archive-page__cta h2 { max-width:30ch; margin-block:var(--space-3) var(--space-4); color:var(--color-text-inverse); }
+  .archive-page__cta > p:not(.archive-page__eyebrow) { max-width:70ch; margin-block-end:var(--space-6); color:var(--color-neutral-300); line-height:1.6; }
+  .archive-page__system, .archive-page__directions, .archive-page__flow { width:min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline:auto; }
+  .archive-page__system { display:grid; gap:var(--space-6); padding-block:var(--layout-section-padding-mobile); border-block:1px solid var(--color-border); }
+  .archive-page__system h2, .archive-page__directions h2, .archive-page__flow h2 { margin-block-start:var(--space-3); }
+  .archive-page__system > p { max-width:62ch; color:var(--color-text-muted); line-height:1.7; }
+  .archive-page__directions { padding-block:var(--layout-section-padding-mobile); }
+  .archive-page__section-heading { max-width:42rem; }
+  .archive-page__directions ul { display:grid; gap:0; margin:var(--space-8) 0 0; padding:0; list-style:none; border-block-start:1px solid var(--color-border); }
+  .archive-page__directions li { padding-block:var(--space-5); border-block-end:1px solid var(--color-border); }
+  .archive-page__directions h3 { font:600 var(--type-card-title)/1.3 var(--font-heading); letter-spacing:-.02em; }
+  .archive-page__directions p { margin-block-start:var(--space-2); color:var(--color-text-muted); line-height:1.55; }
+  .archive-page__flow { display:grid; gap:var(--space-8); width:100%; box-sizing:border-box; margin-block-start:var(--space-8); padding:var(--layout-section-padding-mobile) var(--layout-gutter-mobile); background:var(--color-neutral-100); }
+  .archive-page__flow > div, .archive-page__flow > ol { width:min(100%, var(--layout-content-max)); margin-inline:auto; }
+  .archive-page__flow ol { display:grid; gap:var(--space-3); margin:0; padding-block-end:var(--space-6); list-style:none; counter-reset:flow; }
+  .archive-page__flow li { display:flex; align-items:center; gap:var(--space-3); padding-block:var(--space-3); border-block-end:1px solid var(--color-border-strong); font-weight:600; }
+  .archive-page__flow li::before { counter-increment:flow; content:counter(flow, decimal-leading-zero); color:var(--color-vamo-red); font:600 .8125rem/1 var(--font-heading); }
+  @media (min-width: 48rem) { .archive-page__crumbs, .archive-page__intro, .archive-page__listing, .archive-page__founder, .archive-page__cta, .archive-page__system, .archive-page__directions { width:min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .archive-page__intro { grid-template-columns: minmax(0, 1fr) minmax(17rem, .55fr); align-items:start; gap:var(--space-16); padding-block: var(--layout-anchor-padding-desktop); } .archive-page__intro-aside { justify-self:end; margin-block-start:var(--space-1); } .archive-page__system { grid-template-columns:minmax(14rem,.65fr) minmax(0,1.35fr); align-items:start; gap:var(--space-16); padding-block:var(--layout-section-padding-desktop); } .archive-page__directions { padding-block:var(--layout-section-padding-desktop); } .archive-page__directions ul { grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:var(--space-10); } .archive-page__directions li:nth-child(even) { padding-inline-start:var(--space-8); border-inline-start:1px solid var(--color-border); } .archive-page__flow { grid-template-columns:minmax(14rem,.65fr) minmax(0,1.35fr); align-items:center; gap:var(--space-16); padding:var(--space-8) var(--layout-gutter-desktop); } .archive-page__flow ol { grid-template-columns:repeat(5,minmax(0,1fr)); gap:var(--space-3); padding-block:var(--space-5); } .archive-page__flow li { display:grid; align-content:start; min-height:5rem; border-block:0; } .archive-page__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); } .archive-page__listing { padding-block: var(--space-12) var(--space-24); } .archive-page__founder { grid-template-columns: minmax(0,1fr) minmax(16rem,24rem); align-items:center; padding-block:var(--space-16); } .archive-page__cta { margin-block-end:var(--space-24); padding:var(--space-12) var(--space-16); } }
+  @media (min-width: 64rem) { .archive-page__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

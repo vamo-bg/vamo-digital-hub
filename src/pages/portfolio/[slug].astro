@@ -2,12 +2,20 @@
 import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 
-import ProjectGallery from '../../components/sections/ProjectGallery.astro';
+import ProductionSheet from '../../components/sections/ProductionSheet.astro';
+import ProjectCoda from '../../components/sections/ProjectCoda.astro';
+import ProjectFrames from '../../components/sections/ProjectFrames.astro';
+import ProjectLead from '../../components/sections/ProjectLead.astro';
+import ProofChapter from '../../components/sections/ProofChapter.astro';
 import Button from '../../components/ui/Button.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('portfolio');
+  const projects = await getCollection(
+    'portfolio',
+    ({ data }) => import.meta.env.DEV || !data.draft,
+  );
 
   return projects.map((project) => ({
     params: { slug: project.id },
@@ -19,19 +27,141 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 const {
   title,
-  client,
-  clientDescription,
+  clientId,
   description,
   coverImage,
   coverAlt,
   year,
   location,
   projectType,
-  services,
+  serviceIds,
+  lead,
+  leadImage,
+  leadImageAlt,
+  overview,
+  task,
+  deliverables,
+  outcome,
+  resultSummary,
+  results,
+  expertIds,
   gallery,
   externalLinks,
+  referenceDocuments,
+  review,
   draft,
 } = project.data;
+
+const allClients = await getCollection('clients');
+const client = allClients.find((c) => c.id === clientId);
+
+const allServices = await getCollection('resheniya');
+const services = allServices
+  .filter((s) => serviceIds.includes(s.id))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+  .map((service) => ({ id: service.id, title: service.data.title }));
+
+const allExperts = await getCollection(
+  'eksperti',
+  ({ data }) => !data.draft && data.active,
+);
+const experts = expertIds
+  .map((id) => allExperts.find((expert) => expert.id === id))
+  .filter((expert): expert is (typeof allExperts)[number] => expert !== undefined);
+
+/* ---------------------------------------------------------------------------
+ * Chapter resolution
+ *
+ * The page is a three-act dossier: an opening chapter about the work itself,
+ * a production sheet, and the proof. Which chapters exist and how the opening
+ * one is presented both follow from the material the entry actually carries,
+ * so one template serves a film, an exhibition, a platform, or five fields.
+ * ------------------------------------------------------------------------ */
+
+const videoPattern = /(youtube\.com|youtu\.be|vimeo\.com)/i;
+const videoLink = externalLinks.find((link) => videoPattern.test(link.url));
+const secondaryLink = externalLinks.find((link) => link !== externalLinks[0]);
+
+type LeadVariant = 'film' | 'exhibition' | 'platform' | 'editorial';
+
+const leadVariant: LeadVariant | null = overview
+  ? (lead ??
+    (videoLink
+      ? 'film'
+      : gallery.length >= 6
+        ? 'exhibition'
+        : externalLinks.length > 0
+          ? 'platform'
+          : 'editorial'))
+  : null;
+
+const isExhibitionLead = leadVariant === 'exhibition';
+
+/* Two or more images make the band, which is where the photography belongs.
+ * Promoting one of them to a full-width slot would only pick an arbitrary
+ * frame, so a single image is the one case the sheet illustrates itself. */
+const frameItems = gallery.length >= 2 ? gallery : [];
+const evidence = gallery.length === 1 ? gallery[0] : undefined;
+
+const showFrames = frameItems.length >= 2;
+
+const hasSheet =
+  Boolean(task) ||
+  deliverables.length > 0 ||
+  Boolean(outcome) ||
+  Boolean(resultSummary) ||
+  results.length > 0 ||
+  services.length > 0;
+const hasProof = referenceDocuments.length > 0 || Boolean(review);
+const hasCodaContext = Boolean(client) || experts.length > 0;
+
+/* Surfaces are assigned across the chapters that survived, not hardcoded per
+ * component, so no two light chapters can ever end up side by side. */
+type Tone = 'dark' | 'light';
+const chapterTones: { key: string; tone: Tone }[] = [
+  leadVariant ? { key: 'lead', tone: 'light' as Tone } : null,
+  hasSheet ? { key: 'sheet', tone: 'light' as Tone } : null,
+  showFrames && !isExhibitionLead ? { key: 'frames', tone: 'dark' as Tone } : null,
+  hasProof ? { key: 'proof', tone: 'light' as Tone } : null,
+  hasCodaContext ? { key: 'coda', tone: 'light' as Tone } : null,
+].filter((chapter): chapter is { key: string; tone: Tone } => chapter !== null);
+
+let lightCount = 0;
+const surfaces = new Map<string, 'cream' | 'muted'>();
+for (const chapter of chapterTones) {
+  if (chapter.tone === 'light') {
+    surfaces.set(chapter.key, lightCount % 2 === 0 ? 'cream' : 'muted');
+    lightCount += 1;
+  }
+}
+
+const lastChapter = chapterTones.at(-1);
+const codaPrecededByDark = !hasCodaContext && lastChapter?.tone === 'dark';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Начало',
+      item: new URL('/', Astro.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Портфолио',
+      item: new URL('/portfolio/', Astro.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+      item: Astro.url.href,
+    },
+  ],
+};
 ---
 
 <BaseLayout
@@ -40,41 +170,55 @@ const {
   image={coverImage?.src}
   noindex={draft}
 >
-  <article>
-    <header class="project-hero">
-      <div class="project-shell project-hero__inner">
-        <nav class="breadcrumbs" aria-label="Навигация">
-          <a href="/">Начало</a>
-          <span aria-hidden="true">/</span>
-          <a href="/resheniya/">Проекти</a>
-          <span aria-hidden="true">/</span>
-          <span aria-current="page">{title}</span>
-        </nav>
+  <script
+    slot="head"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(breadcrumbSchema)}
+  ></script>
 
+  <article>
+    <div class="project-breadcrumbs-bar">
+      <nav class="project-shell project-breadcrumbs" aria-label="Навигация">
+        <a href="/">Начало</a>
+        <span aria-hidden="true">/</span>
+        <a href="/portfolio/">Портфолио</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{title}</span>
+      </nav>
+    </div>
+
+    <header class="project-hero">
+      <NetworkPattern />
+      <div class="project-shell project-hero__inner">
         <div class="project-hero__copy">
           {projectType && <p class="eyebrow">{projectType}</p>}
           <h1>{title}</h1>
           <p class="project-hero__summary">{description}</p>
-          <div class="project-hero__actions">
-            <Button href="#za-proekta" size="lg">Разгледайте проекта</Button>
-            {externalLinks[0] && (
+          {externalLinks[0] && (
+            <div class="project-hero__actions">
               <Button
                 href={externalLinks[0].url}
-                variant="ghost"
                 size="lg"
                 target="_blank"
                 rel="noreferrer"
               >
                 {externalLinks[0].label}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <dl class="project-facts">
           <div>
             <dt>Клиент</dt>
-            <dd>{client}</dd>
+            <dd>
+              {client ? (
+                <a href={`/klienti/${client.id}/`}>{client.data.name}</a>
+              ) : (
+                clientId
+              )}
+            </dd>
           </div>
           {location && (
             <div>
@@ -89,109 +233,173 @@ const {
             </div>
           )}
         </dl>
-      </div>
 
-      {coverImage && (
-        <div class="project-cover">
-          <Image
-            src={coverImage}
-            alt={coverAlt ?? ''}
-            widths={[640, 960, 1440, 1920]}
-            sizes="100vw"
-            loading="eager"
-          />
-        </div>
-      )}
+        {coverImage && (
+          <div class="project-cover">
+            <Image
+              src={coverImage}
+              alt={coverAlt ?? ''}
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 48rem) 44vw, 100vw"
+              loading="eager"
+            />
+          </div>
+        )}
+      </div>
     </header>
 
-    <div class="project-shell">
-      <div class="project-body" id="za-proekta">
-        <div class="project-story">
-          <Content />
-        </div>
+    {leadVariant && overview && (
+      <ProjectLead
+        variant={leadVariant}
+        title="За проекта"
+        statement={overview.lead}
+        details={overview.details}
+        action={secondaryLink}
+        image={leadImage}
+        imageAlt={leadImageAlt}
+      />
+    )}
 
-        <aside class="project-services" aria-labelledby="services-title">
-          <p class="eyebrow">Обхват</p>
-          <h2 id="services-title">Какво включва проектът</h2>
-          <ul>
-            {services.map((service) => <li>{service}</li>)}
-          </ul>
-        </aside>
-      </div>
+    {isExhibitionLead && showFrames && (
+      <ProjectFrames items={frameItems} seamless />
+    )}
 
-      <ProjectGallery items={gallery} />
-    </div>
+    {hasSheet && (
+      <ProductionSheet
+        surface={surfaces.get('sheet') ?? 'cream'}
+        title="Как го направихме"
+        taskSummary={task?.summary}
+        goals={task?.goals}
+        deliverables={deliverables}
+        outcome={outcome}
+        resultSummary={resultSummary}
+        results={results}
+        services={services}
+        evidence={evidence}
+        anchor={!leadVariant}
+      >
+        <Content />
+      </ProductionSheet>
+    )}
 
-    <section class="client-section" aria-labelledby="client-title">
-      <div class="project-shell client-section__inner">
-        <p class="eyebrow">Клиент</p>
-        <div>
-          <h2 id="client-title">{client}</h2>
-          {clientDescription && <p>{clientDescription}</p>}
-        </div>
-      </div>
-    </section>
+    {showFrames && !isExhibitionLead && (
+      <ProjectFrames title="Проектът в кадри" items={frameItems} />
+    )}
 
-    <section class="project-next">
-      <div class="project-shell project-next__inner">
-        <div>
-          <p class="eyebrow">Следващ проект</p>
-          <h2>Имате история, която заслужава силна реализация?</h2>
-        </div>
-        <Button href="/kontakt/" size="lg">Разкажете ни за нея</Button>
-      </div>
-    </section>
+    {hasProof && (
+      <ProofChapter
+        surface={surfaces.get('proof') ?? 'muted'}
+        documents={referenceDocuments}
+        review={review}
+      />
+    )}
+
+    <ProjectCoda
+      surface={surfaces.get('coda') ?? 'muted'}
+      client={client
+        ? {
+            name: client.data.name,
+            description: client.data.description,
+            website: client.data.website,
+          }
+        : undefined}
+      experts={experts}
+      cta={{
+        title: 'Имате история, която заслужава силна реализация?',
+        label: 'Разкажете ни за нея',
+        href: '/kontakti/',
+      }}
+      precededByDark={codaPrecededByDark}
+    />
   </article>
 </BaseLayout>
 
 <style>
   .project-shell {
-    width: min(100% - (2 * var(--space-4)), 80rem);
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
     margin-inline: auto;
   }
 
   .project-hero {
-    padding-block-start: var(--space-8);
-    background-color: var(--color-cream);
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--space-6) var(--space-10);
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
   }
 
   .project-hero__inner {
+    position: relative;
+    z-index: 1;
     display: grid;
-    gap: var(--space-10);
-    padding-block-end: var(--space-12);
+    gap: var(--space-8);
   }
 
-  .breadcrumbs {
+  .project-breadcrumbs-bar {
+    border-block: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .project-breadcrumbs {
     display: flex;
     overflow: hidden;
+    min-height: 2.75rem;
     align-items: center;
     gap: var(--space-2);
     color: var(--color-text-muted);
-    font-size: 0.8125rem;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    line-height: 1.5;
     white-space: nowrap;
   }
 
-  .breadcrumbs a {
-    text-decoration: none;
+  .project-breadcrumbs a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: var(--space-1);
+    transition:
+      color var(--dur-2) ease,
+      text-decoration-color var(--dur-2) ease;
   }
 
-  .breadcrumbs a:hover {
+  .project-breadcrumbs a:hover {
     color: var(--color-vamo-red);
+    text-decoration-color: currentColor;
   }
 
-  .breadcrumbs span:last-child {
+  .project-breadcrumbs a:focus-visible {
+    border-radius: var(--radius-control);
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .project-breadcrumbs span[aria-hidden='true'] {
+    color: var(--color-neutral-400);
+  }
+
+  .project-breadcrumbs span[aria-current='page'] {
     overflow: hidden;
+    color: var(--color-text);
+    font-weight: 600;
     text-overflow: ellipsis;
   }
 
   .project-hero__copy {
     display: grid;
-    max-width: 69rem;
-    gap: var(--space-5);
+    max-width: 43rem;
+    gap: var(--space-4);
   }
 
   .eyebrow {
-    color: var(--color-vamo-red);
+    color: var(--color-accent-on-dark);
     font-family: var(--font-heading);
     font-size: 0.75rem;
     font-weight: 700;
@@ -200,19 +408,19 @@ const {
   }
 
   .project-hero h1 {
-    max-width: 16ch;
-    font-size: clamp(2.75rem, 9vw, 6.5rem);
+    max-width: 14ch;
+    font-size: var(--type-page-title);
     font-weight: 700;
-    line-height: 0.95;
-    letter-spacing: -0.055em;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
 
   .project-hero__summary {
-    max-width: 45rem;
-    color: var(--color-neutral-800);
-    font-size: clamp(1.125rem, 2vw, 1.375rem);
-    line-height: 1.55;
+    max-width: 39rem;
+    color: var(--color-neutral-300);
+    font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
+    line-height: 1.6;
     text-wrap: pretty;
   }
 
@@ -220,15 +428,16 @@ const {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
-    margin-block-start: var(--space-3);
+    margin-block-start: var(--space-2);
   }
 
   .project-facts {
     display: grid;
-    gap: var(--space-6);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
     margin: 0;
-    padding-block-start: var(--space-6);
-    border-block-start: 1px solid var(--color-border-strong);
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-neutral-800);
   }
 
   .project-facts div {
@@ -237,7 +446,7 @@ const {
   }
 
   .project-facts dt {
-    color: var(--color-text-muted);
+    color: var(--color-neutral-400);
     font-family: var(--font-heading);
     font-size: 0.6875rem;
     font-weight: 700;
@@ -253,205 +462,90 @@ const {
     line-height: 1.4;
   }
 
+  .project-facts dd a {
+    color: inherit;
+    text-decoration-color: var(--color-neutral-600);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    transition: color var(--dur-2) ease, text-decoration-color var(--dur-2) ease;
+  }
+
+  .project-facts dd a:hover {
+    color: var(--color-text-inverse);
+    text-decoration-color: var(--color-accent-on-dark);
+  }
+
+  .project-facts dd a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: var(--space-1);
+  }
+
   .project-cover {
     overflow: hidden;
     width: 100%;
-    max-height: 52rem;
-    background-color: var(--color-surface-strong);
+    min-height: 20rem;
+    border: 1px solid var(--color-neutral-800);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-neutral-800);
   }
 
   .project-cover :global(img) {
     width: 100%;
-    height: clamp(25rem, 62vw, 52rem);
+    height: 100%;
+    min-height: 20rem;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-  }
-
-  .project-body {
-    display: grid;
-    gap: var(--space-16);
-    padding-block: var(--space-20);
-  }
-
-  .project-story {
-    min-width: 0;
-  }
-
-  .project-story :global(h2) {
-    max-width: 18ch;
-    margin-block: var(--space-16) var(--space-6);
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.035em;
-    text-wrap: balance;
-  }
-
-  .project-story :global(h2:first-child) {
-    margin-block-start: 0;
-  }
-
-  .project-story :global(h3) {
-    margin-block: var(--space-10) var(--space-3);
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.25;
-  }
-
-  .project-story :global(p),
-  .project-story :global(li) {
-    color: var(--color-neutral-800);
-    font-size: 1.0625rem;
-    line-height: 1.75;
-  }
-
-  .project-story :global(p + p) {
-    margin-block-start: var(--space-5);
-  }
-
-  .project-story :global(ul) {
-    display: grid;
-    gap: var(--space-3);
-    margin: var(--space-6) 0 0;
-    padding-inline-start: var(--space-6);
-  }
-
-  .project-services {
-    align-self: start;
-    padding: var(--space-8);
-    border-block-start: 3px solid var(--color-vamo-black);
-    background-color: var(--color-surface);
-  }
-
-  .project-services h2 {
-    max-width: 18ch;
-    margin-block-start: var(--space-3);
-    font-size: 1.75rem;
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-  }
-
-  .project-services ul {
-    display: grid;
-    gap: var(--space-4);
-    margin: var(--space-8) 0 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: services;
-  }
-
-  .project-services li {
-    display: grid;
-    grid-template-columns: var(--space-8) 1fr;
-    gap: var(--space-3);
-    padding-block-end: var(--space-4);
-    border-block-end: 1px solid var(--color-border);
-    color: var(--color-neutral-800);
-    counter-increment: services;
-    line-height: 1.45;
-  }
-
-  .project-services li::before {
-    color: var(--color-neutral-400);
-    content: counter(services, decimal-leading-zero);
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  .client-section {
-    padding-block: var(--space-20);
-    background-color: var(--color-vamo-black);
-    color: var(--color-text-inverse);
-  }
-
-  .client-section__inner {
-    display: grid;
-    gap: var(--space-6);
-  }
-
-  .client-section h2 {
-    max-width: 21ch;
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.035em;
-  }
-
-  .client-section__inner > div > p {
-    max-width: 40rem;
-    margin-block-start: var(--space-5);
-    color: var(--color-neutral-300);
-    font-size: 1.0625rem;
-  }
-
-  .project-next {
-    padding-block: var(--space-20);
-    background-color: var(--color-surface);
-  }
-
-  .project-next__inner {
-    display: grid;
-    gap: var(--space-8);
-  }
-
-  .project-next h2 {
-    max-width: 22ch;
-    margin-block-start: var(--space-3);
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.035em;
-    text-wrap: balance;
   }
 
   @media (min-width: 48rem) {
     .project-shell {
-      width: min(100% - (2 * var(--space-8)), 80rem);
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
     }
 
     .project-hero {
-      padding-block-start: var(--space-10);
+      padding-block: var(--space-8) var(--space-12);
     }
 
     .project-hero__inner {
-      gap: var(--space-12);
-      padding-block-end: var(--space-16);
+      grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.8fr);
+      grid-template-areas:
+        'copy cover'
+        'facts cover';
+      column-gap: var(--space-12);
+      row-gap: var(--space-4);
+    }
+
+    .project-hero__copy {
+      grid-area: copy;
     }
 
     .project-facts {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      display: flex;
+      grid-area: facts;
+      align-self: end;
+      margin-block-start: var(--space-2);
     }
 
-    .project-body {
-      padding-block: var(--space-24);
+    .project-facts div {
+      min-width: 0;
+      flex: 1 1 0;
     }
 
-    .client-section,
-    .project-next {
-      padding-block: var(--space-24);
+    .project-facts div:first-child {
+      flex-grow: 1.65;
     }
 
-    .client-section__inner {
-      grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr);
+    .project-cover {
+      grid-area: cover;
+      min-height: 30rem;
     }
 
-    .project-next__inner {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: end;
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .project-body {
-      grid-template-columns: minmax(0, 1.3fr) minmax(20rem, 0.7fr);
-      gap: var(--space-20);
-      align-items: start;
-    }
-
-    .project-services {
-      position: sticky;
-      inset-block-start: var(--space-24);
+    .project-cover :global(img) {
+      min-height: 30rem;
+      aspect-ratio: auto;
     }
   }
 </style>

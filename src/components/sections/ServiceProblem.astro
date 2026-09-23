@@ -1,0 +1,38 @@
+---
+interface Item { title: string; description: string; }
+interface Props { title: string; intro: string; items: Item[]; }
+const { title, intro, items } = Astro.props;
+---
+
+<section class="service-problem" aria-labelledby="service-problem-title">
+  <div class="service-problem__shell">
+    <div class="service-problem__intro">
+      <p class="service-label">Проблемът</p>
+      <h2 id="service-problem-title">{title}</h2>
+      <p>{intro}</p>
+    </div>
+    <ul>
+      {items.map((item) => <li><h3>{item.title}</h3><p>{item.description}</p></li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .service-problem { padding-block: var(--layout-anchor-padding-mobile); background: var(--color-background); }
+  .service-problem__shell { display: grid; width: min(calc(100% - 2 * var(--layout-gutter-mobile)), var(--layout-content-max)); margin-inline: auto; gap: var(--space-10); }
+  .service-label { color: var(--color-vamo-red); font-family: var(--font-heading); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+  h2 { max-width: 28ch; margin-block-start: var(--space-3); font-size: var(--type-section-title-anchor); font-weight: 700; line-height: 1.12; letter-spacing: -.025em; text-wrap: balance; }
+  .service-problem__intro > p:last-child { max-width: 49ch; margin-block-start: var(--space-8); color: var(--color-text-muted); font-size: 1.0625rem; line-height: 1.65; }
+  ul { display: grid; margin: 0; padding: 0; border-block-start: 1px dotted var(--color-border-strong); list-style: none; }
+  li { display: grid; align-content: start; padding: var(--space-6) var(--space-2); border-block-end: 1px dotted var(--color-border-strong); }
+  h3 { display: grid; grid-template-columns: var(--space-4) minmax(0, 1fr); align-items: center; gap: var(--space-3); color: var(--color-text); font-size: var(--type-card-title); font-weight: 600; line-height: 1.3; }
+  h3::before { box-sizing: border-box; width: var(--space-3); height: var(--space-3); border: 3px solid var(--color-background); border-radius: var(--radius-full); outline: 1px solid var(--color-border-strong); background: var(--color-vamo-red); content: ''; }
+  li p { max-width: 32ch; margin-block-start: var(--space-3); padding-inline-start: calc(var(--space-4) + var(--space-3)); color: var(--color-text-muted); font-size: .9375rem; line-height: 1.55; }
+  @media (min-width:48rem) {
+    .service-problem { padding-block: var(--layout-anchor-padding-desktop); }
+    .service-problem__shell { width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max)); grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); gap:var(--space-16); align-items:center; }
+    ul { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    li { min-height: 10rem; padding: var(--space-6) var(--space-8); }
+    li:nth-child(2n) { border-inline-start: 1px dotted var(--color-border-strong); }
+  }
+</style>

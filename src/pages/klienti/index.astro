@@ -1,0 +1,125 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/ui/Button.astro';
+import ClientLogo from '../../components/ui/ClientLogo.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import ProjectsSection from '../../components/sections/ProjectsSection.astro';
+
+const clients = (await getCollection('clients', ({ data }) => !data.draft && data.name !== 'VAMO')).sort(
+  (a, b) =>
+    (a.data.order ?? Number.MAX_SAFE_INTEGER) -
+      (b.data.order ?? Number.MAX_SAFE_INTEGER) ||
+    a.data.name.localeCompare(b.data.name, 'bg'),
+);
+
+const pageUrl = new URL('/klienti/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+  { '@type': 'ListItem', position: 2, name: 'Клиенти', item: pageUrl },
+] };
+---
+
+<BaseLayout
+  title="Клиенти"
+  description="Клиенти и организации, с които VAMO работи заедно."
+>
+  <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
+  <div class="clients-archive">
+    <div class="clients-crumbs">
+      <nav class="client-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">Клиенти</span></nav>
+    </div>
+
+    <header class="clients-hero">
+      <NetworkPattern />
+      <div class="client-shell clients-hero__inner">
+        <div class="clients-hero__copy">
+          <p class="clients-hero__eyebrow">Клиенти</p>
+          <h1>Хората и организациите, които ни се довериха</h1>
+          <p>Работим с бизнеси и институции, които търсят ясна дигитална посока и устойчиви резултати.</p>
+          <Button href="/kontakti/" size="md">Обсъдете вашия проект</Button>
+        </div>
+        <aside class="clients-hero__aside" aria-label="Как работим с клиентите">
+          <p class="clients-hero__overline">Партньорство в действие</p>
+          <p>Всеки проект има различен контекст. Затова събираме подходящите хора, решения и следващи стъпки около неговата реална цел.</p>
+        </aside>
+      </div>
+    </header>
+
+    {
+      clients.length > 0 ? (
+        <section class="client-directory client-shell" aria-labelledby="clients-title">
+          <div class="client-directory__heading">
+            <div>
+              <h2 id="clients-title">Организации, с които сме работили</h2>
+              <p>Логата и профилите се добавят постепенно, заедно с потвърдена информация за всяко партньорство.</p>
+            </div>
+            <p class="client-directory__count">{clients.length} клиента</p>
+          </div>
+          <ul class="client-directory__grid" aria-label="Клиенти на VAMO">
+            {clients.map((client) => (
+              <li id={client.id}>
+                <ClientLogo name={client.data.name} logo={client.data.logo} href={`/klienti/${client.id}/`} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : (
+        <p class="empty-state client-shell">В момента подготвяме информация за клиентите си.</p>
+      )
+    }
+    <ProjectsSection useAllWhenEmpty uniformCards title="Партньорствата ни в реална работа" description="Зад всяко име стои конкретна задача, реализиран проект и измерим резултат." />
+  </div>
+</BaseLayout>
+
+<style>
+  .clients-archive { background: var(--color-cream); color: var(--color-text); }
+  .client-shell { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .clients-crumbs { border-block: 1px solid var(--color-border); background: var(--color-surface); }
+  .breadcrumbs { display: flex; min-height: 2.75rem; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .breadcrumbs a { color: inherit; text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--color-vamo-red); }
+  .breadcrumbs a:focus-visible { border-radius: var(--radius-control); outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .breadcrumbs span[aria-hidden='true'] { color: var(--color-neutral-400); }
+  .breadcrumbs span[aria-current='page'] { color: var(--color-text); font-weight: 600; }
+
+  .clients-hero { position: relative; overflow: hidden; background: var(--color-cream); }
+  .clients-hero > :global(.network-pattern) { opacity: .2; }
+  .clients-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--space-8); padding-block: var(--layout-anchor-padding-mobile); }
+  .clients-hero__copy { display: grid; gap: var(--space-4); max-width: 48rem; }
+  .clients-hero__eyebrow { color: var(--color-vamo-red); font-size: .75rem; font-weight: 700; letter-spacing: .12em; line-height: 1.4; text-transform: uppercase; }
+  .clients-hero h1 { max-width: 19ch; font-family: var(--font-heading); font-size: var(--type-page-title); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
+  .clients-hero__copy > p:not(.clients-hero__eyebrow) { max-width: 58ch; color: var(--color-text-muted); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
+  .clients-hero__copy :global(.button) { justify-self: start; margin-block-start: var(--space-2); }
+  .clients-hero__aside { display: grid; align-content: start; gap: var(--space-3); max-width: 30rem; padding: var(--space-6); border-block: 1px dotted var(--color-border-strong); color: var(--color-text-muted); line-height: 1.65; }
+  .clients-hero__overline { color: var(--color-neutral-600); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+
+  .client-directory { padding-block: var(--layout-section-padding-mobile); }
+  .client-directory__heading { display: grid; gap: var(--space-5); padding-block-end: var(--space-8); border-block-end: 1px dotted var(--color-border-strong); }
+  .client-directory h2 { max-width: 24ch; font-family: var(--font-heading); font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .client-directory__heading > div > p { max-width: 58ch; margin-block-start: var(--space-4); color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
+  .client-directory__count { color: var(--color-text-muted); font-size: .9375rem; }
+  .client-directory__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding: 0; border-block-end: 1px solid var(--color-border); list-style: none; }
+  .client-directory__grid > li { border-block-start: 1px solid var(--color-border); }
+  .client-directory__grid > li:nth-child(odd) { border-inline-end: 1px solid var(--color-border); }
+  .empty-state { padding-block: var(--layout-section-padding-mobile); color: var(--color-text-muted); }
+
+  @media (min-width: 48rem) {
+    .client-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
+    .clients-hero__inner { grid-template-columns: minmax(0, 1fr) minmax(17rem, .55fr); align-items: start; gap: var(--space-16); padding-block: var(--layout-anchor-padding-desktop); }
+    .clients-hero__aside { justify-self: end; margin-block-start: var(--space-1); }
+    .client-directory { padding-block: var(--layout-section-padding-desktop); }
+    .client-directory__heading { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+    .client-directory__count { text-align: end; }
+    .client-directory__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .client-directory__grid > li:nth-child(odd) { border-inline-end: 0; }
+    .client-directory__grid > li:not(:nth-child(3n)) { border-inline-end: 1px solid var(--color-border); }
+  }
+
+  @media (min-width: 64rem) {
+    .client-directory__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .client-directory__grid > li:not(:nth-child(3n)) { border-inline-end: 0; }
+    .client-directory__grid > li:not(:nth-child(4n)) { border-inline-end: 1px solid var(--color-border); }
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+interface ResultItem {
+  value: string;
+  label: string;
+  detail?: string;
+}
+
+interface Props {
+  summary?: string;
+  items: ResultItem[];
+}
+
+const { summary, items } = Astro.props;
+---
+
+{
+  (summary || items.length > 0) && (
+    <section class="project-results" aria-labelledby="project-results-title">
+      <div class="project-results__intro">
+        <h2 id="project-results-title">Какво постигнахме</h2>
+        {summary && <p>{summary}</p>}
+      </div>
+
+      {items.length > 0 && (
+        <dl class="project-results__list">
+          {items.map((item) => (
+            <div>
+              <dd>{item.value}</dd>
+              <dt>{item.label}</dt>
+              {item.detail && <p>{item.detail}</p>}
+            </div>
+          ))}
+        </dl>
+      )}
+    </section>
+  )
+}
+
+<style>
+  .project-results {
+    display: grid;
+    gap: var(--space-10);
+    padding-block: var(--layout-section-padding-mobile);
+    border-block: 1px solid var(--color-border-strong);
+  }
+
+  .project-results__intro {
+    display: grid;
+    max-width: 44rem;
+    gap: var(--space-4);
+  }
+
+  .project-results h2 {
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .project-results__intro p {
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .project-results__list {
+    display: grid;
+    margin: 0;
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .project-results__list > div {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-6);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .project-results dd {
+    order: -1;
+    margin: 0;
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .project-results dt {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .project-results__list p {
+    max-width: 28rem;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 48rem) {
+    .project-results {
+      gap: var(--space-12);
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .project-results__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .project-results__list > div {
+      padding: var(--space-8);
+      border-inline-start: 1px solid var(--color-border);
+    }
+
+    .project-results__list > div:first-child {
+      padding-inline-start: 0;
+      border-inline-start: 0;
+    }
+  }
+</style>

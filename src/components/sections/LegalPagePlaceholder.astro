@@ -1,0 +1,85 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  requirements: string[];
+}
+
+const { title, summary, requirements } = Astro.props;
+---
+
+<article class="legal-page">
+  <div class="legal-page__crumbs">
+    <nav class="legal-page__shell breadcrumbs" aria-label="Навигация по местоположението">
+      <a href="/">Начало</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{title}</span>
+    </nav>
+  </div>
+
+  <header class="legal-page__hero">
+    <div class="legal-page__shell">
+      <p class="legal-page__eyebrow">Правна информация</p>
+      <h1>{title}</h1>
+      <p>{summary}</p>
+    </div>
+  </header>
+
+  <section class="legal-page__body" aria-labelledby="legal-status-title">
+    <div class="legal-page__shell legal-page__grid">
+      <div>
+        <nav class="legal-page__nav" aria-label="Правни страници">
+          <p class="legal-page__nav-label">Правни страници</p>
+          <a class:list={{ active: title === 'Политика за поверителност' }} href="/politika-za-poveritelnost/">Политика за поверителност</a>
+          <a class:list={{ active: title === 'Общи условия' }} href="/obshti-usloviya/">Общи условия</a>
+          <a class:list={{ active: title === 'Бисквитки' }} href="/biskvitki/">Бисквитки</a>
+        </nav>
+        <p class="legal-page__status">Информационна версия</p>
+        <h2 id="legal-status-title">Правна информация</h2>
+      </div>
+      <div class="legal-page__copy">
+        {Astro.slots.has('default') ? <div class="legal-page__document"><slot /></div> : <><p>Тази страница има готово място в сайта, но текстът ѝ не се публикува, докато не бъде прегледан и потвърден от отговорното лице или юрист.</p><ul>{requirements.map((requirement) => <li>{requirement}</li>)}</ul></>}
+      </div>
+    </div>
+  </section>
+</article>
+
+<style>
+  .legal-page { background:var(--color-cream); }
+  .legal-page__shell { width:min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline:auto; }
+  .legal-page__crumbs { border-block:1px solid var(--color-border); background:var(--color-surface); }
+  .breadcrumbs { display:flex; min-height:2.75rem; align-items:center; gap:var(--space-2); color:var(--color-text-muted); font-size:.875rem; }
+  .breadcrumbs a { color:inherit; text-decoration:none; }
+  .breadcrumbs a:hover { color:var(--color-vamo-red); }
+  .breadcrumbs a:focus-visible { border-radius:var(--radius-control); outline:2px solid var(--color-focus); outline-offset:2px; }
+  .breadcrumbs span[aria-hidden='true'] { color:var(--color-neutral-400); }
+  .breadcrumbs span[aria-current='page'] { color:var(--color-text); font-weight:600; }
+  .legal-page__hero { padding-block:var(--layout-anchor-padding-mobile); border-block-end:1px solid var(--color-border); background:var(--color-neutral-100); }
+  .legal-page__eyebrow,.legal-page__status { margin:0; color:var(--color-vamo-red); font-family:var(--font-heading); font-size:.75rem; font-weight:600; letter-spacing:.12em; line-height:1.4; text-transform:uppercase; }
+  .legal-page h1 { max-width:18ch; margin-block-start:var(--space-3); font-size:var(--type-page-title); font-weight:700; letter-spacing:-.03em; line-height:1.08; text-wrap:balance; }
+  .legal-page__hero p:not(.legal-page__eyebrow) { max-width:55ch; margin-block-start:var(--space-5); color:var(--color-text-muted); font-size:1.125rem; line-height:1.6; text-wrap:pretty; }
+  .legal-page__body { padding-block:var(--layout-anchor-padding-mobile); }
+  .legal-page__grid { display:grid; gap:var(--space-8); padding-block:var(--space-8); border-block:1px solid var(--color-border-strong); }
+  .legal-page h2 { margin-block-start:var(--space-3); font-size:var(--type-section-title); font-weight:600; letter-spacing:-.02em; line-height:1.2; }
+  .legal-page__copy { max-width:72ch; color:var(--color-text-muted); font-size:1rem; line-height:1.7; }
+  .legal-page__copy p { margin:0; }
+  .legal-page__copy ul { display:grid; gap:var(--space-3); margin:var(--space-6) 0 0; padding:0; list-style:none; }
+  .legal-page__copy li { display:grid; grid-template-columns:auto minmax(0, 1fr); gap:var(--space-3); }
+  .legal-page__copy li::before { width:.5rem; height:.5rem; margin-block-start:.55em; border-radius:var(--radius-full); background:var(--color-vamo-red); content:''; }
+  .legal-page__document { display:grid; gap:var(--space-4); }
+  .legal-page__document > h1:first-child { display:none; }
+  .legal-page__document h2 { margin-block-start:var(--space-6); font-size:1.35rem; }
+  .legal-page__document h3 { margin-block-start:var(--space-5); font-size:1.1rem; color:var(--color-text); }
+  .legal-page__document p { margin:0; }
+  .legal-page__document ul,.legal-page__document ol { margin:0; padding-inline-start:1.35rem; }
+  .legal-page__document li + li { margin-block-start:var(--space-2); }
+  .legal-page__document blockquote { margin:0; padding:var(--space-4) var(--space-5); border-inline-start:3px solid var(--color-vamo-red); background:var(--color-neutral-100); color:var(--color-text); }
+  .legal-page__document a { color:var(--color-text); text-decoration:underline; text-underline-offset:.15em; }
+  .legal-page__nav { display:grid; gap:var(--space-2); margin-block-end:var(--space-10); }
+  .legal-page__nav-label { margin:0 0 var(--space-2); color:var(--color-text-muted); font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; }
+  .legal-page__nav a { display:flex; align-items:baseline; justify-content:space-between; gap:var(--space-3); padding-block:var(--space-2); border-block-end:1px solid var(--color-border); color:var(--color-text-muted); text-decoration:none; }
+  .legal-page__nav a:hover,.legal-page__nav a.active { color:var(--color-text); }
+  .legal-page__nav a.active { border-color:var(--color-vamo-red); font-weight:600; }
+  .legal-page__nav a span { color:var(--color-text-muted); font-size:.75rem; font-weight:400; }
+  @media (min-width:48rem) { .legal-page__shell { width:min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .legal-page__hero,.legal-page__body { padding-block:var(--layout-anchor-padding-desktop); } .legal-page__grid { grid-template-columns:minmax(15rem,.55fr) minmax(0,1.45fr); gap:var(--space-16); } }
+</style>

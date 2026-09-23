@@ -1,0 +1,216 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import Button from '../ui/Button.astro';
+import ExpertCard from '../ui/ExpertCard.astro';
+
+interface Props {
+  surface: 'cream' | 'muted';
+  client?: { name: string; description?: string; website?: string };
+  experts?: CollectionEntry<'eksperti'>[];
+  cta: { title: string; label: string; href: string };
+  /** Keeps two dark chapters from meeting when the coda has no light part. */
+  precededByDark?: boolean;
+}
+
+const {
+  surface,
+  client,
+  experts = [],
+  cta,
+  precededByDark = false,
+} = Astro.props;
+
+const hasContext = Boolean(client) || experts.length > 0;
+const ctaOnDark = hasContext || !precededByDark;
+---
+
+{
+  hasContext && (
+    <section class:list={['coda', `coda--${surface}`]} aria-labelledby="project-coda-title">
+      <div class="coda__shell">
+        <h2 id="project-coda-title">Зад проекта</h2>
+
+        <div class="coda__grid">
+          {client && (
+            <div class="coda__client">
+              <h3>Клиент</h3>
+              <p class="coda__client-name">{client.name}</p>
+              {client.description && <p class="coda__client-text">{client.description}</p>}
+              {client.website && (
+                <a href={client.website} target="_blank" rel="noreferrer">
+                  {client.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                </a>
+              )}
+            </div>
+          )}
+
+          {experts.length > 0 && (
+            <div class="coda__experts">
+              <h3>Екип</h3>
+              <div class="coda__experts-list">
+                {experts.map((expert) => <ExpertCard expert={expert} />)}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<section class:list={['cta', ctaOnDark ? 'cta--dark' : 'cta--light']}>
+  <div class="cta__shell">
+    <h2>{cta.title}</h2>
+    <Button href={cta.href} size="lg">{cta.label}</Button>
+  </div>
+</section>
+
+<style>
+  .coda {
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .coda--cream {
+    background-color: var(--color-background);
+  }
+
+  .coda--muted {
+    background-color: var(--color-surface);
+  }
+
+  .coda__shell,
+  .cta__shell {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+  }
+
+  .coda h2 {
+    font-size: var(--type-section-title);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .coda__grid {
+    display: grid;
+    gap: var(--space-12);
+    margin-block-start: var(--space-10);
+  }
+
+  .coda h3 {
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .coda__client-name {
+    max-width: 20ch;
+    margin-block-start: var(--space-4);
+    font-family: var(--font-heading);
+    font-size: var(--type-feature-title);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .coda__client-text {
+    max-width: 44ch;
+    margin-block-start: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .coda__client a {
+    display: inline-block;
+    margin-block-start: var(--space-4);
+    color: var(--color-vamo-red);
+    font-size: 0.9375rem;
+    text-underline-offset: 0.2em;
+  }
+
+  .coda__experts-list {
+    display: grid;
+    gap: var(--space-6);
+    margin-block-start: var(--space-5);
+  }
+
+  .cta {
+    padding-block: var(--layout-anchor-padding-mobile);
+  }
+
+  .cta--dark {
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .cta--light {
+    background-color: var(--color-surface);
+  }
+
+  .cta__shell {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .cta h2 {
+    max-width: 20ch;
+    font-size: var(--type-cta-title);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .cta__shell :global(.button) {
+    justify-self: start;
+  }
+
+  @media (min-width: 48rem) {
+    .coda {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .cta {
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+
+    .coda__shell,
+    .cta__shell {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+    }
+
+    .coda__grid {
+      grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+
+    /* auto-fill with a ceiling: a single expert keeps a card's width instead
+       of stretching across the whole column. */
+    .coda__experts-list {
+      grid-template-columns: repeat(auto-fill, minmax(15rem, 20rem));
+    }
+
+    .cta__shell {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      column-gap: var(--space-12);
+    }
+
+    .cta__shell :global(.button) {
+      justify-self: end;
+    }
+  }
+</style>

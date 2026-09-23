@@ -1,0 +1,209 @@
+---
+import Button from '../ui/Button.astro';
+import NetworkPattern from '../ui/NetworkPattern.astro';
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  title: string;
+  statement: string;
+  details: string;
+  image?: ImageMetadata;
+  backgroundImage?: ImageMetadata;
+}
+
+const { title, statement, details, image, backgroundImage } = Astro.props;
+---
+
+<header class="service-hero" style={backgroundImage ? `--service-hero-bg: url('${backgroundImage.src}')` : undefined}>
+  <NetworkPattern />
+  <div class="service-hero__shell">
+    <div class="service-hero__copy">
+      <p class="service-hero__context">Решение / {title}</p>
+      <h1>{title}</h1>
+      <p class="service-hero__statement">{statement}</p>
+      <p class="service-hero__details">{details}</p>
+      <div class="service-hero__actions">
+        <Button href="/kontakti/" size="lg">Започнете с опознавателен разговор</Button>
+        <a class="service-hero__secondary" href="#kak-rabotim">Вижте как работим</a>
+      </div>
+    </div>
+
+    <div class="service-hero__visual" aria-hidden="true">
+      {image && <Image src={image} alt="" width={720} height={720} loading="eager" />}
+      {!image && <>
+        <span class="service-hero__orbit service-hero__orbit--one"></span>
+        <span class="service-hero__orbit service-hero__orbit--two"></span>
+        <span class="service-hero__core"></span>
+        <span class="service-hero__node service-hero__node--one"></span>
+        <span class="service-hero__node service-hero__node--two"></span>
+        <span class="service-hero__node service-hero__node--three"></span>
+      </>}
+    </div>
+  </div>
+</header>
+
+<style>
+  .service-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .service-hero::before {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background: var(--service-hero-bg) center / cover no-repeat;
+    content: '';
+    opacity: 0.34;
+  }
+
+  .service-hero__shell {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: min(calc(100% - 2 * var(--layout-gutter-mobile)), var(--layout-content-max));
+    min-height: 36rem;
+    margin-inline: auto;
+    padding-block: var(--space-6) var(--space-12);
+  }
+
+  .service-hero__copy {
+    display: grid;
+    align-content: center;
+    max-width: 46rem;
+    padding-block-start: var(--space-10);
+  }
+
+  .service-hero__context {
+    color: var(--color-accent-on-dark);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .service-hero h1 {
+    margin-block-start: var(--space-3);
+    font-size: clamp(2.375rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.03;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .service-hero__statement {
+    max-width: 48rem;
+    margin-block-start: var(--space-10);
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 600;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .service-hero__details {
+    max-width: 50rem;
+    margin-block-start: var(--space-6);
+    color: var(--color-neutral-300);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  .service-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-block-start: var(--space-8);
+  }
+
+  .service-hero__secondary {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--space-6);
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-control);
+    color: var(--color-text-inverse);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    transition: border-color var(--dur-2) ease, background-color var(--dur-2) ease;
+  }
+
+  .service-hero__secondary:hover { border-color: var(--color-cream); background: var(--color-neutral-800); }
+  .service-hero__secondary:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+
+  .service-hero__visual { display: none; }
+  .service-hero__visual img { width:100%; height:100%; object-fit:cover; }
+
+  @media (min-width: 48rem) {
+    .service-hero__shell {
+      width: min(calc(100% - 2 * var(--layout-gutter-desktop)), var(--layout-content-max));
+      min-height: 35.5rem;
+      grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.65fr);
+      grid-template-areas: 'copy visual';
+      column-gap: var(--space-12);
+      padding-block: var(--space-8) var(--space-12);
+    }
+
+    .service-hero__copy { grid-area: copy; padding-block-start: var(--space-6); }
+    .service-hero__visual {
+      position: relative;
+      display: block;
+      grid-area: visual;
+      align-self: end;
+      height: 24rem;
+      overflow: hidden;
+      border: 1px solid var(--color-neutral-800);
+      background: color-mix(in srgb, var(--color-vamo-black) 84%, var(--color-neutral-800));
+    }
+    .service-hero__visual:has(img) { border-radius:var(--radius-surface); }
+    .service-hero__visual:has(img) > :not(img) { display:none; }
+
+    .service-hero__core,
+    .service-hero__orbit,
+    .service-hero__node { position: absolute; }
+
+    .service-hero__core {
+      inset: 50% auto auto 50%;
+      width: 4rem;
+      height: 4rem;
+      translate: -50% -50%;
+      border: 1px solid var(--color-red-300);
+      border-radius: var(--radius-full);
+      background: var(--color-vamo-red);
+      box-shadow: 0 0.75rem 2rem color-mix(in srgb, var(--color-vamo-red) 28%, transparent);
+    }
+
+    .service-hero__orbit {
+      inset: 50% auto auto 50%;
+      translate: -50% -50%;
+      border: 1px solid var(--color-neutral-600);
+      border-radius: var(--radius-full);
+      rotate: -18deg;
+    }
+
+    .service-hero__orbit--one { width: 17rem; height: 8rem; }
+    .service-hero__orbit--two { width: 22rem; height: 13rem; rotate: 24deg; }
+
+    .service-hero__node {
+      width: 0.7rem;
+      height: 0.7rem;
+      border: 1px solid var(--color-neutral-400);
+      border-radius: var(--radius-full);
+      background: var(--color-cream);
+    }
+
+    .service-hero__node--one { top: 24%; left: 20%; }
+    .service-hero__node--two { right: 17%; top: 31%; }
+    .service-hero__node--three { right: 24%; bottom: 18%; }
+  }
+</style>

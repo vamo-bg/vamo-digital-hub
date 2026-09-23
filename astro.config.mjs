@@ -6,7 +6,12 @@ import { defineConfig, envField } from 'astro/config';
 export default defineConfig({
   site: 'https://vamo.bg',
   output: 'static',
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes('/break-tests/'),
+    }),
+  ],
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',

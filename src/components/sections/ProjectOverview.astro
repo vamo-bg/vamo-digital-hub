@@ -1,0 +1,149 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  lead: string;
+  details?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  highlight?: {
+    value: string;
+    label: string;
+  };
+}
+
+const { lead, details, image, imageAlt = '', highlight } = Astro.props;
+---
+
+<section class="project-overview" aria-labelledby="project-overview-title">
+  <div class="project-overview__content">
+    <p class="eyebrow">Контекст</p>
+    <h2 id="project-overview-title">За проекта</h2>
+    <p class="project-overview__lead">{lead}</p>
+    {details && <p class="project-overview__details">{details}</p>}
+  </div>
+
+  {image && (
+    <div class="project-overview__visual">
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[640, 960, 1280]}
+        sizes="(min-width: 48rem) 54vw, 100vw"
+        loading="lazy"
+      />
+
+      {highlight && (
+        <div class="project-overview__highlight" aria-label={`${highlight.value} ${highlight.label}`}>
+          <strong>{highlight.value}</strong>
+          <span>{highlight.label}</span>
+        </div>
+      )}
+    </div>
+  )}
+</section>
+
+<style>
+  .project-overview {
+    display: grid;
+    gap: var(--space-10);
+    padding-block: var(--layout-section-padding-mobile);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .project-overview__content {
+    align-self: center;
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .project-overview__content .eyebrow {
+    margin-block-end: calc(-1 * var(--space-2));
+  }
+
+  .project-overview h2 {
+    max-width: 14ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .project-overview__details {
+    max-width: 52ch;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .project-overview__content .project-overview__lead {
+    max-width: 43ch;
+    color: var(--color-neutral-800);
+    font-size: clamp(1.0625rem, 1.8vw, 1.25rem);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .project-overview__visual {
+    position: relative;
+    min-width: 0;
+    padding-block-end: var(--space-10);
+  }
+
+  .project-overview__visual :global(img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+  }
+
+  .project-overview__highlight {
+    display: grid;
+    width: min(15rem, calc(100% - var(--space-8)));
+    gap: var(--space-1);
+    margin: calc(-1 * var(--space-8)) var(--space-4) 0 auto;
+    padding: var(--space-5) var(--space-6);
+    position: relative;
+    background: var(--color-cream);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+  }
+
+  .project-overview__highlight strong {
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+    font-size: var(--type-feature-title);
+    line-height: 1.2;
+  }
+
+  .project-overview__highlight span {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  @media (min-width: 48rem) {
+    .project-overview {
+      grid-template-columns: minmax(16rem, 0.82fr) minmax(0, 1.18fr);
+      align-items: center;
+      gap: var(--space-12);
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .project-overview__visual {
+      padding-block-end: var(--space-6);
+    }
+
+    .project-overview__highlight {
+      position: absolute;
+      right: var(--space-6);
+      bottom: 0;
+      margin: 0;
+    }
+  }
+</style>

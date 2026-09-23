@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Страницата не е намерена';
+const description = 'Страницата, която търсите, не съществува или е преместена.';
+---
+
+<BaseLayout title={title} description={description} noindex>
+  <article class="not-found">
+    <section class="not-found__content" aria-labelledby="not-found-title">
+      <div class="not-found__shell">
+        <p class="not-found__code" aria-hidden="true">404</p>
+        <p class="not-found__eyebrow">Страницата не е налична</p>
+        <h1 id="not-found-title">Тук няма съдържание</h1>
+        <p class="not-found__lead">Възможно е адресът да е променен или да е въведен неточно. Изберете посока, за да продължите.</p>
+        <nav class="not-found__actions" aria-label="Полезни връзки">
+          <a class="not-found__primary" href="/">Към началната страница</a>
+          <a class="not-found__secondary" href="/resheniya/">Разгледайте решенията</a>
+        </nav>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .not-found { display:grid; min-block-size:clamp(32rem, 70vh, 48rem); background:var(--color-cream); }
+  .not-found__content { display:grid; align-items:center; padding-block:var(--layout-anchor-padding-mobile); border-block:1px solid var(--color-border); background:var(--color-neutral-100); }
+  .not-found__shell { width:min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline:auto; }
+  .not-found__code { margin:0; color:var(--color-neutral-300); font-family:var(--font-heading); font-size:clamp(5rem, 18vw, 12rem); font-weight:700; letter-spacing:-.06em; line-height:.8; user-select:none; }
+  .not-found__eyebrow { margin-block-start:var(--space-8); color:var(--color-vamo-red); font-family:var(--font-heading); font-size:.75rem; font-weight:600; letter-spacing:.12em; line-height:1.4; text-transform:uppercase; }
+  .not-found h1 { max-width:12ch; margin-block-start:var(--space-3); font-size:var(--type-page-title); font-weight:700; letter-spacing:-.03em; line-height:1.08; text-wrap:balance; }
+  .not-found__lead { max-width:54ch; margin-block-start:var(--space-5); color:var(--color-text-muted); font-size:1.125rem; line-height:1.6; text-wrap:pretty; }
+  .not-found__actions { display:flex; flex-wrap:wrap; gap:var(--space-3); margin-block-start:var(--space-8); }
+  .not-found__actions a { display:inline-flex; min-height:2.75rem; align-items:center; justify-content:center; padding-inline:var(--space-5); border-radius:var(--radius-control); font-family:var(--font-ui); font-size:1rem; font-weight:700; text-decoration:none; transition:background-color var(--dur-2) var(--ease-out-quad), border-color var(--dur-2) var(--ease-out-quad), color var(--dur-2) var(--ease-out-quad); }
+  .not-found__primary { background:var(--color-vamo-red); color:var(--color-text-inverse); }
+  .not-found__primary:hover { background:var(--color-primary-hover); }
+  .not-found__secondary { border:1px solid var(--color-border-strong); color:var(--color-text); }
+  .not-found__secondary:hover { border-color:var(--color-text); }
+  .not-found__actions a:focus-visible { outline:2px solid var(--color-focus); outline-offset:3px; }
+
+  @media (min-width:48rem) {
+    .not-found__content { padding-block:var(--layout-anchor-padding-desktop); }
+    .not-found__shell { width:min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
+  }
+</style>

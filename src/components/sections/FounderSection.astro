@@ -1,0 +1,177 @@
+---
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+
+const { founder } = site;
+---
+
+<section class="founder" aria-labelledby="founder-title">
+  <div class="founder__inner">
+    <div class="founder__content">
+      <div class="founder__main">
+        <h2 id="founder-title" class="founder__title">
+          Работите директно с <span>{founder.name}</span> — от диагнозата до изпълнението
+        </h2>
+
+        <div class="founder__copy">
+          <p>{founder.introduction}</p>
+          <p>{founder.commitment}</p>
+        </div>
+
+        <blockquote class="founder__quote">
+          <p>„{founder.quote}“</p>
+          <footer>— {founder.name}</footer>
+        </blockquote>
+
+        <div class="founder__actions">
+          <Button href="/kontakti/" variant="primary" size="md">
+            Започнете с VAMO Business Check-up
+          </Button>
+          <Button href="/referentsii/" variant="ghost" size="md">
+            Вижте доказателства
+          </Button>
+        </div>
+      </div>
+
+      <ul class="founder__highlights">
+        {founder.highlights.map((highlight) => (
+          <li>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="m4.5 10.5 3.2 3.2 7.8-8" />
+            </svg>
+            <span>{highlight}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .founder {
+    background-color: var(--color-cream);
+  }
+
+  .founder__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .founder__quote {
+    max-width: 42rem;
+    margin: var(--space-8) 0 0;
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .founder__quote p {
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+
+  .founder__quote footer {
+    margin-block-start: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .founder__content {
+    display: grid;
+    gap: var(--space-10);
+    margin-inline: auto;
+  }
+
+  .founder__title {
+    max-width: 25ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .founder__title span {
+    color: var(--color-vamo-red);
+  }
+
+  .founder__copy {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 60ch;
+    margin-block-start: var(--space-6);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .founder__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-6);
+  }
+
+  .founder__highlights {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    border-block: 1px solid var(--color-border);
+    list-style: none;
+  }
+
+  .founder__highlights li {
+    display: grid;
+    grid-template-columns: var(--space-5) minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: center;
+    min-height: 3.5rem;
+    padding-block: var(--space-3);
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .founder__highlights li + li {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .founder__highlights svg {
+    width: var(--space-5);
+    height: var(--space-5);
+    fill: none;
+    stroke: var(--color-vamo-red);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (min-width: 48rem) {
+    .founder__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .founder__content {
+      grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+      gap: var(--space-16);
+      align-items: center;
+    }
+
+    .founder__highlights {
+      align-self: center;
+    }
+  }
+</style>

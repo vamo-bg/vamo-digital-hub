@@ -1,0 +1,149 @@
+---
+import Button from '../../components/ui/Button.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactForm from '../../components/ui/ContactForm.astro';
+import { site } from '../../data/site';
+
+const title = 'Контакт';
+const description = 'Свържете се с VAMO. Започваме с разговор за вашата задача, контекст и следващ смислен ход.';
+const pageUrl = new URL('/kontakti/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: title, item: pageUrl },
+  ],
+};
+
+const contactMethods = [site.contact.email, site.contact.phone, site.contact.viber, site.contact.messenger];
+---
+
+<BaseLayout title={title} description={description}>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <article class="contact-page">
+    <div class="contact-crumbs">
+      <nav class="contact-shell breadcrumbs" aria-label="Навигация по местоположението">
+        <a href="/">Начало</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{title}</span>
+      </nav>
+    </div>
+
+    <header class="contact-hero">
+      <NetworkPattern />
+      <div class="contact-shell contact-hero__inner">
+        <div>
+          <h1>Нека започнем с разговор</h1>
+          <p>Разкажете накратко каква е задачата, къде сте сега и какъв резултат искате да постигнете. Ще преценим най-смисления следващ ход.</p>
+          <Button href={site.contact.email.href} size="md">Пишете ни по имейл</Button>
+        </div>
+      </div>
+    </header>
+
+    <section class="contact-inquiry" aria-labelledby="contact-inquiry-title">
+      <div class="contact-shell contact-inquiry__inner">
+        <div class="contact-inquiry__contacts">
+          <div class="contact-methods__intro"><h2 id="contact-inquiry-title">Изберете удобния начин</h2><p>Всички канали водят към един и същ разговор — за вашата конкретна задача.</p></div>
+          <ul class="contact-methods__list">{contactMethods.map((method) => <li><a href={method.href}><i class:list={['ph', `ph-${method.icon}`]} aria-hidden="true" /><span>{method.label}</span><i class="ph ph-arrow-up-right" aria-hidden="true" /></a></li>)}</ul>
+        </div>
+        <div class="contact-inquiry__form"><ContactForm /></div>
+      </div>
+    </section>
+
+    <section class="contact-visit" aria-labelledby="visit-title">
+      <div class="contact-shell contact-visit__inner">
+        <div>
+          <h2 id="visit-title">Къде да ни намерите</h2>
+          <p>{site.contact.address.label}</p>
+        </div>
+        <Button href={site.contact.address.href} target="_blank" rel="noreferrer" variant="ghost" size="md">Отворете картата</Button>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .contact-page { display:flex; flex-direction:column; background: var(--color-cream); }
+  .contact-hero { order:1; }
+  .contact-inquiry { order:2; }
+  .contact-methods { order:3; }
+  .contact-visit { order:4; }
+  .contact-shell { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .contact-crumbs { border-block: 1px solid var(--color-border); background: var(--color-surface); }
+  .breadcrumbs { display: flex; min-height: 2.75rem; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .breadcrumbs a { color: inherit; text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--color-vamo-red); }
+  .breadcrumbs a:focus-visible { border-radius: var(--radius-control); outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .breadcrumbs span[aria-hidden='true'] { color: var(--color-neutral-400); }
+  .breadcrumbs span[aria-current='page'] { color: var(--color-text); font-weight: 600; }
+
+  .contact-hero { position: relative; overflow: hidden; background: var(--color-vamo-black); color: var(--color-text-inverse); }
+  .contact-hero > :global(.network-pattern) { opacity: .68; }
+  .contact-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--space-10); padding-block: var(--layout-anchor-padding-mobile); }
+  .contact-hero h1 { max-width: 13ch; font-size: var(--type-page-title); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
+  .contact-hero p { max-width: 56ch; margin-block-start: var(--space-5); color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
+  .contact-hero :global(.button) { margin-block-start: var(--space-6); }
+  .contact-hero__direct { display: grid; border-block: 1px solid var(--color-neutral-800); }
+  .contact-hero__direct a { display: grid; grid-template-columns: var(--space-6) 1fr; column-gap: var(--space-3); padding-block: var(--space-5); color: var(--color-text-inverse); text-decoration: none; }
+  .contact-hero__direct a + a { border-block-start: 1px solid var(--color-neutral-800); }
+  .contact-hero__direct i { grid-row: span 2; padding-block-start: var(--space-1); color: var(--color-accent-on-dark); font-size: 1.25rem; }
+  .contact-hero__direct span { color: var(--color-neutral-300); font-size: .875rem; }
+  .contact-hero__direct strong { margin-block-start: var(--space-1); font-family: var(--font-heading); font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
+  .contact-hero__direct a:hover strong { color: var(--color-accent-on-dark); }
+  .contact-hero__direct a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+
+  .contact-methods { padding-block: var(--layout-anchor-padding-mobile); background: var(--color-cream); }
+  .contact-methods__inner { display: grid; gap: var(--space-10); }
+  .contact-methods__intro { display: grid; gap: var(--space-4); max-width: 38rem; }
+  .contact-methods h2, .contact-visit h2 { font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .contact-methods__intro p, .contact-visit p { color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
+  .contact-methods__list { display: grid; margin: 0; padding: 0; border-block-start: 1px solid var(--color-border-strong); list-style: none; }
+  .contact-methods__list li { border-block-end: 1px solid var(--color-border); }
+  .contact-methods__list a { display: grid; min-height: 4.5rem; grid-template-columns: var(--space-8) 1fr var(--space-6); gap: var(--space-4); align-items: center; color: var(--color-text); font-family: var(--font-heading); font-size: var(--type-card-title); font-weight: 600; letter-spacing: -.02em; text-decoration: none; }
+  .contact-methods__list i:first-child { color: var(--color-vamo-red); font-size: 1.5rem; }
+  .contact-methods__list i:last-child { justify-self: end; color: var(--color-neutral-400); font-size: 1.25rem; transition: color var(--dur-2) ease, transform var(--dur-2) var(--ease-out-quad); }
+  .contact-methods__list a:hover i:last-child { color: var(--color-vamo-red); transform: translate(2px, -2px); }
+  .contact-methods__list a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+
+  .contact-inquiry { padding-block: var(--layout-anchor-padding-mobile); background: var(--color-neutral-100); }
+  .contact-inquiry__inner { display: grid; gap: var(--space-10); }
+  .contact-inquiry__intro { display: grid; gap: var(--space-4); max-width: 38rem; }
+  .contact-inquiry h2 { font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .contact-inquiry__intro p { color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
+
+  .contact-visit { padding-block: var(--layout-section-padding-mobile); background: var(--color-neutral-100); }
+  .contact-visit__inner { display: grid; gap: var(--space-6); align-items: end; padding: var(--space-8); border: 1px solid var(--color-border-strong); border-radius: var(--radius-surface); background: var(--color-cream); }
+  .contact-visit p { max-width: 42ch; margin-block-start: var(--space-3); color: var(--color-text); font-family: var(--font-heading); font-size: 1.125rem; font-weight: 500; line-height: 1.5; letter-spacing: -.02em; }
+  .contact-visit :global(.button) { justify-self: start; }
+
+  @media (min-width: 48rem) {
+    .contact-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
+    .contact-hero__inner { grid-template-columns: minmax(0, 1fr) minmax(22rem, .72fr); align-items: start; padding-block: var(--layout-anchor-padding-desktop); }
+  .contact-inquiry__form { position: relative; z-index: 2; width: min(100%, 36rem); margin-block-start: 0; }
+  .contact-inquiry__contacts .contact-methods__intro { max-width: none; }
+  .contact-inquiry__contacts .contact-methods__list { grid-template-columns: 1fr; }
+  .contact-inquiry__contacts .contact-methods__list a { padding-inline: 0; }
+    .contact-methods { padding-block: calc(var(--layout-anchor-padding-desktop) + var(--space-16)) var(--layout-anchor-padding-desktop); }
+    .contact-methods__inner { grid-template-columns: minmax(14rem, .75fr) minmax(0, 1.25fr); gap: var(--space-16); align-items: start; }
+    .contact-methods__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .contact-methods__list li:nth-child(even) { border-inline-start: 1px solid var(--color-border); }
+    .contact-methods__list a { padding-inline: var(--space-6); }
+    .contact-methods__list li:nth-child(odd) a { padding-inline-start: 0; }
+    .contact-inquiry { padding-block: var(--layout-anchor-padding-desktop); }
+    .contact-inquiry__inner { grid-template-columns: minmax(24rem, 1fr) minmax(0, 1.2fr); gap: var(--space-10); align-items: start; }
+    .contact-inquiry__contacts .contact-methods__intro { gap: var(--space-3); }
+    .contact-inquiry__contacts .contact-methods__intro h2 { white-space: nowrap; }
+    .contact-inquiry__inner { position: relative; }
+    .contact-hero__direct { display: grid; grid-column: 2; grid-row: 1; align-self: end; max-width: 32rem; }
+    .contact-inquiry__form { justify-self: end; margin-block-start: calc(var(--space-16) * -5); }
+    .contact-inquiry__contacts .contact-methods__list li:nth-child(even) { border-inline-start: 0; }
+    .contact-visit { padding-block: var(--layout-section-padding-desktop); }
+    .contact-visit__inner { grid-template-columns: minmax(0, 1fr) auto; padding: var(--space-10); }
+    .contact-visit :global(.button) { justify-self: end; }
+  }
+</style>

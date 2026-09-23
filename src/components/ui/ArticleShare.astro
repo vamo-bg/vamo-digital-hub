@@ -1,0 +1,39 @@
+---
+interface Props {
+  title: string;
+  url: string;
+  compact?: boolean;
+}
+
+const { title, url, compact = false } = Astro.props;
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+---
+
+<nav class:list={['article-share', { 'article-share--compact': compact }]} aria-label="Споделете статията">
+  <span class="article-share__label">Споделете</span>
+  <div class="article-share__actions">
+    <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`} target="_blank" rel="noopener noreferrer" aria-label={`Споделете „${title}“ в LinkedIn`}><i class="ph ph-linkedin-logo" aria-hidden="true"></i><span>LinkedIn</span></a>
+    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedTitle}`} target="_blank" rel="noopener noreferrer" aria-label={`Споделете „${title}“ във Facebook`}><i class="ph ph-facebook-logo" aria-hidden="true"></i><span>Facebook</span></a>
+    <button type="button" data-share-copy data-share-url={url}><i class="ph ph-link" aria-hidden="true"></i><span>Копирайте връзка</span></button>
+  </div>
+  <span class="article-share__status" data-share-status aria-live="polite"></span>
+</nav>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-share-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const status = button.closest('.article-share')?.querySelector<HTMLElement>('[data-share-status]');
+      try {
+        await navigator.clipboard.writeText(button.dataset.shareUrl ?? window.location.href);
+        if (status) status.textContent = 'Връзката е копирана.';
+      } catch {
+        if (status) status.textContent = 'Копирайте адреса от браузъра.';
+      }
+    });
+  });
+</script>
+
+<style>
+  .article-share{display:grid;gap:var(--space-2);color:var(--color-text-muted);font-family:var(--font-ui);font-size:.875rem}.article-share__label{font-weight:700}.article-share__actions{display:flex;flex-wrap:wrap;gap:var(--space-2)}.article-share__actions :is(a,button){display:inline-flex;min-height:2.75rem;align-items:center;gap:var(--space-2);padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-control);background:transparent;color:var(--color-text);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;transition:border-color var(--dur-2) ease,color var(--dur-2) ease}.article-share__actions :is(a,button):hover{border-color:var(--color-vamo-red);color:var(--color-vamo-red)}.article-share__actions :is(a,button):focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}.article-share__actions i{font-size:1.125rem}.article-share__status{min-height:1.25rem;color:var(--color-text-muted);font-size:.8125rem}.article-share--compact{grid-template-columns:auto 1fr;align-items:center}.article-share--compact .article-share__status{grid-column:2}@media(max-width:30rem){.article-share__actions span{display:none}.article-share__actions :is(a,button){width:2.75rem;justify-content:center;padding-inline:0}}
+</style>

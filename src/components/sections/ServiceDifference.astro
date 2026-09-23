@@ -1,0 +1,35 @@
+---
+interface Item { title: string; description: string; }
+interface Props { title: string; intro: string; items: Item[]; }
+const { title, intro, items } = Astro.props;
+---
+
+<section class="service-difference" aria-labelledby="service-difference-title">
+  <div class="service-difference__shell">
+    <div>
+      <p class="service-label">Какво правим различно</p>
+      <h2 id="service-difference-title">{title}</h2>
+      <p class="service-difference__intro">{intro}</p>
+    </div>
+    <ul>{items.map((item) => <li><i class="ph ph-check-circle" aria-hidden="true"></i><span><strong>{item.title}</strong><small>{item.description}</small></span></li>)}</ul>
+  </div>
+</section>
+
+<style>
+  .service-difference { position:relative; isolation:isolate; overflow:hidden; padding-block:var(--layout-anchor-padding-mobile); background-color:var(--color-vamo-black); background-image:url('/patterns/network-pattern.svg'); background-position:center; background-repeat:no-repeat; background-size:cover; color:var(--color-text-inverse); }
+  .service-difference__shell { position:relative; z-index:1; display:grid; width:min(calc(100% - 2 * var(--layout-gutter-mobile)),var(--layout-content-max)); margin-inline:auto; gap:var(--space-12); }
+  .service-label { color:var(--color-accent-on-dark); font-family:var(--font-heading); font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; }
+  h2 { max-width:30ch; margin-block-start:var(--space-3); font-size:var(--type-section-title-anchor); font-weight:700; line-height:1.12; letter-spacing:-.025em; text-wrap:balance; }
+  .service-difference__intro { max-width:49ch; margin-block-start:var(--space-8); color:var(--color-neutral-300); font-size:1.0625rem; line-height:1.65; }
+  ul { display:grid; gap:var(--space-5); margin:0; padding:0; list-style:none; }
+  li { display:grid; grid-template-columns:1.25rem 1fr; gap:var(--space-3); }
+  i { color:var(--color-cream); font-size:1.15rem; }
+  li span { display:grid; gap:var(--space-1); }
+  strong { font-family:var(--font-heading); font-size:1rem; line-height:1.35; }
+  small { color:var(--color-neutral-300); font-size:.9375rem; line-height:1.55; }
+  @media(min-width:48rem){
+    .service-difference{padding-block:var(--layout-anchor-padding-desktop);background-attachment:fixed}
+    .service-difference__shell{width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max));grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:var(--space-16);align-items:start}
+  }
+  @media(prefers-reduced-motion:reduce){.service-difference{background-attachment:scroll}}
+</style>

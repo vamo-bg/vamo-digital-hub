@@ -1,0 +1,145 @@
+---
+import Stats from '../../components/ui/Stats.astro';
+import type { SiteMetric } from '../../data/site';
+import { site } from '../../data/site';
+import '../../styles/global.css';
+
+const productionItems = Object.values(site.metrics);
+
+const eightItems: readonly SiteMetric[] = [
+  ...productionItems,
+  ...productionItems.map((item) => ({ ...item })),
+];
+
+const stressItems: readonly SiteMetric[] = [
+  {
+    value: 123456789,
+    suffix: '+',
+    label: 'много голяма стойност с реален числов формат',
+  },
+  {
+    value: 35,
+    suffix: '+',
+    label:
+      'Изключително дълъг описателен текст, който продължава в няколко изречения и проверява как компонентът се държи при нетипично обемно съдържание. Второто изречение умишлено удължава етикета още повече.',
+  },
+  {
+    value: 130,
+    suffix: '+',
+    label: 'непрекъсваемтексткойтонеможедасепренесенормално',
+  },
+  {
+    value: 140,
+    suffix: '+',
+    label: 'официални референции',
+  },
+];
+
+const scenarios = [
+  {
+    label: 'Реална секция · 4 показателя · compact · center',
+    items: productionItems,
+    columns: 4 as const,
+    width: '100%',
+  },
+  {
+    label: 'Минимално количество · 1 показател',
+    items: productionItems.slice(2, 3),
+    columns: 1 as const,
+    width: '30rem',
+  },
+  {
+    label: 'Празно съдържание · 0 показателя',
+    items: [] as readonly SiteMetric[],
+    columns: 1 as const,
+    width: '30rem',
+  },
+  {
+    label: 'Увеличено количество · 8 показателя',
+    items: eightItems,
+    columns: 4 as const,
+    width: '100%',
+  },
+  {
+    label: 'Минимална ширина · 320 px',
+    items: productionItems,
+    columns: 4 as const,
+    width: '20rem',
+  },
+  {
+    label: 'Притиснат контейнер · 480 px',
+    items: productionItems,
+    columns: 4 as const,
+    width: '30rem',
+  },
+  {
+    label: 'Крайно съдържание · голямо число и дълги етикети',
+    items: stressItems,
+    columns: 4 as const,
+    width: '100%',
+  },
+] as const;
+---
+
+<!doctype html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=PT+Sans:wght@400;700&display=swap"
+    />
+    <title>Break test · Stats</title>
+  </head>
+  <body>
+    <main class="break-page">
+      <h1>Stats · break test</h1>
+
+      {scenarios.map((scenario) => (
+        <section class="break-scenario">
+          <h2>{scenario.label}</h2>
+          <div class="break-frame" style={`--break-width: ${scenario.width}`}>
+            <Stats
+              items={scenario.items}
+              columns={scenario.columns}
+              align="center"
+              size="compact"
+            />
+          </div>
+        </section>
+      ))}
+    </main>
+  </body>
+</html>
+
+<style>
+  .break-page {
+    display: grid;
+    gap: var(--space-16);
+    width: min(100% - 2rem, 90rem);
+    margin-inline: auto;
+    padding-block: var(--space-12);
+  }
+
+  .break-page > h1,
+  .break-scenario > h2 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .break-scenario {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .break-frame {
+    width: min(100%, var(--break-width));
+    outline: 1px dashed var(--color-border);
+  }
+</style>

@@ -1,0 +1,572 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface FrameItem {
+  image: ImageMetadata;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  /** Omit when an adjacent chapter already names this material. */
+  title?: string;
+  note?: string;
+  items: FrameItem[];
+  /** Continues an adjacent dark chapter instead of opening its own. */
+  seamless?: boolean;
+}
+
+const { title, note, items, seamless = false } = Astro.props;
+
+/**
+ * The band shares one height and lets every frame keep its own width, the way
+ * a contact sheet does. A shared aspect ratio would crop whichever photographs
+ * were not shot in the majority orientation, and a gallery is rarely uniform.
+ * Widths are derived per frame so each one is requested at the size it is
+ * actually drawn at, including on a 2× display.
+ */
+const FRAME_HEIGHT_MOBILE = 336;
+const FRAME_HEIGHT_DESKTOP = 504;
+
+const frames = items.map((item) => {
+  const ratio = item.image.width / item.image.height;
+  const mobileWidth = Math.round(FRAME_HEIGHT_MOBILE * ratio);
+  const desktopWidth = Math.round(FRAME_HEIGHT_DESKTOP * ratio);
+  const widths = [
+    ...new Set([mobileWidth, desktopWidth, desktopWidth * 2]),
+  ]
+    .filter((width) => width <= item.image.width)
+    .sort((a, b) => a - b);
+
+  return {
+    ...item,
+    widths: widths.length > 0 ? widths : [item.image.width],
+    sizes: `(min-width: 48rem) ${desktopWidth}px, ${mobileWidth}px`,
+  };
+});
+---
+
+{
+  items.length > 0 && (
+    <section
+      class:list={['frames', { 'frames--seamless': seamless }]}
+      aria-labelledby={title ? 'project-frames-title' : undefined}
+      aria-label={title ? undefined : 'Кадри от проекта'}
+    >
+      <div class:list={['frames__shell', { 'frames__shell--untitled': !title }]}>
+        {title && (
+          <div class="frames__head">
+            <h2 id="project-frames-title">{title}</h2>
+            {note && <p>{note}</p>}
+          </div>
+        )}
+        <div class="frames__controls">
+          <p class="frames__count">
+            <span>{items.length}</span> кадъра
+          </p>
+          <div class="frames__buttons" aria-label="Управление на галерията">
+            <button type="button" data-frames-previous aria-label="Предишни кадри">
+              <i class="ph ph-arrow-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" data-frames-next aria-label="Следващи кадри">
+              <i class="ph ph-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ul
+        class="frames__track"
+        tabindex="0"
+        role="group"
+        aria-label={`${title} — превъртете хоризонтално за още кадри`}
+      >
+        {frames.map((item, index) => (
+          <li class="frames__item">
+            <figure>
+              <button
+                class="frames__open"
+                type="button"
+                data-frame-index={index}
+                aria-label={`Отворете кадър ${index + 1} от ${items.length}`}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  widths={item.widths}
+                  sizes={item.sizes}
+                  loading="lazy"
+                />
+                <span aria-hidden="true"><i class="ph ph-arrows-out-simple"></i></span>
+              </button>
+              {item.caption && <figcaption>{item.caption}</figcaption>}
+            </figure>
+          </li>
+        ))}
+      </ul>
+
+      <dialog class="frames__lightbox" aria-label="Преглед на кадрите от проекта">
+        <div class="frames__lightbox-bar">
+          <p data-lightbox-count></p>
+          <button type="button" data-lightbox-close aria-label="Затворете галерията">
+            <i class="ph ph-x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="frames__lightbox-stage">
+          <button type="button" data-lightbox-previous aria-label="Предишен кадър">
+            <i class="ph ph-arrow-left" aria-hidden="true"></i>
+          </button>
+          <figure>
+            <img data-lightbox-image alt="" />
+            <figcaption data-lightbox-caption></figcaption>
+          </figure>
+          <button type="button" data-lightbox-next aria-label="Следващ кадър">
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </dialog>
+    </section>
+  )
+}
+
+<style>
+  .frames {
+    padding-block: var(--layout-section-padding-mobile);
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .frames--seamless {
+    padding-block-start: 0;
+  }
+
+  .frames__shell {
+    display: grid;
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    gap: var(--space-4);
+  }
+
+  .frames h2 {
+    font-size: var(--type-section-title);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .frames__head p {
+    max-width: 52ch;
+    margin-block-start: var(--space-3);
+    color: var(--color-neutral-300);
+    font-size: 1rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .frames__count {
+    color: var(--color-neutral-400);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .frames__count span {
+    color: var(--color-cream);
+  }
+
+  .frames__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
+  .frames__buttons {
+    display: none;
+    gap: var(--space-2);
+  }
+
+  .frames[data-enhanced] .frames__buttons {
+    display: flex;
+  }
+
+  .frames__buttons button {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    place-items: center;
+    border: 1px solid var(--color-neutral-600);
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-cream);
+    cursor: pointer;
+    transition:
+      border-color var(--dur-2) ease,
+      background-color var(--dur-2) ease,
+      color var(--dur-2) ease,
+      opacity var(--dur-2) ease;
+  }
+
+  .frames__buttons button:hover:not(:disabled) {
+    border-color: var(--color-neutral-300);
+    background-color: var(--color-neutral-800);
+  }
+
+  .frames__buttons button:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .frames__buttons button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .frames__buttons i {
+    font-size: 1.125rem;
+  }
+
+  /* One horizontal room instead of a tall vertical mosaic. */
+  .frames__track {
+    display: flex;
+    gap: var(--space-4);
+    margin: var(--space-10) 0 0;
+    padding: 0 var(--layout-gutter-mobile) var(--space-4);
+    overflow-x: auto;
+    list-style: none;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline-start: var(--layout-gutter-mobile);
+    scrollbar-color: var(--color-neutral-600) transparent;
+    scrollbar-width: thin;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+  }
+
+  .frames__track:focus-visible {
+    outline: 2px solid var(--color-cream);
+    outline-offset: 4px;
+  }
+
+  .frames__item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .frames__item figure {
+    width: max-content;
+    margin: 0;
+  }
+
+  .frames__open {
+    position: relative;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--radius-surface);
+    background: transparent;
+    color: var(--color-cream);
+    cursor: zoom-in;
+  }
+
+  .frames__open > span {
+    position: absolute;
+    inset-inline-end: var(--space-3);
+    inset-block-end: var(--space-3);
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--color-cream) 45%, transparent);
+    border-radius: var(--radius-control);
+    background: color-mix(in srgb, var(--color-vamo-black) 78%, transparent);
+    opacity: 0.82;
+    transition: opacity var(--dur-2) ease;
+  }
+
+  .frames__open:hover > span {
+    opacity: 1;
+  }
+
+  .frames__open:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  /* One shared height, each frame's own width: nothing is ever cropped. */
+  .frames__item :global(img) {
+    display: block;
+    width: auto;
+    max-width: none;
+    height: 21rem;
+    border-radius: inherit;
+  }
+
+  .frames__item figcaption {
+    max-width: 24rem;
+    margin-block-start: var(--space-3);
+    color: var(--color-neutral-400);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .frames__lightbox {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-4);
+    border: 0;
+    background: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .frames__lightbox::backdrop {
+    background: color-mix(in srgb, var(--color-vamo-black) 88%, transparent);
+  }
+
+  .frames__lightbox-bar {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .frames__lightbox-bar p {
+    color: var(--color-neutral-300);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .frames__lightbox button {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    padding: 0;
+    place-items: center;
+    border: 1px solid var(--color-neutral-600);
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-cream);
+    cursor: pointer;
+  }
+
+  .frames__lightbox button:hover:not(:disabled) {
+    border-color: var(--color-neutral-300);
+    background: var(--color-neutral-800);
+  }
+
+  .frames__lightbox button:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .frames__lightbox button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .frames__lightbox-stage {
+    display: grid;
+    height: calc(100% - 2.75rem);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .frames__lightbox-stage figure {
+    display: grid;
+    min-width: 0;
+    max-height: 100%;
+    margin: 0;
+    justify-items: center;
+    gap: var(--space-3);
+  }
+
+  .frames__lightbox-stage img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(100dvh - 8rem);
+    object-fit: contain;
+  }
+
+  .frames__lightbox-stage figcaption {
+    max-width: 65ch;
+    color: var(--color-neutral-300);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .frames__lightbox-stage figcaption:empty {
+    display: none;
+  }
+
+  @media (min-width: 48rem) {
+    .frames {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .frames--seamless {
+      padding-block-start: 0;
+    }
+
+    .frames__shell {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      column-gap: var(--space-8);
+    }
+
+    .frames__shell--untitled {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .frames__track {
+      padding-inline: max(
+        var(--layout-gutter-desktop),
+        calc((100vw - var(--layout-content-max)) / 2)
+      );
+      scroll-padding-inline-start: max(
+        var(--layout-gutter-desktop),
+        calc((100vw - var(--layout-content-max)) / 2)
+      );
+      gap: var(--space-5);
+    }
+
+    .frames__item :global(img) {
+      height: 31.5rem;
+    }
+
+    .frames__lightbox {
+      padding: var(--space-6) var(--space-8);
+    }
+
+    .frames__lightbox-stage {
+      gap: var(--space-6);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .frames__track {
+      scroll-behavior: auto;
+      scroll-snap-type: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.frames').forEach((gallery) => {
+    if (gallery.dataset.carouselReady === 'true') return;
+
+    const track = gallery.querySelector<HTMLElement>('.frames__track');
+    const previous = gallery.querySelector<HTMLButtonElement>('[data-frames-previous]');
+    const next = gallery.querySelector<HTMLButtonElement>('[data-frames-next]');
+    const dialog = gallery.querySelector<HTMLDialogElement>('.frames__lightbox');
+    const openButtons = Array.from(
+      gallery.querySelectorAll<HTMLButtonElement>('[data-frame-index]'),
+    );
+    const lightboxImage = dialog?.querySelector<HTMLImageElement>('[data-lightbox-image]');
+    const lightboxCaption = dialog?.querySelector<HTMLElement>('[data-lightbox-caption]');
+    const lightboxCount = dialog?.querySelector<HTMLElement>('[data-lightbox-count]');
+    const lightboxPrevious = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-previous]');
+    const lightboxNext = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-next]');
+    const lightboxClose = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-close]');
+    if (
+      !track ||
+      !previous ||
+      !next ||
+      !dialog ||
+      !lightboxImage ||
+      !lightboxCaption ||
+      !lightboxCount ||
+      !lightboxPrevious ||
+      !lightboxNext ||
+      !lightboxClose
+    ) return;
+
+    gallery.dataset.carouselReady = 'true';
+    gallery.dataset.enhanced = 'true';
+
+    const updateControls = () => {
+      const end = track.scrollWidth - track.clientWidth;
+      previous.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= end - 1;
+    };
+
+    const move = (direction: -1 | 1) => {
+      track.scrollBy({
+        left: direction * Math.max(track.clientWidth * 0.78, 280),
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ? 'auto'
+          : 'smooth',
+      });
+    };
+
+    previous.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    track.addEventListener('scroll', updateControls, { passive: true });
+    new ResizeObserver(updateControls).observe(track);
+    updateControls();
+
+    let activeIndex = 0;
+    let previousBodyOverflow = '';
+
+    const showFrame = (index: number) => {
+      const trigger = openButtons[index];
+      const source = trigger?.querySelector<HTMLImageElement>('img');
+      if (!trigger || !source) return;
+
+      activeIndex = index;
+      lightboxImage.src = source.currentSrc || source.src;
+      lightboxImage.alt = source.alt;
+      lightboxCaption.textContent = trigger.closest('figure')?.querySelector('figcaption')?.textContent?.trim() ?? '';
+      lightboxCount.textContent = `${index + 1} / ${openButtons.length}`;
+      lightboxPrevious.disabled = index === 0;
+      lightboxNext.disabled = index === openButtons.length - 1;
+    };
+
+    openButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        showFrame(index);
+        previousBodyOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        dialog.showModal();
+      });
+    });
+
+    lightboxPrevious.addEventListener('click', () => showFrame(activeIndex - 1));
+    lightboxNext.addEventListener('click', () => showFrame(activeIndex + 1));
+    lightboxClose.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => {
+      document.body.style.overflow = previousBodyOverflow;
+      lightboxImage.removeAttribute('src');
+    });
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        dialog.close();
+        return;
+      }
+      if (event.key === 'ArrowLeft' && activeIndex > 0) showFrame(activeIndex - 1);
+      if (event.key === 'ArrowRight' && activeIndex < openButtons.length - 1) showFrame(activeIndex + 1);
+    });
+  });
+</script>

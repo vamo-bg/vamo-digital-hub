@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogTeaser from '../../components/ui/BlogTeaser.astro';
+import Button from '../../components/ui/Button.astro';
+import FinalCtaSection from '../../components/sections/FinalCtaSection.astro';
+
+const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+const featuredPost = posts[0];
+const archivePosts = posts.slice(1);
+const pageUrl = new URL('/blog/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+  { '@type': 'ListItem', position: 2, name: 'Блог', item: pageUrl },
+] };
+---
+
+<BaseLayout title="Блог" description="Статии, гледни точки и практически материали от VAMO.">
+  <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
+  <article class="blog-page">
+    <div class="blog-crumbs">
+      <nav class="blog-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">Блог</span></nav>
+    </div>
+    <header class="blog-intro">
+      <div class="blog-shell blog-intro__inner">
+        <div class="blog-intro__copy">
+          <p class="blog-intro__eyebrow">Блог</p>
+          <h1>Идеи, които подреждат следващата стъпка</h1>
+          <p>Практически материали за стратегия, комуникация, съдържание и реализация — написани от хората зад проектите.</p>
+          <Button href="/kontakti/" size="md">Обсъдете вашата задача</Button>
+        </div>
+        <aside class="blog-intro__aside" aria-label="Теми в блога">
+          <p class="blog-intro__overline">За реалната работа</p>
+          <p>Гледни точки и полезни изводи от работата по стратегии, комуникация, съдържание и проекти.</p>
+        </aside>
+      </div>
+    </header>
+    <section class="blog-list" aria-label="Статии">
+      <div class="blog-shell">
+        <div class="blog-top">
+          {featuredPost && <div class="blog-featured"><BlogTeaser id={featuredPost.id} title={featuredPost.data.title} description={featuredPost.data.description} pubDate={featuredPost.data.pubDate} cover={featuredPost.data.cover} coverAlt={featuredPost.data.coverAlt} variant="feature" /></div>}
+          {archivePosts.length > 0 && <div class="blog-secondary">{archivePosts.slice(0, 2).map((post) => <BlogTeaser id={post.id} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate} cover={post.data.cover} coverAlt={post.data.coverAlt} variant="feature" />)}</div>}
+        </div>
+        <div class="blog-grid">
+          {archivePosts.slice(2).map((post) => <BlogTeaser id={post.id} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate} cover={post.data.cover} coverAlt={post.data.coverAlt} />)}
+        </div>
+        <nav class="blog-pagination" aria-label="Страници на блога">
+          <span class="blog-pagination__current" aria-current="page">1</span>
+          <span>2</span>
+          <span>3</span>
+          <span aria-hidden="true">…</span>
+          <span>Следваща страница <span aria-hidden="true">→</span></span>
+        </nav>
+      </div>
+    </section>
+    <FinalCtaSection title="Нека превърнем идеята в следващата стъпка" description="Ако търсите ясна посока за комуникация, съдържание или проект, започнете разговор с VAMO." actionLabel="Започнете разговор" />
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-page { background:var(--color-cream); }
+  .blog-shell { width:min(calc(100% - (2 * var(--layout-gutter-mobile))),var(--layout-content-max)); margin-inline:auto; }
+  .blog-crumbs { border-block:1px solid var(--color-border); background:var(--color-surface); }
+  .breadcrumbs { display:flex; min-height:2.75rem; align-items:center; gap:var(--space-2); color:var(--color-text-muted); font-size:.875rem; }
+  .breadcrumbs a { color:inherit; text-decoration:none; }
+  .breadcrumbs a:hover { color:var(--color-vamo-red); }
+  .breadcrumbs a:focus-visible { border-radius:var(--radius-control); outline:2px solid var(--color-focus); outline-offset:2px; }
+  .breadcrumbs span[aria-hidden='true'] { color:var(--color-neutral-400); }
+  .breadcrumbs span[aria-current='page'] { color:var(--color-text); font-weight:600; }
+  .blog-intro { border-block-end:1px solid var(--color-border); background:var(--color-cream); }
+  .blog-intro__inner { display:grid; gap:var(--space-8); padding-block:var(--layout-anchor-padding-mobile); }
+  .blog-intro__copy { display:grid; align-content:start; gap:var(--space-4); }
+  .blog-intro__eyebrow { color:var(--color-vamo-red); font-size:.75rem; font-weight:700; letter-spacing:.12em; line-height:1.4; text-transform:uppercase; }
+  .blog-intro h1 { max-width:20ch; font-size:var(--type-page-title); font-weight:700; line-height:1.08; letter-spacing:-.03em; text-wrap:balance; }
+  .blog-intro__copy > p:not(.blog-intro__eyebrow) { max-width:55ch; color:var(--color-text-muted); font-size:1.125rem; line-height:1.6; text-wrap:pretty; }
+  .blog-intro__copy :global(.button) { justify-self:start; margin-block-start:var(--space-2); }
+  .blog-intro__aside { display:grid; align-content:start; gap:var(--space-3); max-width:30rem; padding:var(--space-6); border-block:1px dotted var(--color-border-strong); color:var(--color-text-muted); line-height:1.65; }
+  .blog-intro__overline { color:var(--color-neutral-600); font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+  .blog-list { padding-block:var(--layout-section-padding-mobile); }
+  .blog-list h2 { font-size:var(--type-section-title); font-weight:600; letter-spacing:-.02em; }
+  .blog-top { margin-block-start:var(--space-8); }
+  .blog-featured { min-width:0; }
+  .blog-secondary { display:grid; gap:var(--space-6); margin-block-start:var(--space-6); }
+  .blog-grid { display:grid; gap:var(--space-10); margin-block-start:var(--space-12); }
+  .blog-pagination { display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-2); margin-block-start:var(--space-12); padding-block-start:var(--space-6); border-block-start:1px solid var(--color-border); color:var(--color-text-muted); font-size:.9375rem; }
+  .blog-pagination > span { display:inline-flex; min-height:2.75rem; align-items:center; padding-inline:var(--space-4); }
+  .blog-pagination__current { border:1px solid var(--color-text); border-radius:var(--radius-control); color:var(--color-text); font-weight:700; }
+  .blog-pagination > span:last-child { margin-inline-start:auto; color:var(--color-text); font-weight:700; }
+  .blog-pagination > span:last-child span { margin-inline-start:var(--space-2); color:var(--color-vamo-red); }
+  @media (min-width:48rem) { .blog-shell { width:min(calc(100% - (2 * var(--layout-gutter-desktop))),var(--layout-content-max)); } .blog-intro__inner { grid-template-columns:minmax(0,1fr) minmax(17rem,.55fr); align-items:start; gap:var(--space-16); padding-block:var(--layout-anchor-padding-desktop); } .blog-intro__aside { justify-self:end; margin-block-start:var(--space-1); } .blog-list { padding-block:var(--layout-section-padding-desktop); } .blog-top { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(16rem,.9fr); gap:var(--space-6); align-items:stretch; min-height:36.75rem; } .blog-featured { display:flex; } .blog-featured > .blog-teaser { flex:1; } .blog-featured .blog-teaser--feature > a { height:100%; min-height:0; } .blog-secondary { height:100%; grid-template-rows:repeat(2,minmax(0,1fr)); margin-block-start:0; } .blog-secondary .blog-teaser, .blog-secondary .blog-teaser--feature > a { height:100%; min-height:0; } .blog-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--space-12) var(--space-8); } }
+  @media (min-width:64rem) { .blog-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--space-12) var(--space-6); } }
+</style>

@@ -1,0 +1,268 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  id?: string;
+  title: string;
+  description: string;
+  pubDate?: Date;
+  cover?: ImageMetadata;
+  coverAlt?: string;
+  variant?: 'lead' | 'feature' | 'standard';
+  isPreview?: boolean;
+}
+
+const {
+  id,
+  title,
+  description,
+  pubDate,
+  cover,
+  coverAlt,
+  variant = 'standard',
+  isPreview = false,
+} = Astro.props;
+
+const formattedDate = pubDate
+  ? new Intl.DateTimeFormat('bg-BG', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    }).format(pubDate)
+  : undefined;
+---
+
+<article class:list={['blog-teaser', `blog-teaser--${variant}`, { 'blog-teaser--preview': isPreview }]}>
+  {id && !isPreview ? (
+    <a href={`/blog/${id}/`} aria-label={`Прочетете статията: ${title}`}>
+      <div class:list={['blog-teaser__media', { 'blog-teaser__media--placeholder': !cover }]}>
+        {cover ? (
+          <Image
+            src={cover}
+            alt={coverAlt ?? title}
+            widths={[640, 960, 1280]}
+            sizes={variant === 'lead' ? '(min-width: 64rem) 55vw, 100vw' : '(min-width: 64rem) 35vw, 100vw'}
+            loading="lazy"
+          />
+        ) : <span aria-hidden="true">Изображение към статията предстои</span>}
+      </div>
+      <div class="blog-teaser__content">
+        <div class="blog-teaser__meta">
+          {formattedDate && <time datetime={pubDate?.toISOString()}>{formattedDate}</time>}
+        </div>
+        <h3>{title}</h3>
+        <p>{description}</p>
+        <span class="blog-teaser__action">Прочетете статията <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
+  ) : (
+    <div class="blog-teaser__preview-content">
+      <div class:list={['blog-teaser__media', { 'blog-teaser__media--placeholder': !cover }]}>
+        {cover ? (
+          <Image
+            src={cover}
+            alt={coverAlt ?? title}
+            widths={[640, 960, 1280]}
+            sizes={variant === 'lead' ? '(min-width: 64rem) 55vw, 100vw' : '(min-width: 64rem) 35vw, 100vw'}
+            loading="lazy"
+          />
+        ) : <span aria-hidden="true">Изображение към статията предстои</span>}
+      </div>
+      <div class="blog-teaser__content">
+        <span class="blog-teaser__preview-label">Примерно съдържание</span>
+        <div class="blog-teaser__meta">
+          {formattedDate && <time datetime={pubDate?.toISOString()}>{formattedDate}</time>}
+        </div>
+        <h3>{title}</h3>
+        <p>{description}</p>
+        <span class="blog-teaser__pending">Статията предстои</span>
+      </div>
+    </div>
+  )}
+</article>
+
+<style>
+  .blog-teaser {
+    min-width: 0;
+  }
+
+  .blog-teaser > a,
+  .blog-teaser__preview-content {
+    display: grid;
+    height: 100%;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .blog-teaser--standard > a,
+  .blog-teaser--standard .blog-teaser__preview-content {
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-surface);
+    background: var(--color-cream);
+  }
+
+  .blog-teaser--standard .blog-teaser__media {
+    margin-block-end: 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  .blog-teaser--standard .blog-teaser__content {
+    padding: var(--space-6);
+  }
+
+  .blog-teaser__media {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    margin-block-end: var(--space-6);
+    background-color: var(--color-neutral-200);
+  }
+
+  .blog-teaser__media--placeholder {
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .blog-teaser__media--placeholder span {
+    max-width: 18ch;
+    padding: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .blog-teaser__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-4) var(--ease-out-cubic);
+  }
+
+  .blog-teaser__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .blog-teaser__preview-label {
+    margin-block-end: var(--space-3);
+    color: var(--color-neutral-400);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .blog-teaser__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .blog-teaser h3 {
+    margin-block-start: var(--space-3);
+    color: var(--color-neutral-800);
+    font-size: var(--type-card-title);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .blog-teaser p {
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .blog-teaser__action,
+  .blog-teaser__pending {
+    display: inline-flex;
+    gap: var(--space-2);
+    margin-block-start: var(--space-5);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .blog-teaser__action {
+    font-weight: 700;
+  }
+
+  .blog-teaser__action span {
+    color: var(--color-vamo-red);
+    transition: transform var(--dur-2) var(--ease-out-quart);
+  }
+
+  .blog-teaser__pending {
+    color: var(--color-text-muted);
+  }
+
+  .blog-teaser > a:hover .blog-teaser__media :global(img) {
+    transform: scale(1.025);
+  }
+
+  .blog-teaser > a:hover .blog-teaser__action span {
+    transform: translateX(var(--space-1));
+  }
+
+  .blog-teaser > a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
+  .blog-teaser--feature > a,
+  .blog-teaser--feature .blog-teaser__preview-content { position:relative; min-height:100%; overflow:hidden; border-radius:var(--radius-surface); background:var(--color-vamo-black); color:var(--color-white); }
+  .blog-teaser--feature .blog-teaser__media { position:absolute; inset:0; aspect-ratio:auto; margin:0; }
+  .blog-teaser--feature .blog-teaser__media::after { position:absolute; inset:0; background:linear-gradient(180deg, transparent 18%, color-mix(in srgb, var(--color-vamo-black) 88%, transparent) 100%); content:''; }
+  .blog-teaser--feature .blog-teaser__content { position:relative; z-index:1; min-height:100%; justify-content:end; padding:var(--space-6); }
+  .blog-teaser--feature h3 { color:var(--color-white); font-size:1.4rem; }
+  .blog-teaser--feature .blog-teaser__meta,.blog-teaser--feature p { color:var(--color-neutral-300); }
+  .blog-teaser--feature .blog-teaser__action { color:var(--color-white); }
+
+  @media (min-width: 64rem) {
+    .blog-teaser--feature > a,
+    .blog-teaser--feature .blog-teaser__preview-content { min-height:26rem; }
+    .blog-teaser--feature .blog-teaser__content { padding:var(--space-8); }
+    .blog-teaser--feature h3 { font-size:var(--type-feature-title); }
+    .blog-teaser--lead > a,
+    .blog-teaser--lead .blog-teaser__preview-content {
+      grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+      align-items: center;
+      gap: var(--space-12);
+      padding-block: var(--space-8);
+      border-block: 1px solid var(--color-border-strong);
+    }
+
+    .blog-teaser--lead .blog-teaser__media {
+      margin-block-end: 0;
+    }
+
+    .blog-teaser--lead h3 {
+      font-size: var(--type-feature-title);
+    }
+
+    .blog-teaser--standard > a,
+    .blog-teaser--standard .blog-teaser__preview-content {
+      padding: 0;
+      border: 1px solid var(--color-border-strong);
+    }
+
+    .blog-teaser--standard .blog-teaser__content {
+      padding: var(--space-8);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-teaser__media :global(img),
+    .blog-teaser__action span {
+      transition: none;
+    }
+  }
+</style>

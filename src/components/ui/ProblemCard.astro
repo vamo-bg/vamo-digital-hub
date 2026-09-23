@@ -1,0 +1,84 @@
+---
+import type { HomeProblem } from '../../data/home';
+import ProblemNumber from './ProblemNumber.astro';
+
+interface Props extends HomeProblem {}
+
+const { number, title, linkLabel, href } = Astro.props;
+---
+
+<a class="problem-card" href={href}>
+  <ProblemNumber value={number} class="problem-card__number" />
+
+  <h3 class="problem-card__title">{title}</h3>
+
+  <span class="problem-card__link" aria-hidden="true">
+    {linkLabel}
+    <span class="problem-card__arrow">→</span>
+  </span>
+</a>
+
+<style>
+  .problem-card {
+    display: grid;
+    min-height: 16rem;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-cream);
+    color: var(--color-text);
+    text-decoration: none;
+    transition:
+      border-color var(--dur-2) ease,
+      background-color var(--dur-2) ease;
+  }
+
+  .problem-card:hover {
+    border-color: var(--color-vamo-red);
+    background-color: var(--color-white);
+  }
+
+  .problem-card:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .problem-card__title {
+    max-width: 24ch;
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+
+  .problem-card__link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: var(--space-2);
+    justify-self: start;
+    color: var(--color-vamo-red);
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+
+  .problem-card__arrow {
+    font-size: 1.25em;
+    transition: transform var(--dur-2) var(--ease-out-quart);
+  }
+
+  .problem-card:hover .problem-card__arrow {
+    transform: translateX(var(--space-1));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .problem-card,
+    .problem-card__arrow {
+      transition: none;
+    }
+  }
+</style>

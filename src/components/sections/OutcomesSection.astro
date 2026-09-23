@@ -1,0 +1,80 @@
+---
+import { homeOutcomes } from '../../data/home';
+import OutcomeGrid from '../ui/OutcomeGrid.astro';
+
+interface Props {
+  title?: string;
+  closing?: string;
+}
+
+const {
+  title = 'Какво постигаме заедно',
+  closing =
+    'Избираме решението според вашата реална нужда — така всяко действие има посока, смисъл и видим резултат.',
+} = Astro.props;
+---
+
+<section class="outcomes" aria-labelledby="outcomes-title">
+  <div class="outcomes__inner">
+    <h2 id="outcomes-title" class="outcomes__title">{title}</h2>
+
+    <div class="outcomes__grid">
+      <OutcomeGrid items={homeOutcomes} />
+    </div>
+
+    <p class="outcomes__closing">{closing}</p>
+  </div>
+</section>
+
+<style>
+  .outcomes {
+    background-color: var(--color-cream);
+  }
+
+  .outcomes__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .outcomes__title {
+    max-width: 20ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .outcomes__grid {
+    margin-block-start: var(--space-8);
+  }
+
+  .outcomes__closing {
+    width: min(100%, 54rem);
+    margin: var(--space-8) auto 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 48rem) {
+    .outcomes__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .outcomes__grid,
+    .outcomes__closing {
+      margin-block-start: var(--space-10);
+    }
+  }
+</style>

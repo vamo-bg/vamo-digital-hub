@@ -1,0 +1,149 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import ProjectShowcaseCard from '../ui/ProjectShowcaseCard.astro';
+
+interface Props {
+  projects: CollectionEntry<'portfolio'>[];
+  clientNames: Record<string, string>;
+}
+
+const { projects, clientNames } = Astro.props;
+const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
+---
+
+<section class="service-projects" aria-labelledby="service-projects-title">
+  <div class="service-projects__shell">
+    <header class="service-projects__header">
+      <div>
+        <p>Реализирани проекти</p>
+        <h2 id="service-projects-title">Подходът в реална работа</h2>
+      </div>
+      <a href="/portfolio/">Вижте всички проекти <span aria-hidden="true">→</span></a>
+    </header>
+
+    <div class:list={['service-projects__grid', supportingProjects.length === 0 && 'service-projects__grid--single', supportingProjects.length === 1 && 'service-projects__grid--pair']}>
+      {featuredProject && (
+        <ProjectShowcaseCard
+          id={featuredProject.id}
+          title={featuredProject.data.title}
+          clientName={clientNames[featuredProject.data.clientId]}
+          projectType={featuredProject.data.projectType}
+          year={featuredProject.data.year}
+          coverImage={featuredProject.data.coverImage}
+          coverAlt={featuredProject.data.coverAlt}
+          variant={supportingProjects.length > 1 ? 'featured' : 'standard'}
+        />
+      )}
+
+      {supportingProjects.length > 0 && (
+        <div class="service-projects__supporting">
+          {supportingProjects.map((project) => (
+            <ProjectShowcaseCard
+              id={project.id}
+              title={project.data.title}
+              clientName={clientNames[project.data.clientId]}
+              projectType={project.data.projectType}
+              year={project.data.year}
+              coverImage={project.data.coverImage}
+              coverAlt={project.data.coverAlt}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-projects {
+    padding-block: var(--layout-anchor-padding-mobile);
+    background: var(--color-surface);
+  }
+
+  .service-projects__shell {
+    width: min(calc(100% - 2 * var(--layout-gutter-mobile)), var(--layout-content-max));
+    margin-inline: auto;
+  }
+
+  .service-projects__header {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .service-projects__header p {
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    max-width: 28ch;
+    margin-block-start: var(--space-3);
+    font-size: var(--type-section-title-anchor);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -.025em;
+    text-wrap: balance;
+  }
+
+  .service-projects__header > a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: var(--space-2);
+    justify-self: start;
+    color: var(--color-text);
+    font-weight: 700;
+    text-underline-offset: var(--space-1);
+  }
+
+  .service-projects__header > a span {
+    color: var(--color-vamo-red);
+  }
+
+  .service-projects__grid {
+    display: grid;
+    gap: var(--space-6);
+    margin-block-start: var(--space-10);
+  }
+
+  .service-projects__supporting {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    .service-projects {
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+
+    .service-projects__shell {
+      width: min(calc(100% - 2 * var(--layout-gutter-desktop)), var(--layout-content-max));
+    }
+
+    .service-projects__header {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+
+    .service-projects__header > a {
+      justify-self: end;
+    }
+
+    .service-projects__grid:not(.service-projects__grid--single) {
+      grid-template-columns: minmax(0, 1.35fr) minmax(20rem, .65fr);
+    }
+
+    .service-projects__grid--pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .service-projects__grid--pair .service-projects__supporting {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,224 @@
+---
+import { getEntry } from 'astro:content';
+
+import Button from '../../components/ui/Button.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import ProjectsSection from '../../components/sections/ProjectsSection.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const process = await getEntry('process', 'kak-rabotim');
+if (!process) throw new Error('Липсва съдържание за страницата „Как работим“.');
+
+const { title, description, heroTitle, heroSummary, steps, collaboration, draft } = process.data;
+const pageUrl = new URL('/kak-rabotim/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: title, item: pageUrl },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} noindex={draft}>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <article class="process-page">
+    <div class="process-crumbs">
+      <nav class="process-shell breadcrumbs" aria-label="Навигация по местоположението">
+        <a href="/">Начало</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{title}</span>
+      </nav>
+    </div>
+
+    <header class="process-hero">
+      <NetworkPattern />
+      <div class="process-shell process-hero__inner">
+        <div class="process-hero__copy">
+          <h1>{heroTitle}</h1>
+          <p>{heroSummary}</p>
+          <Button href="/kontakti/" size="md">Нека обсъдим задачата</Button>
+        </div>
+
+        <aside class="process-hero__media" aria-label="Място за реален кадър от работата на VAMO">
+          <div class="process-hero__media-frame" aria-hidden="true">
+            <span>Работа в действие</span>
+            <span>среща · терен · реализация</span>
+          </div>
+          <p>Тук ще поставим реален кадър от процеса по конкретна задача.</p>
+        </aside>
+      </div>
+    </header>
+
+    <section class="process-proof" aria-label="Как подреждаме работата">
+      <div class="process-shell">
+        <dl class="process-proof__list">
+          <div>
+            <dt>4</dt>
+            <dd>последователни етапа</dd>
+          </div>
+          <div>
+            <dt>1</dt>
+            <dd>общ план за действие</dd>
+          </div>
+          <div>
+            <dt>1</dt>
+            <dd>координирана посока</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="process-path" aria-labelledby="path-title">
+      <div class="process-shell">
+        <div class="process-path__heading">
+          <h2 id="path-title">Пътят от задача до реализация</h2>
+          <p>Всяка задача има различен мащаб, но работата минава през ясни решения и отговорности.</p>
+        </div>
+
+        <ol class="process-path__steps">
+          {steps.map((step, index) => (
+            <li>
+              <div class="process-path__number" aria-hidden="true">{index + 1}</div>
+              <div>
+                <h3>{step.title}</h3>
+                <p class="process-path__summary">{step.summary}</p>
+                <p class="process-path__detail">{step.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="collaboration" aria-labelledby="collaboration-title">
+      <div class="process-shell collaboration__inner">
+        <div class="collaboration__intro">
+          <h2 id="collaboration-title">{collaboration.title}</h2>
+          <p>{collaboration.lead}</p>
+        </div>
+        <ul class="collaboration__list">
+          {collaboration.items.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="process-boundaries" aria-labelledby="boundaries-title">
+      <div class="process-shell process-boundaries__inner">
+        <div>
+          <p class="process-boundaries__eyebrow">Ясни граници</p>
+          <h2 id="boundaries-title">Какво не поемаме</h2>
+        </div>
+        <p>Не поемаме хаотични задачи без ясен обхват, срокове, отговорности и човек за вземане на решения.</p>
+      </div>
+    </section>
+
+    <ProjectsSection
+      title="Как изглежда процесът в реален проект"
+      description="Подбрани реализации, в които виждате как стратегията, хората и изпълнението работят като една система."
+    />
+
+    <section class="process-cta" aria-labelledby="process-cta-title">
+      <div class="process-shell process-cta__inner">
+        <div>
+          <h2 id="process-cta-title">Имате задача, която трябва да се подреди?</h2>
+          <p>Нека започнем с разговор за контекста, хората и най-смисления следващ ход.</p>
+        </div>
+        <Button href="/kontakti/" size="md">Свържете се с нас</Button>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .process-page { background: var(--color-cream); }
+  .process-shell { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .process-crumbs { border-block: 1px solid var(--color-border); background: var(--color-surface); }
+  .breadcrumbs { display: flex; min-height: 2.75rem; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .breadcrumbs a { color: inherit; text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--color-vamo-red); }
+  .breadcrumbs a:focus-visible { border-radius: var(--radius-control); outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .breadcrumbs span[aria-hidden='true'] { color: var(--color-neutral-400); }
+  .breadcrumbs span[aria-current='page'] { color: var(--color-text); font-weight: 600; }
+
+  .process-hero { position: relative; overflow: hidden; background: var(--color-vamo-black); color: var(--color-text-inverse); }
+  .process-hero > :global(.network-pattern) { opacity: .68; }
+  .process-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--space-10); padding-block: var(--layout-anchor-padding-mobile); }
+  .process-hero__copy { display: grid; gap: var(--space-6); max-width: 48rem; }
+  .process-hero h1 { max-width: 12ch; font-size: var(--type-page-title); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
+  .process-hero p { max-width: 58ch; color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
+  .process-hero :global(.button) { justify-self: start; }
+  .process-hero__media { display: grid; gap: var(--space-3); max-width: 28rem; color: var(--color-neutral-300); font-size: 1rem; line-height: 1.55; }
+  .process-hero__media-frame { position: relative; display: flex; aspect-ratio: 4 / 3; flex-direction: column; justify-content: space-between; padding: var(--space-5); border: 1px solid var(--color-neutral-600); border-radius: var(--radius-surface); background: var(--color-neutral-800); overflow: hidden; color: var(--color-text-inverse); font-family: var(--font-heading); font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
+  .process-hero__media-frame::before, .process-hero__media-frame::after { position: absolute; content: ''; pointer-events: none; }
+  .process-hero__media-frame::before { inset: 0; border-inline-start: 1px solid var(--color-neutral-600); transform: translateX(57%) skewX(-28deg); }
+  .process-hero__media-frame::after { inset-inline: var(--space-5); inset-block-start: 50%; border-block-start: 1px solid var(--color-neutral-600); }
+  .process-hero__media-frame span { position: relative; z-index: 1; max-width: 14ch; }
+  .process-hero__media-frame span:last-child { align-self: end; color: var(--color-accent-on-dark); text-align: end; }
+
+  .process-proof { background: var(--color-cream); }
+  .process-proof__list { display: grid; margin: 0; padding: 0; border-block: 1px dotted var(--color-border-strong); list-style: none; }
+  .process-proof__list > div { display: grid; gap: var(--space-2); padding-block: var(--space-6); }
+  .process-proof dt { color: var(--color-vamo-red); font-family: var(--font-heading); font-size: var(--type-section-title-anchor); font-weight: 600; line-height: 1; letter-spacing: -.03em; }
+  .process-proof dd { margin: 0; color: var(--color-text-muted); font-size: .9375rem; line-height: 1.5; }
+
+  .process-path { padding-block: var(--layout-anchor-padding-mobile); background: var(--color-vamo-black); color: var(--color-text-inverse); }
+  .process-path__heading { display: grid; gap: var(--space-4); max-width: 44rem; }
+  .process-path__heading h2, .collaboration h2, .process-cta h2 { font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .process-path__heading p { max-width: 56ch; color: var(--color-neutral-300); line-height: 1.65; text-wrap: pretty; }
+  .process-path__steps { display: grid; gap: var(--space-8); margin: var(--space-10) 0 0; padding: 0; list-style: none; }
+  .process-path__steps li { display: grid; grid-template-columns: var(--space-8) minmax(0, 1fr); gap: var(--space-5); }
+  .process-path__number { display: grid; width: var(--space-8); height: var(--space-8); place-items: center; border: 1px solid var(--color-vamo-red); border-radius: var(--radius-full); color: var(--color-vamo-red); font-family: var(--font-heading); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .process-path h3 { font-size: var(--type-card-title); font-weight: 600; line-height: 1.3; letter-spacing: -.02em; }
+  .process-path__summary { margin-block-start: var(--space-2); color: var(--color-text-inverse); font-size: 1.0625rem; line-height: 1.55; }
+  .process-path__detail { max-width: 50ch; margin-block-start: var(--space-3); color: var(--color-neutral-300); line-height: 1.65; }
+
+  .collaboration { padding-block: var(--layout-anchor-padding-mobile); background: var(--color-neutral-100); }
+  .collaboration__inner { display: grid; gap: var(--space-10); }
+  .collaboration__intro { display: grid; gap: var(--space-4); max-width: 42rem; }
+  .collaboration__intro p { color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
+  .collaboration__list { display: grid; margin: 0; padding: 0; border-block-start: 1px solid var(--color-border-strong); list-style: none; }
+  .collaboration__list li { display: grid; gap: var(--space-3); padding-block: var(--space-6); border-block-end: 1px solid var(--color-border); }
+  .collaboration h3 { font-size: var(--type-card-title); font-weight: 600; line-height: 1.3; letter-spacing: -.02em; }
+  .collaboration li p { max-width: 48ch; color: var(--color-text-muted); line-height: 1.65; }
+  .process-boundaries { padding-block: var(--layout-section-padding-mobile); background: var(--color-cream); }
+  .process-boundaries__inner { display: grid; gap: var(--space-5); padding-block-start: var(--space-8); border-block-start: 1px dotted var(--color-border-strong); }
+  .process-boundaries h2 { margin-block-start: var(--space-2); font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; }
+  .process-boundaries__eyebrow { color: var(--color-vamo-red); font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .process-boundaries__inner > p { max-width: 56ch; color: var(--color-text-muted); line-height: 1.65; }
+
+  .process-cta { padding-block: var(--layout-section-padding-mobile); background: var(--color-neutral-100); }
+  .process-cta__inner { display: grid; gap: var(--space-6); align-items: start; padding-block-start: var(--space-8); border-block-start: 1px dotted var(--color-border-strong); }
+  .process-cta h2 { max-width: 24ch; }
+  .process-cta p { max-width: 52ch; margin-block-start: var(--space-3); color: var(--color-text-muted); line-height: 1.65; }
+  .process-cta :global(.button) { justify-self: start; }
+
+  @media (min-width: 48rem) {
+    .process-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
+    .process-hero__inner { grid-template-columns: minmax(0, 1fr) minmax(18rem, .6fr); align-items: start; padding-block: var(--layout-anchor-padding-desktop); }
+    .process-hero__media { justify-self: end; }
+    .process-proof__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .process-proof__list > div { padding: var(--space-8); }
+    .process-proof__list > div + div { border-inline-start: 1px dotted var(--color-border-strong); }
+    .process-path, .collaboration { padding-block: var(--layout-anchor-padding-desktop); }
+    .process-boundaries { padding-block: var(--layout-section-padding-desktop); }
+    .process-boundaries__inner { grid-template-columns: minmax(15rem, .72fr) minmax(0, 1.28fr); gap: var(--space-16); align-items: start; }
+    .process-path__steps { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-16); row-gap: var(--space-12); }
+    .collaboration__inner { grid-template-columns: minmax(15rem, .72fr) minmax(0, 1.28fr); gap: var(--space-16); align-items: start; }
+    .collaboration__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .collaboration__list li { padding: var(--space-6); }
+    .collaboration__list li + li { border-inline-start: 1px solid var(--color-border); }
+    .process-cta { padding-block: var(--layout-section-padding-desktop); }
+    .process-cta__inner { grid-template-columns: minmax(0, .8fr) minmax(18rem, .6fr); gap: var(--space-16); padding-block-start: var(--space-10); }
+    .process-cta :global(.button) { justify-self: start; }
+  }
+</style>

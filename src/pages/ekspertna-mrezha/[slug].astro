@@ -1,0 +1,475 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntries, render } from 'astro:content';
+
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import ExpertBiography from '../../components/sections/ExpertBiography.astro';
+import ExpertNetworkSection from '../../components/sections/ExpertNetworkSection.astro';
+import ExpertProjectsSection from '../../components/sections/ExpertProjectsSection.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const experts = await getCollection('eksperti');
+
+  return experts
+    .filter((expert) => expert.data.active && !expert.data.draft)
+    .map((expert) => ({
+      params: { slug: expert.id },
+      props: { expert },
+    }));
+}
+
+const { expert } = Astro.props;
+const { Content } = await render(expert);
+const {
+  name,
+  role,
+  shortBio,
+  photo,
+  photoAlt,
+  expertise,
+  services: serviceReferences,
+  seoTitle,
+  seoDescription,
+} = expert.data;
+const services = await getEntries(serviceReferences);
+const relatedProjects = (await getCollection('portfolio', ({ data }) => import.meta.env.DEV || !data.draft))
+  .filter((project) => project.data.expertIds.includes(expert.id))
+  .sort((a, b) => Number(b.data.year ?? 0) - Number(a.data.year ?? 0))
+  .slice(0, 3);
+const clients = await getCollection('clients', ({ data }) => !data.draft);
+const clientNames = Object.fromEntries(clients.map((client) => [client.id, client.data.name]));
+const allServices = await getCollection('resheniya', ({ data }) => !data.draft);
+const serviceNames = Object.fromEntries(allServices.map((service) => [service.id, service.data.title]));
+const heroHighlights = expert.data.heroHighlights ?? expertise.slice(0, 3);
+const displayName = name.replace(/^(доц\.?\s*д-р|доц\.?|д-р|проф\.?)\s*/i, '').trim();
+---
+
+<BaseLayout
+  title={seoTitle ?? name}
+  description={seoDescription ?? shortBio}
+  image={photo?.src}
+>
+  <article class="expert-profile">
+    <div class="expert-profile__breadcrumbs-bar">
+      <nav class="expert-profile__shell expert-profile__breadcrumbs" aria-label="Навигация">
+        <a href="/">Начало</a>
+        <span aria-hidden="true">/</span>
+        <a href="/ekspertna-mrezha/">Експертна мрежа</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{name}</span>
+      </nav>
+    </div>
+
+    <header class="expert-profile__hero">
+      <div class="expert-profile__network"><NetworkPattern /></div>
+      <div class="expert-profile__shell expert-profile__header">
+        <div class="expert-profile__intro">
+          <p class="expert-profile__eyebrow">Експертна мрежа</p>
+          <h1>{name}</h1>
+          <p class="expert-profile__role">{role}</p>
+          <p class="expert-profile__summary">{shortBio}</p>
+
+        </div>
+
+        {photo && (
+          <figure class="expert-profile__photo">
+            <Image
+              src={photo}
+              alt={photoAlt ?? name}
+              widths={[280, 560]}
+              sizes="(min-width: 48rem) 17.5rem, 15rem"
+              loading="eager"
+            />
+          </figure>
+        )}
+      </div>
+    </header>
+
+    <div class="expert-profile__highlights">
+      <div class="expert-profile__shell expert-profile__highlights-grid">
+        {heroHighlights.length > 0 && (
+          <ul class="expert-profile__expertise" aria-label="Основни направления">
+            {heroHighlights.map((item) => <li>{item}</li>)}
+          </ul>
+        )}
+      </div>
+    </div>
+
+    <section class="expert-profile__about" aria-labelledby="expert-about-title">
+      <div class="expert-profile__shell expert-profile__about-grid">
+        <h2 id="expert-about-title">За {displayName.split(' ')[0]}</h2>
+        <ExpertBiography>
+          <Content />
+        </ExpertBiography>
+      </div>
+    </section>
+
+    {services.length > 0 && (
+      <section class="expert-profile__services" aria-labelledby="expert-services-title">
+        <div class="expert-profile__shell">
+          <div class="expert-profile__section-head">
+            <h2 id="expert-services-title">Решения, по които работи</h2>
+            <p>Области, в които експертизата участва пряко в работата по клиентски задачи.</p>
+          </div>
+
+          <nav aria-label={`Решения с участието на ${name}`}>
+            <ul>
+              {services.map((service, index) => (
+                <li>
+                  <a href={`/resheniya/${service.id}/`}>
+                    <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{service.data.title}</strong>
+                    <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </section>
+    )}
+
+    <ExpertProjectsSection expertName={name} projects={relatedProjects} clientNames={clientNames} serviceNames={serviceNames} />
+
+    <ExpertNetworkSection
+      excludeExpertId={expert.id}
+      title="Други експерти от мрежата"
+      description="Подбираме и координираме експерти според нуждите на всеки конкретен проект."
+    />
+  </article>
+</BaseLayout>
+
+<style>
+  .expert-profile {
+    background-color: var(--color-cream);
+  }
+
+  .expert-profile__shell {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+  }
+
+  .expert-profile__breadcrumbs-bar {
+    border-block: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .expert-profile__breadcrumbs {
+    display: flex;
+    overflow: hidden;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-muted);
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .expert-profile__breadcrumbs a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: var(--space-1);
+    transition:
+      color var(--dur-2) ease,
+      text-decoration-color var(--dur-2) ease;
+  }
+
+  .expert-profile__breadcrumbs a:hover {
+    color: var(--color-vamo-red);
+    text-decoration-color: currentColor;
+  }
+
+  .expert-profile__breadcrumbs a:focus-visible {
+    border-radius: var(--radius-control);
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .expert-profile__breadcrumbs span[aria-hidden='true'] {
+    color: var(--color-neutral-400);
+  }
+
+  .expert-profile__breadcrumbs span[aria-current='page'] {
+    overflow: hidden;
+    color: var(--color-text);
+    font-weight: 600;
+    text-overflow: ellipsis;
+  }
+
+  .expert-profile__hero {
+    position: relative;
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .expert-profile__network {
+    position: absolute;
+    opacity: 1;
+    pointer-events: none;
+    inset: 0 0 0 55%;
+  }
+
+  .expert-profile__header {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--space-8);
+    padding-block: var(--space-10) 0;
+  }
+
+  .expert-profile__photo {
+    width: 100%;
+    max-width: calc(var(--space-20) * 3);
+    align-self: center;
+    justify-self: center;
+    transform: translateY(var(--space-8));
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-surface);
+    background-color: var(--color-neutral-800);
+  }
+
+  .expert-profile__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .expert-profile__intro {
+    align-self: center;
+  }
+
+  .expert-profile__eyebrow {
+    color: var(--color-accent-on-dark);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .expert-profile__role {
+    max-width: 52ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-text-inverse);
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .expert-profile h1 {
+    margin-block-start: var(--space-3);
+    font-size: var(--type-page-title);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .expert-profile__summary {
+    max-width: 52ch;
+    margin-block-start: var(--space-5);
+    color: var(--color-neutral-300);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .expert-profile__expertise {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .expert-profile__expertise li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-control);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .expert-profile__highlights {
+    background-color: var(--color-surface);
+    padding-block: var(--space-16) var(--space-6);
+  }
+
+  .expert-profile__highlights-grid {
+    display: grid;
+    align-items: center;
+  }
+
+  .expert-profile__about {
+    padding-block: var(--layout-section-padding-mobile);
+    background-color: var(--color-surface);
+  }
+
+  .expert-profile__about-grid {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .expert-profile__about h2,
+  .expert-profile__services h2 {
+    font-size: var(--type-section-title);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .expert-profile__services {
+    padding-block: var(--layout-section-padding-mobile);
+    background-color: var(--color-background);
+  }
+
+  .expert-profile__section-head {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .expert-profile__section-head p {
+    max-width: 54ch;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .expert-profile__services ul {
+    display: grid;
+    margin: var(--space-10) 0 0;
+    padding: 0;
+    border-block-start: 1px dotted var(--color-border-strong);
+    list-style: none;
+  }
+
+  .expert-profile__services a {
+    display: grid;
+    min-height: 5rem;
+    grid-template-columns: var(--space-8) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-4);
+    border-block-end: 1px dotted var(--color-border-strong);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color var(--dur-2) ease;
+  }
+
+  .expert-profile__services a > span {
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .expert-profile__services a strong {
+    font-family: var(--font-heading);
+    font-size: var(--type-card-title);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .expert-profile__services a i {
+    font-size: 1.125rem;
+    transition: transform var(--dur-2) var(--ease-out-cubic);
+  }
+
+  .expert-profile__services a:hover {
+    color: var(--color-vamo-red);
+  }
+
+  .expert-profile__services a:hover i {
+    transform: translate(var(--space-1), calc(-1 * var(--space-1)));
+  }
+
+  .expert-profile__services a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 48rem) {
+    .expert-profile__shell {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+    }
+
+    .expert-profile__header {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.5fr);
+      gap: var(--space-16);
+      padding-block: var(--space-12) 0;
+    }
+
+    .expert-profile__intro {
+      padding-block-end: var(--space-12);
+    }
+
+    .expert-profile__highlights {
+      padding-block: var(--space-8);
+    }
+
+    .expert-profile__highlights-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.5fr);
+      gap: var(--space-16);
+      min-height: var(--space-16);
+    }
+
+    .expert-profile__photo {
+      max-width: calc(var(--space-20) * 3.5);
+      justify-self: center;
+      align-self: end;
+      transform: translateY(var(--space-16));
+    }
+
+    .expert-profile__about,
+    .expert-profile__services {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .expert-profile__about-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .expert-profile__section-head {
+      grid-template-columns: minmax(0, 0.52fr) minmax(20rem, 0.48fr);
+      align-items: start;
+      gap: var(--space-16);
+    }
+
+    .expert-profile__services ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-12);
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .expert-profile__network {
+      opacity: 0.38;
+      inset-inline-start: 0;
+    }
+  }
+</style>

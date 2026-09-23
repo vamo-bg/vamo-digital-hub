@@ -88,7 +88,7 @@ const { items } = Astro.props;
   .gallery__item {
     min-width: 0;
     overflow: hidden;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-surface);
     background-color: var(--color-surface-strong);
   }
 
@@ -97,7 +97,7 @@ const { items } = Astro.props;
     height: 100%;
     min-height: 19rem;
     object-fit: cover;
-    transition: transform 400ms ease;
+    transition: transform var(--dur-4) var(--ease-out-cubic);
   }
 
   .gallery__item:hover :global(img) {

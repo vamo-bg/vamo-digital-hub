@@ -1,26 +1,39 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../../../resources/VAMO-color.png';
 import Button from '../ui/Button.astro';
 
-interface NavItem {
+interface NavLink {
   label: string;
   href: string;
+  description?: string;
+  icon?: string;
 }
-
-interface Props {
-  ctaLabel?: string;
-  ctaHref?: string;
+interface NavItem extends NavLink {
+  children?: NavLink[];
+  menuType?: 'dropdown' | 'mega';
 }
+interface Props { ctaLabel?: string; ctaHref?: string; }
 
-const {
-  ctaLabel = 'Започни оттук',
-  ctaHref = '/kontakti/',
-} = Astro.props;
+const { ctaLabel = 'Започни оттук', ctaHref = '/kontakti/' } = Astro.props;
 
 const navItems: NavItem[] = [
   { label: 'Начало', href: '/' },
-  { label: 'Решения', href: '/resheniya/' },
-  { label: 'За нас', href: '/za-nas/' },
-  { label: 'Доказателства', href: '/dokazatelstva/' },
+  { label: 'Решения', href: '/resheniya/', menuType: 'mega', children: [
+    { label: 'Дизайн и рекламни материали', href: '/resheniya/dizayn-i-reklamni-materiali/', description: 'Визуална идентичност, печатни и рекламни решения.', icon: 'paint-brush' },
+    { label: 'Подкаст и интервю формати', href: '/resheniya/podkast-i-intervyu-formati/', description: 'Формати за устойчив диалог и публично присъствие.', icon: 'microphone-stage' },
+    { label: 'Събития и логистика', href: '/resheniya/sabitiya-i-logistika/', description: 'Цялостна организация на събития — от идеята до изпълнението.', icon: 'calendar-check' },
+    { label: 'EU Visibility & Compliance', href: '/resheniya/eu-visibility-compliance/', description: 'Публичност, отчетност и доказателствени пакети по европейски проекти.', icon: 'seal-check' },
+    { label: 'Комуникации и PR', href: '/resheniya/komunikatsii-i-pr/', description: 'Стратегия, медийно присъствие и управление на публичен образ.', icon: 'megaphone' },
+    { label: 'Видео и филмово производство', href: '/resheniya/video-i-filmovo-proizvodstvo/', description: 'Документални, имиджови и рекламни видеа с ясен разказ.', icon: 'video-camera' },
+    { label: 'Всички решения', href: '/resheniya/' },
+  ] },
+  { label: 'За нас', href: '/za-nas/', children: [
+    { label: 'Кои сме ние', href: '/za-nas/' },
+    { label: 'Как работим', href: '/kak-rabotim/' },
+    { label: 'Клиенти', href: '/klienti/' },
+  ] },
+  { label: 'Референции', href: '/referentsii/' },
   { label: 'Експертна мрежа', href: '/ekspertna-mrezha/' },
   { label: 'Портфолио', href: '/portfolio/' },
   { label: 'Блог', href: '/blog/' },
@@ -28,128 +41,182 @@ const navItems: NavItem[] = [
 ];
 
 const currentPath = Astro.url.pathname;
-const isCurrent = (href: string) =>
-  href === '/' ? currentPath === href : currentPath.startsWith(href);
+const isCurrent = (href: string) => href === '/' ? currentPath === href : currentPath.startsWith(href);
 ---
 
-<div class="site-header">
+<div class="site-header" data-site-header data-scroll-state="visible">
   <div class="site-header__inner">
     <a class="site-header__logo" href="/" aria-label="VAMO, начало">
-      <span class="site-header__mark" aria-hidden="true">V</span>
-      <span class="site-header__wordmark" aria-hidden="true">VAMO</span>
+      <Image src={logo} alt="" width={236} height={71} widths={[236, 472]} sizes="118px" loading="eager" />
     </a>
 
     <nav class="desktop-nav" aria-label="Основна навигация">
       <ul>
-        {
-          navItems.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                aria-current={isCurrent(item.href) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
+        {navItems.map((item) => (
+          <li>
+            {item.children ? (
+              <div class:list={['nav-parent', item.menuType === 'mega' && 'nav-parent--mega']}>
+                <a class="nav-parent__link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+                <details class:list={['nav-dropdown', item.menuType === 'mega' && 'nav-dropdown--mega']}>
+                  <summary aria-label={`Отвори меню „${item.label}“`}>
+                    <span class="dropdown-arrow" aria-hidden="true" />
+                  </summary>
+                  <ul class:list={['nav-dropdown__menu', item.menuType === 'mega' && 'mega-menu']}>
+                    {item.children.map((child) => (
+                      <li class:list={[child.description && 'mega-menu__item', !child.description && 'mega-menu__all']}>
+                        <a href={child.href} aria-current={currentPath === child.href ? 'page' : undefined}>
+                          {child.description && (
+                            <i
+                              class:list={['mega-menu__icon', 'ph', `ph-${child.icon}`]}
+                              data-phosphor-icon={child.icon}
+                              aria-hidden="true"
+                            />
+                          )}
+                          <span class="mega-menu__copy">
+                            <span class="mega-menu__title">{child.label}</span>
+                            {child.description && <span class="mega-menu__description">{child.description}</span>}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </div>
+            ) : (
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+            )}
+          </li>
+        ))}
       </ul>
     </nav>
 
-    <Button class="site-header__cta" href={ctaHref} size="sm">
-      {ctaLabel}
-    </Button>
+    <Button class="site-header__cta" href={ctaHref} size="sm">{ctaLabel}</Button>
 
     <details class="mobile-nav">
       <summary>
         <span class="mobile-nav__label">Меню</span>
-        <span class="mobile-nav__icon" aria-hidden="true">
-          <span></span>
-          <span></span>
-        </span>
+        <span class="mobile-nav__icon" aria-hidden="true"><span></span><span></span></span>
       </summary>
-
       <nav class="mobile-nav__panel" aria-label="Мобилна навигация">
         <ul>
-          {
-            navItems.map((item) => (
-              <li>
-                <a
-                  class="mobile-nav__link"
-                  href={item.href}
-                  aria-current={isCurrent(item.href) ? 'page' : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
+          {navItems.map((item) => (
+            <li>
+              {item.children ? (
+                <div class="mobile-nav__branch">
+                  <a class="mobile-nav__link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+                  <details class="mobile-dropdown">
+                    <summary aria-label={`Отвори меню „${item.label}“`}>
+                      <span class="dropdown-arrow" aria-hidden="true" />
+                    </summary>
+                    <ul>
+                      {item.children.map((child) => (
+                        <li><a href={child.href} aria-current={currentPath === child.href ? 'page' : undefined}>{child.label}</a></li>
+                      ))}
+                    </ul>
+                  </details>
+                </div>
+              ) : (
+                <a class="mobile-nav__link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+              )}
+            </li>
+          ))}
         </ul>
-
-        <Button class="mobile-nav__cta" href={ctaHref}>
-          {ctaLabel}
-        </Button>
+        <Button class="mobile-nav__cta" href={ctaHref}>{ctaLabel}</Button>
       </nav>
     </details>
   </div>
 </div>
 
+<script>
+  const siteHeader = document.querySelector<HTMLElement>('[data-site-header]');
+  let previousScrollY = window.scrollY;
+  let scrollFrame: number | undefined;
+
+  const updateHeaderVisibility = () => {
+    if (!siteHeader) return;
+
+    const currentScrollY = Math.max(window.scrollY, 0);
+    const delta = currentScrollY - previousScrollY;
+    const headerIsActive = siteHeader.matches(':focus-within') || Boolean(siteHeader.querySelector('details[open]'));
+
+    siteHeader.toggleAttribute('data-scrolled', currentScrollY > 0);
+
+    if (currentScrollY <= siteHeader.offsetHeight || headerIsActive || delta < -6) {
+      siteHeader.dataset.scrollState = 'visible';
+    } else if (delta > 6) {
+      siteHeader.dataset.scrollState = 'hidden';
+    }
+
+    previousScrollY = currentScrollY;
+    scrollFrame = undefined;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (scrollFrame === undefined) scrollFrame = window.requestAnimationFrame(updateHeaderVisibility);
+  }, { passive: true });
+
+  const closeDesktopDropdowns = (except?: HTMLDetailsElement) => {
+    document.querySelectorAll<HTMLDetailsElement>('.nav-dropdown[open]').forEach((dropdown) => {
+      if (dropdown !== except) dropdown.open = false;
+    });
+  };
+  document.querySelectorAll<HTMLDetailsElement>('.nav-dropdown').forEach((dropdown) => {
+    dropdown.addEventListener('toggle', () => dropdown.open && closeDesktopDropdowns(dropdown));
+    dropdown.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        dropdown.open = false;
+        dropdown.querySelector('summary')?.focus();
+      }
+    });
+  });
+  document.addEventListener('click', (event) => {
+    if (!(event.target as Element).closest('.nav-dropdown')) closeDesktopDropdowns();
+  });
+</script>
+
 <style>
   .site-header {
-    position: relative;
-    z-index: 10;
+    position: fixed;
+    z-index: 50;
+    inset-block-start: 0;
+    inset-inline: 0;
     border-block-end: 1px solid var(--color-border);
     background-color: var(--color-white);
+    transition:
+      transform var(--dur-3) var(--ease-out-quart),
+      box-shadow var(--dur-2) ease;
   }
-
+  .site-header[data-scroll-state='hidden'] {
+    transform: translateY(-100%);
+  }
+  .site-header[data-scrolled] {
+    box-shadow: 0 0.5rem 1.25rem rgb(17 17 17 / 8%);
+  }
   .site-header__inner {
     position: relative;
     display: flex;
-    width: min(100% - (2 * var(--space-4)), 80rem);
-    min-height: var(--space-16);
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    min-height: 3.5rem;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);
     margin-inline: auto;
   }
-
   .site-header__logo {
-    display: inline-flex;
+    display: flex;
     flex: 0 0 auto;
+    min-height: 2.75rem;
     align-items: center;
-    gap: var(--space-2);
-    color: var(--color-vamo-red);
-    font-family: var(--font-heading);
-    text-decoration: none;
+    transition: opacity 220ms ease;
   }
-
-  .site-header__mark {
-    display: grid;
-    width: var(--space-8);
-    height: var(--space-8);
-    place-items: center;
-    border-radius: var(--radius-sm);
-    background-color: var(--color-vamo-red);
-    color: var(--color-white);
-    font-size: 1.125rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.08em;
-  }
-
-  .site-header__wordmark {
-    font-size: 1.375rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.04em;
-  }
-
-  .desktop-nav,
-  :global(.site-header__cta) {
-    display: none;
-  }
-
-  .mobile-nav summary {
+  .site-header__logo:hover { opacity: 0.88; }
+  .site-header__logo:focus-visible { opacity: 0.88; }
+  .site-header__logo img { width: 7.375rem; height: auto; }
+  .desktop-nav, :global(.button.site-header__cta) { display: none; }
+  .mobile-nav > summary {
     display: flex;
     min-width: 4.75rem;
     min-height: 2.75rem;
@@ -157,166 +224,231 @@ const isCurrent = (href: string) =>
     justify-content: flex-end;
     gap: var(--space-3);
     color: var(--color-vamo-red);
-    font-family: var(--font-heading);
+    font-family: var(--font-ui);
     font-weight: 700;
     list-style: none;
+    text-transform: uppercase;
     cursor: pointer;
   }
-
-  .mobile-nav summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .mobile-nav summary:focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: 3px;
-  }
-
-  .mobile-nav__label {
-    font-size: 0.9375rem;
-  }
-
-  .mobile-nav__icon {
-    position: relative;
-    display: grid;
-    width: var(--space-6);
-    height: var(--space-6);
-    place-content: center;
-    gap: var(--space-2);
-  }
-
-  .mobile-nav__icon span {
-    display: block;
-    width: var(--space-5);
-    height: 2px;
-    background-color: currentColor;
-    transition: transform 160ms ease;
-  }
-
-  .mobile-nav[open] .mobile-nav__icon span:first-child {
-    transform: translateY(0.3125rem) rotate(45deg);
-  }
-
-  .mobile-nav[open] .mobile-nav__icon span:last-child {
-    transform: translateY(-0.3125rem) rotate(-45deg);
-  }
-
+  summary::-webkit-details-marker { display: none; }
+  summary::marker { content: ''; }
+  summary:focus-visible, .site-header__logo:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+  .mobile-nav__label { font-size: 0.875rem; }
+  .mobile-nav__icon { display: grid; width: var(--space-6); height: var(--space-6); place-content: center; gap: var(--space-2); }
+  .mobile-nav__icon span { display: block; width: var(--space-5); height: 2px; background: currentColor; transition: transform var(--dur-2) var(--ease-in-out-cubic); }
+  .mobile-nav[open] .mobile-nav__icon span:first-child { transform: translateY(0.3125rem) rotate(45deg); }
+  .mobile-nav[open] .mobile-nav__icon span:last-child { transform: translateY(-0.3125rem) rotate(-45deg); }
   .mobile-nav__panel {
     position: absolute;
     inset-block-start: 100%;
     inset-inline: calc(-1 * var(--space-4));
-    padding: var(--space-5) var(--space-4) var(--space-6);
+    max-height: calc(100dvh - 3.5rem);
+    overflow-y: auto;
+    padding: var(--space-3) var(--space-4) var(--space-6);
     border-block: 1px solid var(--color-border);
-    background-color: var(--color-white);
+    background: var(--color-white);
   }
-
-  .mobile-nav__panel ul {
-    display: grid;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
+  .mobile-nav__panel ul { display: grid; margin: 0; padding: 0; list-style: none; }
+  .mobile-nav__branch { display:flex; flex-wrap:wrap; align-items:stretch; border-block-end:1px solid var(--color-border); }
+  .mobile-nav__branch .mobile-nav__link { flex:1 1 auto; border-block-end:0; }
   .mobile-nav__link {
     display: flex;
     min-height: 2.75rem;
     align-items: center;
+    justify-content: space-between;
     border-block-end: 1px solid var(--color-border);
     color: var(--color-vamo-red);
-    font-family: var(--font-heading);
-    font-size: 1.125rem;
+    font-family: var(--font-ui);
+    font-size: 1rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .mobile-dropdown { position:relative; display:grid; flex:0 0 2.75rem; }
+  .mobile-dropdown > summary { display:grid; min-height:2.75rem; place-items:center; color:var(--color-vamo-red); list-style:none; cursor:pointer; }
+  .dropdown-arrow {
+    width: 0.45em;
+    height: 0.45em;
+    border-inline-end: 1px solid currentColor;
+    border-block-end: 1px solid currentColor;
+    transform: translateY(-0.1em) rotate(45deg);
+    transition: transform var(--dur-2) var(--ease-in-out-cubic);
+  }
+  details[open] > summary .dropdown-arrow { transform: translateY(0.1em) rotate(225deg); }
+  .mobile-dropdown[open] { flex-basis:100%; }
+  .mobile-dropdown[open] > summary { position:absolute; inset-inline-end:var(--space-4); }
+  .mobile-dropdown ul { width:100%; padding: var(--space-2) 0 var(--space-2) var(--space-4); }
+  .mobile-dropdown ul a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--color-text-muted);
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+    line-height: 1.25;
     text-decoration: none;
   }
-
-  .mobile-nav__panel a[aria-current='page'] {
-    color: var(--color-primary-hover);
-  }
-
-  :global(.mobile-nav__cta) {
-    width: 100%;
-    margin-block-start: var(--space-6);
-  }
+  .mobile-nav__panel [aria-current='page'] { color: var(--color-primary-hover); }
+  :global(.mobile-nav__cta) { width: 100%; margin-block-start: var(--space-5); font-family: var(--font-ui); text-transform: uppercase; }
 
   @media (min-width: 64rem) {
     .site-header__inner {
-      width: min(100% - (2 * var(--space-8)), 80rem);
-      gap: var(--space-4);
-    }
-
-    .desktop-nav {
-      display: block;
-      min-width: 0;
-      margin-inline-start: auto;
-    }
-
-    .desktop-nav ul {
-      display: flex;
-      align-items: center;
+      display: grid;
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      min-height: 3.5625rem;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       gap: var(--space-3);
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      white-space: nowrap;
     }
-
-    .desktop-nav a {
-      position: relative;
+    .desktop-nav { display: block; min-width: 0; justify-self: center; }
+    .desktop-nav > ul { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; white-space: nowrap; }
+    .desktop-nav a, .nav-dropdown > summary {
       display: flex;
       min-height: 2.75rem;
       align-items: center;
+      gap: var(--space-2);
+      padding-inline: var(--space-3);
       color: var(--color-vamo-red);
-      font-family: var(--font-heading);
+      font-family: var(--font-ui);
       font-size: 0.875rem;
-      font-weight: 700;
+      font-weight: 400;
       line-height: 1;
-      letter-spacing: -0.01em;
+      list-style: none;
       text-decoration: none;
-      transition: color 160ms ease;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: var(--radius-control);
+      transition: color var(--dur-1) ease, background-color var(--dur-1) ease;
     }
-
-    .desktop-nav a::after {
-      position: absolute;
-      inset: auto 0 0;
-      height: 2px;
-      background-color: var(--color-primary);
-      content: '';
-      transform: scaleX(0);
-      transform-origin: right;
-      transition: transform 160ms ease;
-    }
-
     .desktop-nav a:hover,
-    .desktop-nav a[aria-current='page'] {
+    .nav-dropdown > summary:hover,
+    .desktop-nav [aria-current='page'] {
       color: var(--color-primary-hover);
+      background: var(--color-surface);
     }
-
-    .desktop-nav a:hover::after,
-    .desktop-nav a[aria-current='page']::after {
-      transform: scaleX(1);
-      transform-origin: left;
+    .nav-parent { position:relative; display:flex; align-items:center; }
+    .nav-parent--mega { position:static; }
+    .nav-parent__link { padding-inline-end:var(--space-1); }
+    .nav-dropdown { position:static; }
+    .nav-dropdown--mega { position: static; }
+    .nav-dropdown > summary { width:2rem; justify-content:center; padding-inline:var(--space-2); }
+    .nav-dropdown__menu {
+      position: absolute;
+      inset-block-start: calc(100% - 1px);
+      inset-inline-start: 0;
+      display: grid;
+      width: max-content;
+      min-width: 15rem;
+      margin: 0;
+      padding: var(--space-2) 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-surface);
+      background: var(--color-white);
+      box-shadow: 0 0.5rem 1.25rem rgb(17 17 17 / 8%);
+      list-style: none;
+      overflow: hidden;
+      transform-origin: top center;
+      animation: mega-menu-in var(--dur-2) var(--ease-out-cubic) both;
     }
-
-    :global(.site-header__cta) {
+    .nav-dropdown__menu a { min-height: 2.5rem; padding-inline: var(--space-4); color: var(--color-text); font-size: 0.875rem; text-transform: none; }
+    .nav-dropdown__menu a:hover, .nav-dropdown__menu a[aria-current='page'] { background: var(--color-surface); color: var(--color-vamo-red); }
+    .mega-menu {
+      inset-inline: 0;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      width: 100%;
+      padding: var(--space-6);
+      border-radius: 0 0 var(--radius-surface) var(--radius-surface);
+    }
+    .mega-menu__item {
+      min-width: 0;
+      border-block-end: 1px solid var(--color-border);
+    }
+    .mega-menu__item:nth-child(-n + 3) { border-block-start: 1px solid var(--color-border); }
+    .mega-menu__item:not(:nth-child(3n)) { border-inline-end: 1px solid var(--color-border); }
+    .mega-menu .mega-menu__item > a {
+      display: grid;
+      min-height: 7.5rem;
+      grid-template-columns: var(--space-10) minmax(0, 1fr);
+      align-content: start;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      white-space: normal;
+      transition: background-color var(--dur-1) ease;
+    }
+    .mega-menu__icon {
+      display: grid;
+      width: var(--space-10);
+      height: var(--space-10);
+      place-items: center;
+      border: 1px solid var(--color-red-100);
+      border-radius: var(--radius-full);
+      background: var(--color-primary-subtle);
+      color: var(--color-vamo-red);
+      font-size: 1.5rem;
+      font-style: normal;
+      transition:
+        border-color var(--dur-1) ease,
+        background-color var(--dur-1) ease,
+        color var(--dur-1) ease;
+    }
+    .mega-menu__copy { display: grid; align-content: start; gap: var(--space-2); }
+    .mega-menu__title {
+      color: var(--color-text);
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .mega-menu__description {
+      color: var(--color-text-muted);
+      font-family: var(--font-ui);
+      font-size: 0.8125rem;
+      line-height: 1.45;
+    }
+    .mega-menu .mega-menu__item > a:hover .mega-menu__title,
+    .mega-menu .mega-menu__item > a[aria-current='page'] .mega-menu__title { color: var(--color-vamo-red); }
+    .mega-menu .mega-menu__item > a:hover,
+    .mega-menu .mega-menu__item > a[aria-current='page'] { background: var(--color-surface); }
+    .mega-menu .mega-menu__item > a:hover .mega-menu__icon,
+    .mega-menu .mega-menu__item > a:focus-visible .mega-menu__icon,
+    .mega-menu .mega-menu__item > a[aria-current='page'] .mega-menu__icon {
+      border-color: var(--color-red-100);
+      background: var(--color-primary-subtle);
+      color: var(--color-vamo-red);
+      transform: scale(1.04);
+    }
+    .mega-menu .mega-menu__item > a:hover .mega-menu__description,
+    .mega-menu .mega-menu__item > a[aria-current='page'] .mega-menu__description { color: var(--color-text); }
+    .mega-menu__icon { transition: border-color var(--dur-1) ease, background-color var(--dur-1) ease, color var(--dur-1) ease, transform var(--dur-2) var(--ease-out-cubic); }
+    .mega-menu__all { grid-column: 1 / -1; }
+    .mega-menu .mega-menu__all > a {
+      justify-content: flex-end;
+      min-height: 2.75rem;
+      color: var(--color-vamo-red);
+      font-weight: 700;
+    }
+    :global(.button.site-header__cta) {
       display: inline-flex;
       flex: 0 0 auto;
-      min-block-size: 2.75rem;
-      padding-inline: var(--space-5);
-      border-radius: var(--radius-sm);
-      font-weight: 700;
+      min-block-size: 2.375rem;
+      padding: var(--space-2) var(--space-6);
+      font-family: var(--font-ui);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
     }
-
-    .mobile-nav {
-      display: none;
-    }
+    .mobile-nav { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-header,
+    .mobile-nav__icon span, .dropdown-arrow, .desktop-nav a, .nav-dropdown > summary, .mega-menu__icon { transition: none; }
+    .nav-dropdown__menu { animation: none; }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mobile-nav__icon span,
-    .desktop-nav a,
-    .desktop-nav a::after {
-      transition: none;
-    }
+  @keyframes mega-menu-in {
+    from { opacity: 0; transform: translateY(-0.35rem) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 </style>

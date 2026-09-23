@@ -1,0 +1,137 @@
+---
+import { getCollection } from 'astro:content';
+
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+import ReferenceCard from '../ui/ReferenceCard.astro';
+
+const projects = await getCollection('portfolio', ({ data }) => !data.draft);
+const clients = await getCollection('clients', ({ data }) => !data.draft);
+const clientById = new Map(clients.map((client) => [client.id, client.data.name]));
+
+const references = projects
+  .flatMap((project) =>
+    (project.data.referenceDocuments ?? [])
+      .filter((reference) => reference.featuredInSection)
+      .map((reference) => ({
+        ...reference,
+        projectTitle: project.data.title,
+        clientName: clientById.get(project.data.clientId),
+      })),
+  )
+  .sort(
+    (a, b) =>
+      (a.sectionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (b.sectionOrder ?? Number.MAX_SAFE_INTEGER) ||
+      a.title.localeCompare(b.title, 'bg'),
+  )
+  .slice(0, site.evidenceSection.limit);
+
+const shouldRender = references.length > 0;
+---
+
+{shouldRender && (
+  <section class="evidence" aria-labelledby="evidence-title">
+    <div class="evidence__inner">
+      <div class="evidence__heading">
+        <div>
+          <h2 id="evidence-title">Доказателства, които можете да проверите</h2>
+          <p>
+            Официални референции от организации, с които сме реализирали конкретни проекти.
+          </p>
+        </div>
+
+        {references.length > 0 && (
+          <Button href={site.evidenceSection.archiveHref} variant="ghost" size="md">
+            Вижте всички референции
+          </Button>
+        )}
+      </div>
+
+      <div class="evidence__grid">
+        {references.map((reference) => (
+          <ReferenceCard
+            title={reference.title}
+            projectTitle={reference.projectTitle}
+            clientName={reference.clientName}
+            previewImage={reference.previewImage}
+            previewAlt={reference.previewAlt}
+          />
+        ))}
+
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .evidence {
+    background-color: var(--color-neutral-100);
+    color: var(--color-text);
+    border-block: 1px solid var(--color-neutral-600);
+  }
+
+  .evidence__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-anchor-padding-mobile);
+  }
+
+  .evidence__heading {
+    display: grid;
+    gap: var(--space-6);
+    align-items: end;
+  }
+
+  .evidence__heading h2 {
+    max-width: 23ch;
+    font-size: var(--type-section-title-anchor);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .evidence__heading p {
+    max-width: 64ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .evidence__grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-block-start: var(--space-8);
+  }
+
+  @media (min-width: 48rem) {
+    .evidence__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+
+    .evidence__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .evidence__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-block-start: var(--space-10);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .evidence__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

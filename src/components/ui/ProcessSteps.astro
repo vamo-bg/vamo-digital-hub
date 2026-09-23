@@ -1,0 +1,113 @@
+---
+import type { HomeProcessStep } from '../../data/home';
+
+interface Props {
+  items: readonly HomeProcessStep[];
+}
+
+const { items } = Astro.props;
+---
+
+<ol class="process-steps">
+  {items.map((item) => (
+    <li class="process-step">
+      <span class="process-step__point" aria-hidden="true">{item.number}</span>
+      <div class="process-step__content">
+        <h3 class="process-step__title">{item.title}</h3>
+        <p class="process-step__description">{item.description}</p>
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .process-steps {
+    position: relative;
+    display: grid;
+    gap: var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .process-steps::before {
+    position: absolute;
+    inset-block: var(--space-4);
+    inset-inline-start: calc(var(--space-4) - 1px);
+    width: 1px;
+    background-color: var(--color-neutral-800);
+    content: '';
+  }
+
+  .process-step {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    grid-template-columns: var(--space-8) minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: start;
+  }
+
+  .process-step__point {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: var(--space-8);
+    height: var(--space-8);
+    place-items: center;
+    border: 1px solid var(--color-vamo-red);
+    border-radius: var(--radius-full);
+    background-color: var(--color-vamo-black);
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .process-step__content {
+    padding-block-start: var(--space-1);
+  }
+
+  .process-step__title {
+    color: var(--color-text-inverse);
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .process-step__description {
+    max-width: 32ch;
+    margin-block-start: var(--space-3);
+    color: var(--color-neutral-300);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 48rem) {
+    .process-steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .process-steps::before {
+      inset-block-start: calc(var(--space-4) - 1px);
+      inset-block-end: auto;
+      inset-inline: var(--space-4);
+      width: auto;
+      height: 1px;
+    }
+
+    .process-step {
+      display: block;
+      padding-inline-end: var(--space-6);
+    }
+
+    .process-step__content {
+      padding-block-start: var(--space-6);
+    }
+  }
+</style>

@@ -1,0 +1,23 @@
+---
+interface Props {
+  value: `${number}${number}`;
+  class?: string;
+}
+
+const { value, class: className } = Astro.props;
+---
+
+<span class:list={['problem-number', className]} role="img" aria-label={`Номер ${value}`}>{value}</span>
+
+<style>
+  .problem-number {
+    display: block;
+    width: max-content;
+    color: var(--color-vamo-red);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.75rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+</style>

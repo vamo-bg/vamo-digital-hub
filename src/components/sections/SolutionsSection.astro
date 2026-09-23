@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+import SolutionCard from '../ui/SolutionCard.astro';
+
+const allSolutions = await getCollection('resheniya');
+const solutions = allSolutions
+  .filter(
+    (solution) =>
+      !solution.data.draft && solution.data.featuredInSection,
+  )
+  .sort(
+    (a, b) =>
+      (a.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (b.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) ||
+      a.data.title.localeCompare(b.data.title, 'bg'),
+  )
+  .slice(0, site.solutionsSection.limit);
+---
+
+<section class="solutions-section" aria-labelledby="solutions-section-title">
+  <div class="solutions-section__inner">
+    <div class="solutions-section__heading">
+      <div>
+        <h2 id="solutions-section-title">Решения според реалната ви нужда</h2>
+        <p>
+          Свързваме стратегия, съдържание, дизайн и реализация в ясни решения с конкретна бизнес цел.
+        </p>
+      </div>
+
+      <Button href={site.solutionsSection.archiveHref} variant="ghost" size="md">
+        Вижте всички решения
+      </Button>
+    </div>
+
+    {solutions.length > 0 && (
+      <div class="solutions-section__grid">
+        {solutions.map((solution) => <SolutionCard solution={solution} />)}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .solutions-section {
+    background-color: var(--color-neutral-100);
+  }
+
+  .solutions-section__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .solutions-section__heading {
+    display: grid;
+    gap: var(--space-6);
+    align-items: end;
+  }
+
+  .solutions-section__heading h2 {
+    max-width: 32ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .solutions-section__heading p {
+    max-width: 64ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .solutions-section__grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-block-start: var(--space-8);
+  }
+
+  @media (min-width: 48rem) {
+    .solutions-section__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .solutions-section__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .solutions-section__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-block-start: var(--space-10);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .solutions-section__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

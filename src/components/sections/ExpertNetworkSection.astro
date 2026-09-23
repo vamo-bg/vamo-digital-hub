@@ -1,0 +1,136 @@
+---
+import { getCollection } from 'astro:content';
+
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+import ExpertCard from '../ui/ExpertCard.astro';
+
+interface Props {
+  excludeExpertId?: string;
+  title?: string;
+  description?: string;
+}
+
+const {
+  excludeExpertId,
+  title = 'Експертна мрежа, която работи за вашия резултат',
+  description = 'Вместо да търсите и управлявате различни специалисти, ние подбираме точните хора за всеки проект и координираме целия процес.',
+} = Astro.props;
+
+const experts = (await getCollection('eksperti'))
+  .filter(
+    (expert) =>
+      expert.data.active &&
+      !expert.data.draft &&
+      expert.id !== excludeExpertId &&
+      expert.id !== 'gergana-ivanova' &&
+      (excludeExpertId ? true : expert.data.featuredOnHome),
+  )
+  .sort(
+    (a, b) =>
+      (a.data.homeOrder ?? Number.MAX_SAFE_INTEGER) -
+      (b.data.homeOrder ?? Number.MAX_SAFE_INTEGER),
+  )
+  .slice(0, site.expertNetwork.homeLimit);
+
+---
+
+<section class="expert-network" aria-labelledby="expert-network-title">
+  <div class="expert-network__inner">
+    <div class="expert-network__heading">
+      <div>
+        <h2 id="expert-network-title">{title}</h2>
+        <p>{description}</p>
+      </div>
+
+      <Button href={site.expertNetwork.archiveHref} variant="primary" size="md">
+        Вижте всички експерти
+      </Button>
+    </div>
+
+    {experts.length > 0 && (
+      <div class="expert-network__grid">
+        {experts.map((expert) => <ExpertCard expert={expert} />)}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .expert-network {
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .expert-network__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .expert-network__heading {
+    display: grid;
+    gap: var(--space-6);
+    align-items: end;
+  }
+
+  .expert-network__heading h2 {
+    max-width: 34ch;
+    color: var(--color-text-inverse);
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .expert-network__heading p {
+    max-width: 68ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-neutral-300);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .expert-network__grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-block-start: var(--space-8);
+  }
+
+  .expert-network__note {
+    margin-block-start: var(--space-5);
+    color: var(--color-neutral-300);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 48rem) {
+    .expert-network__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .expert-network__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .expert-network__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-block-start: var(--space-10);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .expert-network__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

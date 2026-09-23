@@ -1,0 +1,145 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  solution: CollectionEntry<'resheniya'>;
+}
+
+const { solution } = Astro.props;
+const { title, description, icon } = solution.data;
+---
+
+<article class="solution-card">
+  <a
+    class="solution-card__link"
+    href={`/resheniya/${solution.id}/`}
+    aria-label={`Вижте решението: ${title}`}
+  >
+    <div class="solution-card__top">
+      {icon && (
+        <i class:list={['solution-card__icon', 'ph', `ph-${icon}`]} aria-hidden="true"></i>
+      )}
+      <span class="solution-card__arrow" aria-hidden="true">→</span>
+    </div>
+
+    <div class="solution-card__content">
+      <h3>{title}</h3>
+      <p>{description}</p>
+      <span class="solution-card__action" aria-hidden="true">Вижте решението</span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .solution-card {
+    min-width: 0;
+  }
+
+  .solution-card__link {
+    display: grid;
+    min-height: 15rem;
+    height: 100%;
+    grid-template-rows: auto 1fr;
+    gap: var(--space-10);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-cream);
+    color: var(--color-text);
+    text-decoration: none;
+    transition:
+      border-color var(--dur-2) ease,
+      background-color var(--dur-2) ease;
+  }
+
+  .solution-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .solution-card__icon {
+    color: var(--color-vamo-red);
+    font-size: var(--space-8);
+    line-height: 1;
+  }
+
+  .solution-card__arrow {
+    color: var(--color-neutral-400);
+    font-size: 1.25rem;
+    line-height: 1;
+    transition:
+      color var(--dur-1) ease,
+      transform var(--dur-2) var(--ease-out-quart);
+  }
+
+  .solution-card__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: end;
+  }
+
+  .solution-card h3 {
+    max-width: 16ch;
+    color: var(--color-neutral-800);
+    font-size: var(--type-card-title);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .solution-card p {
+    max-width: 42ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .solution-card__action {
+    margin-block-start: var(--space-6);
+    color: var(--color-neutral-800);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .solution-card__link:hover {
+    border-color: var(--color-border-strong);
+    background-color: var(--color-white);
+  }
+
+  .solution-card__link:hover .solution-card__arrow,
+  .solution-card__link:focus-visible .solution-card__arrow {
+    color: var(--color-vamo-red);
+    transform: translateX(var(--space-1));
+  }
+
+  .solution-card__link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 48rem) {
+    .solution-card__link {
+      min-height: 20rem;
+      padding: var(--space-8);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .solution-card__link {
+      min-height: 22rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .solution-card__link,
+    .solution-card__arrow {
+      transition: none;
+    }
+  }
+</style>

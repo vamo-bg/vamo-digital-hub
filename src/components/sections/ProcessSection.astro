@@ -1,0 +1,85 @@
+---
+import { homeProcessSteps } from '../../data/home';
+import ProcessSteps from '../ui/ProcessSteps.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Как работим',
+  description =
+    'Работим по ясен и доказан модел, който превръща идеите в реални резултати.',
+} = Astro.props;
+---
+
+<section class="process" aria-labelledby="process-title">
+  <div class="process__inner">
+    <div class="process__heading">
+      <h2 id="process-title" class="process__title">{title}</h2>
+      <p class="process__description">{description}</p>
+    </div>
+
+    <div class="process__steps">
+      <ProcessSteps items={homeProcessSteps} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .process__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-anchor-padding-mobile);
+  }
+
+  .process__heading {
+    max-width: 52rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .process__title {
+    color: var(--color-text-inverse);
+    font-size: var(--type-section-title-anchor);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .process__description {
+    max-width: none;
+    margin: var(--space-4) auto 0;
+    color: var(--color-neutral-300);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+
+  .process__steps {
+    margin-block-start: var(--space-10);
+  }
+
+  @media (min-width: 48rem) {
+    .process__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+
+    .process__steps {
+      margin-block-start: var(--space-12);
+    }
+  }
+</style>

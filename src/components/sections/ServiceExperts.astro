@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import ExpertCard from '../ui/ExpertCard.astro';
+
+interface Props {
+  experts: CollectionEntry<'eksperti'>[];
+}
+
+const { experts } = Astro.props;
+---
+
+{experts.length > 0 && (
+  <section class="service-experts" aria-labelledby="service-experts-title">
+    <div class="service-experts__inner">
+      <header class="service-experts__heading">
+        <h2 id="service-experts-title">Експерти за тази задача</h2>
+        <p>Хората се включват според конкретната нужда и работят в координация с целия проект.</p>
+      </header>
+      <div class="service-experts__grid">
+        {experts.slice(0, 3).map((expert) => <ExpertCard expert={expert} />)}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .service-experts { background: var(--color-cream); }
+  .service-experts__inner { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; padding-block: var(--layout-section-padding-mobile); }
+  .service-experts__heading { display: grid; gap: var(--space-4); max-width: 48rem; }
+  .service-experts h2 { max-width: 30ch; font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .service-experts__heading p { max-width: 58ch; color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
+  .service-experts__grid { display: grid; gap: var(--space-5); margin-block-start: var(--space-8); }
+  @media (min-width: 48rem) { .service-experts__inner { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); padding-block: var(--layout-section-padding-desktop); } .service-experts__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .service-experts__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

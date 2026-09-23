@@ -1,0 +1,88 @@
+---
+import { getEntry } from 'astro:content';
+
+import ExpertNetworkSection from '../../components/sections/ExpertNetworkSection.astro';
+import Button from '../../components/ui/Button.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const about = await getEntry('about', 'za-nas');
+if (!about) throw new Error('Липсва съдържание за страницата „За нас“.');
+
+const { title, description, heroTitle, heroSummary, story, principles, audiences, draft } = about.data;
+const ecosystemLinks = [
+  { name: 'VAMO.bg', description: 'Стратегически център и вход към работа.', href: 'https://vamo.bg/' },
+  { name: 'Balkanite.net', description: 'Медия, истории и регионално съдържание.', href: 'https://balkanite.net/' },
+  { name: 'Komentari.bg', description: 'Анализи, позиции и обществен диалог.', href: 'https://komentari.bg/' },
+  { name: 'YouTube', description: 'Видео библиотека, интервюта и документални формати.', href: 'https://www.youtube.com/@VamoBG' },
+];
+const pageUrl = new URL('/za-nas/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: title, item: pageUrl },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} noindex={draft}>
+  <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
+  <article class="about-page">
+    <div class="about-crumbs"><nav class="about-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav></div>
+    <header class="about-hero">
+      <NetworkPattern />
+      <div class="about-shell about-hero__inner">
+        <div class="about-hero__copy">
+          <h1>{heroTitle}</h1>
+          <p>{heroSummary}</p>
+          <Button href="/kontakti/" size="md" class="about-hero__cta">Нека поговорим</Button>
+        </div>
+        <aside class="about-hero__media" aria-label="Място за медия към разказа за VAMO">
+          <div class="about-hero__media-frame" aria-hidden="true">
+            <span>VAMO</span>
+            <span>Истории в действие</span>
+          </div>
+          <p>Тук ще поставим реален кадър от екипа, работа на терен или завършен проект.</p>
+        </aside>
+      </div>
+    </header>
+    <section class="about-story" aria-labelledby="story-title"><div class="about-shell about-story__inner"><h2 id="story-title">{story.title}</h2><div class="about-story__copy"><p class="about-story__lead">{story.lead}</p>{story.details.map((detail) => <p>{detail}</p>)}</div></div></section>
+    <section class="about-principles" aria-labelledby="principles-title"><div class="about-shell"><div class="about-section-heading"><h2 id="principles-title">{principles.title}</h2><p>{principles.intro}</p></div><ul class="about-principles__list">{principles.items.map((item) => <li><h3>{item.title}</h3><p>{item.description}</p></li>)}</ul></div></section>
+    <section class="about-audiences" aria-labelledby="audiences-title"><div class="about-shell about-audiences__inner"><div class="about-section-heading"><h2 id="audiences-title">{audiences.title}</h2><p>{audiences.intro}</p></div><ul>{audiences.items.map((item) => <li>{item}</li>)}</ul></div></section>
+    <section class="about-ecosystem" aria-labelledby="ecosystem-title"><div class="about-shell"><div class="about-section-heading"><p class="about-ecosystem__eyebrow">Свързани платформи</p><h2 id="ecosystem-title">Собствена медийна и дигитална екосистема</h2><p>Свързваме стратегия, съдържание и публичност в мрежа от платформи, които дават на проектите по-дълъг живот и по-широка видимост.</p></div><ul class="about-ecosystem__list">{ecosystemLinks.map((link) => <li><a href={link.href} target="_blank" rel="noreferrer"><span><strong>{link.name}</strong><small>{link.description}</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></li>)}</ul></div></section>
+    <ExpertNetworkSection title="Експертите се включват според задачата" description="Когато проектът изисква специфична експертиза, събираме подходящите хора и координираме работата им в една посока." />
+    <section class="about-cta" aria-labelledby="about-cta-title"><div class="about-shell about-cta__inner"><h2 id="about-cta-title">Имате задача, която изисква точните хора?</h2><div class="about-cta__action"><p>Нека започнем с разговор за контекста, целта и възможния следващ ход.</p><Button href="/kontakti/" size="md">Свържете се с нас</Button></div></div></section>
+  </article>
+</BaseLayout>
+
+<style>
+  .about-page { background: var(--color-cream); }
+  .about-shell { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .about-crumbs { border-block: 1px solid var(--color-border); background: var(--color-surface); }
+  .breadcrumbs { display: flex; min-height: 2.75rem; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .breadcrumbs a { color: inherit; text-decoration: none; } .breadcrumbs a:hover { color: var(--color-vamo-red); } .breadcrumbs span[aria-current='page'] { color: var(--color-text); font-weight: 600; }
+  .about-hero { position: relative; overflow: hidden; background: var(--color-vamo-black); color: var(--color-text-inverse); } .about-hero > :global(.network-pattern) { opacity: .68; }
+  .about-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--space-10); padding-block: var(--layout-anchor-padding-mobile); }
+  .about-hero__copy { display: grid; gap: var(--space-6); align-content: end; }
+  .about-hero__copy :global(.about-hero__cta) { inline-size: fit-content; justify-self: start; }
+  .about-hero h1 { max-width: 16ch; font-size: var(--type-page-title); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; } .about-hero__copy > p { max-width: 58ch; color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
+  .about-hero__media { display: grid; gap: var(--space-3); max-width: 28rem; color: var(--color-neutral-300); font-size: 1rem; line-height: 1.55; }
+  .about-hero__media-frame { position: relative; display: flex; aspect-ratio: 4 / 3; flex-direction: column; justify-content: space-between; padding: var(--space-5); border: 1px solid var(--color-neutral-600); border-radius: var(--radius-surface); background: var(--color-neutral-800); overflow: hidden; color: var(--color-text-inverse); font-family: var(--font-heading); font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
+  .about-hero__media-frame::before, .about-hero__media-frame::after { position: absolute; content: ''; pointer-events: none; }
+  .about-hero__media-frame::before { inset: 0; border-inline-start: 1px solid var(--color-neutral-600); transform: translateX(57%) skewX(-28deg); }
+  .about-hero__media-frame::after { inset-inline: var(--space-5); inset-block-start: 50%; border-block-start: 1px solid var(--color-neutral-600); }
+  .about-hero__media-frame span { position: relative; z-index: 1; max-width: 12ch; }
+  .about-hero__media-frame span:last-child { align-self: end; color: var(--color-accent-on-dark); text-align: end; }
+  .about-story, .about-principles, .about-audiences, .about-cta { padding-block: var(--layout-section-padding-mobile); }
+  .about-story__inner { display: grid; gap: var(--space-8); } .about-story h2, .about-section-heading h2, .about-cta h2 { font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .about-story__copy { display: grid; gap: var(--space-4); max-width: 62ch; color: var(--color-text-muted); font-size: 1rem; line-height: 1.7; } .about-story__lead { color: var(--color-text); font-family: var(--font-heading); font-size: 1.25rem; font-weight: 500; line-height: 1.5; letter-spacing: -.02em; }
+  .about-principles { background: var(--color-vamo-black); color: var(--color-text-inverse); } .about-audiences { background: var(--color-neutral-100); } .about-section-heading { display: grid; gap: var(--space-4); max-width: 48rem; } .about-section-heading > p { color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
+  .about-principles .about-section-heading > p { color: var(--color-neutral-300); }
+  .about-principles__list { display: grid; margin: var(--space-10) 0 0; padding: 0; border-block-start: 1px dotted var(--color-neutral-600); list-style: none; } .about-principles__list li { display: grid; align-content: start; padding-block: var(--space-6); border-block-end: 1px dotted var(--color-neutral-600); } .about-principles h3 { display: grid; grid-template-columns: var(--space-3) minmax(0, 1fr); align-items: center; gap: var(--space-3); color: var(--color-text-inverse); font-size: var(--type-card-title); font-weight: 600; line-height: 1.3; letter-spacing: -.02em; } .about-principles h3::before { box-sizing: border-box; width: var(--space-3); height: var(--space-3); border: 3px solid var(--color-vamo-black); border-radius: var(--radius-full); outline: 1px solid var(--color-neutral-600); background: var(--color-accent-on-dark); content: ''; } .about-principles li p { max-width: 34ch; margin-block-start: var(--space-3); padding-inline-start: calc(var(--space-3) + var(--space-3)); color: var(--color-neutral-300); line-height: 1.65; } .about-principles__list li:last-child { margin-block-start: var(--space-6); padding: var(--space-8); border: 0; border-radius: var(--radius-surface); background: var(--color-vamo-red); } .about-principles__list li:last-child h3, .about-principles__list li:last-child p { color: var(--color-white); } .about-principles__list li:last-child h3::before { border-color: var(--color-vamo-red); outline-color: var(--color-white); background: var(--color-white); } .about-principles__list li:last-child p { max-width: 48ch; }
+  .about-audiences__inner { display: grid; gap: var(--space-8); } .about-audiences ul { display: grid; gap: var(--space-4); margin: 0; padding: 0; list-style: none; } .about-audiences li { position: relative; padding-inline-start: var(--space-6); color: var(--color-text); line-height: 1.65; } .about-audiences li::before { position: absolute; inset-inline-start: 0; inset-block-start: .55em; box-sizing: border-box; width: var(--space-3); height: var(--space-3); border: 3px solid var(--color-neutral-100); border-radius: var(--radius-full); outline: 1px solid var(--color-neutral-300); background: var(--color-vamo-red); content: ''; }
+  .about-ecosystem { padding-block: var(--layout-section-padding-mobile); background: var(--color-cream); } .about-ecosystem__eyebrow { margin: 0; color: var(--color-vamo-red); font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; } .about-ecosystem__list { display: grid; gap: var(--space-3); margin: var(--space-10) 0 0; padding: 0; list-style: none; } .about-ecosystem__list a { display: flex; min-height: 5.5rem; align-items: center; justify-content: space-between; gap: var(--space-5); padding: var(--space-5) var(--space-6); border-block: 1px solid var(--color-border); color: var(--color-text); text-decoration: none; transition: background-color var(--dur-2) ease, border-color var(--dur-2) ease, transform var(--dur-2) var(--ease-out-quad); } .about-ecosystem__list a:hover { border-color: var(--color-vamo-red); background: var(--color-neutral-100); transform: translateX(var(--space-1)); } .about-ecosystem__list strong { display: block; font-family: var(--font-heading); font-size: var(--type-card-title); letter-spacing: -.02em; } .about-ecosystem__list small { display: block; margin-block-start: var(--space-1); color: var(--color-text-muted); font-size: .9375rem; line-height: 1.45; } .about-ecosystem__list i { flex: 0 0 auto; color: var(--color-vamo-red); font-size: 1.25rem; }
+  .about-cta { background: var(--color-neutral-100); } .about-cta__inner { display: grid; gap: var(--space-6); padding-block-start: var(--space-8); border-block-start: 1px dotted var(--color-border-strong); } .about-cta h2 { max-width: 24ch; } .about-cta__action { display: grid; gap: var(--space-5); align-items: start; } .about-cta p { max-width: 54ch; color: var(--color-text-muted); line-height: 1.65; } .about-cta__action :global(.button) { justify-self: start; }
+  @media (min-width: 48rem) { .about-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .about-hero__inner { grid-template-columns: minmax(0, 1fr) minmax(18rem, .6fr); align-items: end; padding-block: var(--layout-anchor-padding-desktop); } .about-hero__media { justify-self: end; } .about-story, .about-principles, .about-audiences, .about-ecosystem, .about-cta { padding-block: var(--layout-section-padding-desktop); } .about-story__inner { grid-template-columns: minmax(14rem, .7fr) minmax(0, 1.3fr); gap: var(--space-16); } .about-principles__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .about-principles__list li { min-height: 10rem; padding: var(--space-6) var(--space-8); } .about-principles__list li:not(:nth-child(2n + 1)) { border-inline-start: 1px dotted var(--color-neutral-600); } .about-principles__list li:last-child { grid-column: 1 / -1; min-height: auto; padding: var(--space-8); } .about-audiences__inner { grid-template-columns: minmax(14rem, .7fr) minmax(0, 1.3fr); gap: var(--space-16); } .about-audiences ul { gap: var(--space-5); } .about-ecosystem__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--space-8); } .about-ecosystem__list li:nth-child(2n) { border-inline-start: 1px solid var(--color-border); padding-inline-start: var(--space-8); } .about-cta__inner { grid-template-columns: minmax(0, .8fr) minmax(18rem, .6fr); align-items: start; gap: var(--space-16); padding-block-start: var(--space-10); } }
+</style>

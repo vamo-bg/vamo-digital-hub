@@ -12,7 +12,7 @@ VAMO is bold, direct, and highly legible. The identity should feel confident wit
 - Use warm neutrals consistently. The interface must feel warm and grounded, never cold, blue-grey, or clinical.
 - Use whitespace deliberately to separate ideas, establish rhythm, and make important content feel more prominent.
 - Prefer strong typography, clear alignment, and restrained composition over decorative effects.
-- Write interface text in **sentence case**. Uppercase is reserved for short eyebrow or overline labels only.
+- Write interface text in **sentence case**. Uppercase is reserved for short eyebrow or overline labels, with a specific exception for the compact Header navigation and Header CTA used by the reference design.
 - Keep layouts purposeful and responsive. Mobile is the starting point, not a reduced desktop afterthought.
 - Avoid visual clutter. Each section should have a clear primary message and a clear hierarchy.
 
@@ -32,9 +32,13 @@ VAMO is bold, direct, and highly legible. The identity should feel confident wit
 | **Red 50** | `#FEF2F2` | Subtle red-tinted backgrounds and low-emphasis status surfaces. |
 | **Red 100** | `#FECACA` | Soft red borders, selected backgrounds, and restrained supporting accents. |
 | **Red 300** | `#F87171` | Mid-light accent and supporting red state. Do not use for body text without checking contrast. |
-| **Red 500** | `#E3061A` | Primary VAMO Red; main CTA and brand-action color. |
+| **Red 400** | `#FFC4BD` | Light decorative accent; used for subtle footer heading dividers. |
+| **Red 500** | `#E3061A` | Primary VAMO Red; main CTA, brand-action color, and footer frame border. |
+| **Red 650** | `#FB9286` | Muted footer legal text and secondary accents on dark red surfaces. |
 | **Red 700** | `#B91C1C` | Strong red interaction state, including hover or pressed treatment where appropriate. |
+| **Red 800** | `#D40518` | Bright dark red; footer frame gradient start and social icon background. |
 | **Red 900** | `#7F1D1D` | Deep red for high-emphasis text or dark red surfaces where contrast is verified. |
+| **Red 950** | `#B70413` | Darkest brand red; footer outer surface and footer frame gradient end. |
 
 ### Neutral scale
 
@@ -67,7 +71,7 @@ Functional colors communicate state and must not be repurposed as decorative acc
 - Verify WCAG contrast for every text/background combination and all interactive states.
 - Prefer Cream for the page canvas and warm neutrals for section variation.
 - Do not use Red 300 or Neutral 400 automatically for text; confirm contrast first.
-- Never introduce gradients, glows, or additional accent colors without explicit design-system approval.
+- Never introduce gradients, glows, or additional accent colors without explicit design-system approval. The footer frame gradient is the only approved gradient.
 - Keep red at or below approximately 10% of the overall composition.
 
 ## 3. Typography
@@ -99,15 +103,28 @@ Use the approved responsive type scale below. Display and heading styles use Mon
 | **Body Small** | 14px | 14px | 14px | 400 | 1.6 |
 | **Caption** | 12px | 12px | 12px | 400 | 1.5 |
 
+### Reusable page roles
+
+Marketing and content pages use semantic roles in addition to the base type scale:
+
+- `--type-page-title` — the default H1 role for internal pages; it follows the approved 32–48px H1 scale.
+- `--type-section-title` — the default H2 role for supporting page sections.
+- `--type-section-title-anchor` — a larger H2 role reserved for two or three narrative anchors per page.
+- `--type-card-title` — the default visual role for card and list-item headings. It remains clearly subordinate to the containing section title.
+- `--type-feature-title` — the lead item inside an editorial or project composition. It may be stronger than other cards but must remain visibly smaller than the section title.
+- `--type-cta-title` — the compact heading role for final conversion banners. It remains smaller than supporting section titles so the banner closes the page without competing with its content hierarchy.
+
+HTML semantics and visual roles are separate: a card heading may remain an `h3` while using the quieter card-title role. Never make a lead card title visually equal to its section heading.
+
 ### Typography rules
 
 - Use Montserrat for headings and display text; use PT Sans for paragraphs, navigation, labels, buttons, and forms.
 - Use `-0.02em` letter-spacing for Montserrat headings; Display uses `-0.03em`.
-- Eyebrow labels are always VAMO Red (`#E3061A`), uppercase, and use `0.12em` letter-spacing.
+- Eyebrow labels use VAMO Red (`#E3061A`) on light surfaces. On dark surfaces they use `--color-accent-on-dark` (`Red 300`) to preserve WCAG AA contrast. They are uppercase and use `0.12em` letter-spacing.
 - Overline labels are always Neutral 400 (`#9A9994`), uppercase, and use `0.15em` letter-spacing.
 - Never use a font weight below 400 or above 700.
 - Use sentence case for headings, navigation, buttons, and labels.
-- Uppercase is allowed only for short eyebrows or overlines. Never set sentences or long labels in uppercase.
+- Uppercase is allowed for short eyebrows or overlines and, as documented component-level exceptions, for the compact Header navigation, Header CTA, and Footer column titles. Never set sentences or long labels in uppercase.
 - Keep body text comfortably readable with relaxed line-height. Do not use compressed leading.
 - Keep long-form text to a readable line length; avoid paragraphs spanning the full viewport width.
 - Heading letter-spacing should be controlled and intentional. Do not add loose tracking to display text.
@@ -132,6 +149,7 @@ The exact spacing values remain pending approval. Until they are confirmed:
 ### Layout principles
 
 - Design mobile-first and progressively enhance at tablet and desktop widths.
+- Align primary page content to the shared `--layout-content-max` frame, with the documented mobile and desktop gutter tokens.
 - Use a consistent content container and alignment grid across the page.
 - Prefer CSS Grid for page-level composition and complex alignment.
 - Collapse multi-column layouts into a clear single-column reading order on mobile.
@@ -139,6 +157,24 @@ The exact spacing values remain pending approval. Until they are confirmed:
 - Keep content in the normal document flow; avoid fragile overlap and absolute positioning for primary content.
 - Let whitespace establish hierarchy. Do not fill empty space merely to make a section feel busy.
 - Preserve a minimum interactive target of `44px` where controls are used on touch devices. This is an accessibility requirement, not a VAMO brand token.
+
+### Page narrative hierarchy
+
+Structure long marketing pages in three acts rather than as a flat sequence of equal sections:
+
+1. **Promise and diagnosis** — state the value, establish capacity, and help the visitor recognize the problem.
+2. **Method and proof** — explain how the work happens and show a real project, reference, result, or testimonial before presenting a large catalogue of choices.
+3. **People, solutions, and action** — explain who delivers the work, present the relevant solution paths, add supporting trust signals, and finish with one decisive conversion action.
+
+Use only two or three **anchor sections** on a page. Anchor sections use `--type-section-title-anchor` and the larger `--layout-anchor-padding-*` rhythm. Supporting sections use `--type-section-title` and `--layout-section-padding-*`.
+
+Use surface contrast to mark chapters, not as decoration. Avoid long sequences of light sections with identical black headings and card treatments. Alternate Cream and Neutral 100 for supporting content, and use a VAMO Black section at a meaningful transition such as process, proof, people, or final action. Do not place two sections with the same light surface next to each other unless they intentionally form one visual chapter.
+
+Do not repeat the same H2 + paragraph + equal-card-grid composition for every section. Alternate editorial layouts, compact lists, proof-led media, and restrained data bands when the content roles differ. Repetition should communicate equivalence, not merely reuse a framework pattern.
+
+Place verifiable proof before or immediately after the first substantial offer explanation. A visitor should not need to traverse the full service catalogue before seeing evidence.
+
+Every long marketing page ends with a dedicated conversion section containing one primary action. Mid-page archive links and card links remain secondary and must not compete with that final action.
 
 ## 5. Border Radius
 
@@ -151,14 +187,32 @@ The exact VAMO radius values are not yet approved. Use the provisional semantic 
 - `--radius-xl` — prominent containers, used sparingly.
 - `--radius-full` — pills, circular controls, and avatars only.
 
+Reusable components apply these primitive levels through two semantic roles:
+
+- `--radius-control` — buttons and compact interactive controls; currently maps to `--radius-sm`.
+- `--radius-surface` — cards, grouped data surfaces, media thumbnails, and gallery frames; currently maps to `--radius-lg`.
+
+Original document scans and images inside full-screen lightboxes remain square so they read as source material rather than interface cards. The Footer frame keeps its separately documented prominent radius.
+
 Use one radius level consistently within a component family. Do not mix arbitrary corner values, and do not default every container to a rounded card.
 
 ## 6. Components (high-level guidance)
+
+### Motion
+
+- Use motion only for responsiveness, spatial continuity, or clearer understanding. Do not animate decoration without a functional purpose.
+- Use the shared duration and easing tokens from `src/styles/tokens.css`.
+- Keep common interaction feedback between 120ms and 240ms. Larger image transitions may use 300ms.
+- Animate `transform` and `opacity` where possible; avoid layout-triggering animation of width, height, top, or left.
+- Use restrained easing without bounce. Hover colour changes use standard `ease`; directional movement and image transitions use the approved ease-out curves.
+- Do not animate keyboard-driven state changes in a way that delays feedback.
+- Always respect `prefers-reduced-motion`.
 
 ### Buttons
 
 - Use VAMO Red for the primary action and limit each visual region to one clearly dominant primary action.
 - Use VAMO Black or a restrained outline/text treatment for secondary actions.
+- Use `--radius-sm` for all button variants and sizes to maintain the approved subtle corner rounding.
 - Use sentence-case labels with clear, specific verbs.
 - Provide visible hover, focus, active, and disabled states.
 - Focus states must be clearly visible and must not rely on color alone.
@@ -171,6 +225,25 @@ Use one radius level consistently within a component family. Do not mix arbitrar
 - Use Cream and warm neutral surfaces; do not introduce cool-grey card fills.
 - Keep card hierarchy typographic and content-led. Avoid decorative badges, excessive shadows, and nested cards.
 - Make the entire card interactive only when it represents one clear destination, and preserve an accessible focus state.
+
+### Header navigation
+
+- Use a desktop mega menu for the primary solutions group when each destination benefits from a title, short description, and icon.
+- Use Phosphor Regular as the approved Header icon family and keep a consistent stroke weight across the mega menu.
+- Keep mega-menu descriptions in sentence case and icons supportive rather than decorative focal points.
+- Preserve keyboard operation, visible focus, Escape-to-close behavior, and logical reading order.
+
+### Footer
+
+- Use the shared content frame and a four-zone desktop grid for brand context, page navigation, solutions, and contacts.
+- The footer outer surface uses **Red 950** (`#B70413`).
+- The footer content is placed inside a rounded **footer frame**: a `12px` radius container with a `1px` **Red 500** border and a subtle top-to-bottom gradient from **Red 800** to **Red 950**. This is the only approved decorative gradient in the system.
+- Column titles are uppercase, set in the UI font, with a `2px` **Red 400** left border and a small left padding. This is a documented component-level exception to the sentence-case rule.
+- Social icons use a solid **Red 800** circular background.
+- The legal row is centered, separated by a `1px` dotted **Red 500** top border, and uses **Red 650** for muted text.
+- Keep text and dividers restrained and high-contrast.
+- Stack Footer groups in logical reading order on mobile and preserve 44px touch targets.
+- Use Phosphor Regular for social and contact iconography.
 
 ### Forms
 
@@ -190,7 +263,7 @@ Use one radius level consistently within a component family. Do not mix arbitrar
 - Do use Cream and the specified warm neutral scale throughout the interface.
 - Do use Montserrat for headings and PT Sans for body and UI text.
 - Do write headings, buttons, navigation, and labels in sentence case.
-- Do reserve uppercase for short eyebrow or overline labels.
+- Do reserve uppercase for short eyebrow or overline labels and for documented component exceptions (Header compact nav/CTA, Footer column titles).
 - Do use whitespace to create rhythm, focus, and hierarchy.
 - Do maintain strong contrast, visible keyboard focus, and accessible touch targets.
 - Do create one clear primary message and action per section.

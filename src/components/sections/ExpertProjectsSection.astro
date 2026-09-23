@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import ProjectArchiveCard from '../ui/ProjectArchiveCard.astro';
+
+interface Props {
+  expertName: string;
+  projects: CollectionEntry<'portfolio'>[];
+  clientNames: Record<string, string>;
+  serviceNames: Record<string, string>;
+}
+
+const { expertName, projects, clientNames, serviceNames } = Astro.props;
+---
+
+{projects.length > 0 && (
+  <section class="expert-projects" aria-labelledby="expert-projects-title">
+    <div class="expert-projects__inner">
+      <header class="expert-projects__heading">
+        <h2 id="expert-projects-title">Проекти с участието на {expertName}</h2>
+        <p>Конкретни реализации, в които тази експертиза е част от работата по задачата.</p>
+      </header>
+      <div class="expert-projects__grid">
+        {projects.map((project, index) => (
+          <ProjectArchiveCard
+            project={project}
+            clientName={clientNames[project.data.clientId] ?? project.data.clientId}
+            serviceNames={project.data.serviceIds
+              .map((id) => serviceNames[id])
+              .filter((name): name is string => name !== undefined)}
+            featured={index === 0}
+            preview={project.data.draft}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .expert-projects { background: var(--color-neutral-100); }
+  .expert-projects__inner { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; padding-block: var(--layout-section-padding-mobile); }
+  .expert-projects__heading { display: grid; gap: var(--space-4); max-width: 48rem; }
+  .expert-projects h2 { max-width: 24ch; font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .expert-projects__heading p { max-width: 58ch; color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
+  .expert-projects__grid { display: grid; gap: var(--space-6); margin-block-start: var(--space-8); }
+  @media (min-width: 48rem) { .expert-projects__inner { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); padding-block: var(--layout-section-padding-desktop); } }
+  @media (min-width: 64rem) { .expert-projects__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .expert-projects__grid :global(.archive-card:first-child) { grid-column: 1 / -1; } }
+</style>

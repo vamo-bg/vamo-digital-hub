@@ -19,9 +19,13 @@
   --color-red-50: #fef2f2;
   --color-red-100: #fecaca;
   --color-red-300: #f87171;
+  --color-red-400: #ffc4bd;
   --color-red-500: #e3061a;
+  --color-red-650: #fb9286;
   --color-red-700: #b91c1c;
+  --color-red-800: #d40518;
   --color-red-900: #7f1d1d;
+  --color-red-950: #b70413;
 
   /* ======================================================================
    * Neutral scale — warm greys
@@ -58,10 +62,21 @@
   --color-text: var(--color-vamo-black);
   --color-text-muted: var(--color-neutral-600);
   --color-text-inverse: var(--color-cream);
+  --color-accent-on-dark: var(--color-red-300);
 
   --color-border: var(--color-neutral-200);
   --color-border-strong: var(--color-neutral-300);
   --color-focus: var(--color-info);
+
+  /* Footer surface — matches the reference site's dark-red frame */
+  --color-footer-bg: var(--color-red-950);
+  --color-footer-frame-start: var(--color-red-800);
+  --color-footer-frame-end: var(--color-red-950);
+  --color-footer-frame-border: var(--color-vamo-red);
+  --color-footer-heading-border: var(--color-red-400);
+  --color-footer-social-bg: var(--color-red-800);
+  --color-footer-legal-border: var(--color-vamo-red);
+  --color-footer-text-muted: var(--color-red-650);
 
   /* ======================================================================
    * Typography
@@ -70,6 +85,14 @@
   --font-heading: 'Montserrat', sans-serif;
   --font-body: 'PT Sans', sans-serif;
   --font-ui: var(--font-body);
+
+  /* Semantic type roles shared by page sections and reusable cards. */
+  --type-page-title: clamp(2rem, 4vw, 3rem);
+  --type-section-title: clamp(1.625rem, 4vw, 2.25rem);
+  --type-section-title-anchor: clamp(1.875rem, 5vw, 2.75rem);
+  --type-card-title: clamp(1.125rem, 1.8vw, 1.375rem);
+  --type-feature-title: clamp(1.25rem, 2.2vw, 1.5rem);
+  --type-cta-title: clamp(1.875rem, 3vw, 2rem);
 
   /* ======================================================================
    * Spacing
@@ -91,6 +114,18 @@
   --space-32: 8rem;
 
   /* ======================================================================
+   * Layout
+   * Shared content frame for consistent horizontal alignment.
+   * =================================================================== */
+  --layout-content-max: 75rem;
+  --layout-gutter-mobile: var(--space-4);
+  --layout-gutter-desktop: var(--space-12);
+  --layout-section-padding-mobile: var(--space-12);
+  --layout-section-padding-desktop: var(--space-16);
+  --layout-anchor-padding-mobile: var(--space-16);
+  --layout-anchor-padding-desktop: var(--space-20);
+
+  /* ======================================================================
    * Border radius
    * Provisional values; replace when exact Design System values are set.
    * =================================================================== */
@@ -100,6 +135,25 @@
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
+
+  /* Semantic radius roles shared across component families. */
+  --radius-control: var(--radius-sm);
+  --radius-surface: var(--radius-lg);
+
+  /* ======================================================================
+   * Motion
+   * Short, restrained transitions for feedback and spatial continuity.
+   * =================================================================== */
+  --dur-1: 120ms;
+  --dur-2: 180ms;
+  --dur-3: 240ms;
+  --dur-4: 300ms;
+  --dur-5: 500ms;
+
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
 
   /* ======================================================================
    * Breakpoints

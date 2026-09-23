@@ -1,0 +1,159 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  expert: CollectionEntry<'eksperti'>;
+}
+
+const { expert } = Astro.props;
+const { name, role, shortBio, photo, photoAlt } = expert.data;
+---
+
+<article class="expert-card">
+  <a class="expert-card__link" href={`/ekspertna-mrezha/${expert.id}/`} aria-label={`Вижте профила на ${name}`}>
+    <div class="expert-card__media">
+      {photo ? (
+        <Image
+          src={photo}
+          alt={photoAlt ?? name}
+          widths={[360, 540, 720]}
+          sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 50vw, 100vw"
+          loading="lazy"
+        />
+      ) : (
+        <span class="expert-card__placeholder" aria-hidden="true">{name.charAt(0)}</span>
+      )}
+    </div>
+
+    <div class="expert-card__content">
+      <h3>{name}</h3>
+      <p class="expert-card__role">{role}</p>
+      <p class="expert-card__bio">{shortBio}</p>
+      <span class="expert-card__action" aria-hidden="true">Вижте профила <span>→</span></span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .expert-card {
+    min-width: 0;
+  }
+
+  .expert-card__link {
+    display: grid;
+    height: 100%;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-cream);
+    color: var(--color-text);
+    text-decoration: none;
+    transition:
+      border-color var(--dur-2) ease,
+      background-color var(--dur-2) ease;
+  }
+
+  .expert-card__link:hover {
+    border-color: var(--color-vamo-red);
+    background-color: var(--color-white);
+  }
+
+  .expert-card__link:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .expert-card__media {
+    overflow: hidden;
+    width: var(--space-32);
+    height: var(--space-32);
+    margin: var(--space-5) var(--space-5) 0;
+    border-radius: var(--radius-full);
+    background-color: var(--color-neutral-200);
+  }
+
+  .expert-card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform var(--dur-3) var(--ease-out-cubic);
+  }
+
+  .expert-card__link:hover .expert-card__media :global(img) {
+    transform: scale(1.015);
+  }
+
+  .expert-card__placeholder {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    color: var(--color-neutral-400);
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    font-weight: 600;
+  }
+
+  .expert-card__content {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    padding: var(--space-5);
+  }
+
+  .expert-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .expert-card__role {
+    margin-block-start: var(--space-2);
+    color: var(--color-vamo-red);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .expert-card__eyebrow {
+    margin-block-end: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .expert-card__bio {
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .expert-card__action {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: end;
+    gap: var(--space-2);
+    margin-block-start: var(--space-5);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .expert-card__action span {
+    color: var(--color-vamo-red);
+    font-size: 1.25em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .expert-card__link,
+    .expert-card__media :global(img) {
+      transition: none;
+    }
+  }
+</style>

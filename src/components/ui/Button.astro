@@ -67,27 +67,29 @@ const classes = ['button', `button--${variant}`, `button--${size}`, className];
 <style>
   .button {
     display: inline-flex;
+    max-width: 100%;
     align-items: center;
     justify-content: center;
     border: 1px solid transparent;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-control);
     font-family: var(--font-heading);
     font-weight: 600;
     line-height: 1.2;
     letter-spacing: -0.01em;
     text-align: center;
     text-decoration: none;
-    white-space: nowrap;
+    white-space: normal;
     cursor: pointer;
     transition:
-      background-color 180ms ease,
-      border-color 180ms ease,
-      color 180ms ease,
-      transform 180ms ease;
+      background-color var(--dur-1) ease,
+      border-color var(--dur-1) ease,
+      color var(--dur-1) ease,
+      transform var(--dur-1) var(--ease-out-quad);
   }
 
   .button:hover:not(:disabled, [data-disabled]) {
     text-decoration: none;
+    transform: translateY(-1px);
   }
 
   .button:active:not(:disabled, [data-disabled]) {

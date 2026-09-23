@@ -1,0 +1,73 @@
+---
+import { homeProblems } from '../../data/home';
+import ProblemCard from '../ui/ProblemCard.astro';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Къде губите възможности в момента?' } = Astro.props;
+---
+
+<section class="problems" aria-labelledby="problems-title">
+  <div class="problems__inner">
+    <h2 id="problems-title" class="problems__title">{title}</h2>
+
+    <div class="problems__grid">
+      {homeProblems.map((problem) => <ProblemCard {...problem} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .problems {
+    background-color: var(--color-neutral-100);
+  }
+
+  .problems__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .problems__title {
+    max-width: 34ch;
+    margin-inline: auto;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .problems__grid {
+    display: grid;
+    gap: var(--space-4);
+    margin-block-start: var(--space-8);
+  }
+
+  @media (min-width: 48rem) {
+    .problems__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .problems__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-block-start: var(--space-10);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .problems__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

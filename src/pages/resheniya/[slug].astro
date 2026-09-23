@@ -1,0 +1,126 @@
+---
+import { getCollection, getEntries, render } from 'astro:content';
+
+import ServiceDifference from '../../components/sections/ServiceDifference.astro';
+import ServiceHero from '../../components/sections/ServiceHero.astro';
+import ServiceProblem from '../../components/sections/ServiceProblem.astro';
+import ServiceProcess from '../../components/sections/ServiceProcess.astro';
+import ServiceProjects from '../../components/sections/ServiceProjects.astro';
+import ServiceScope from '../../components/sections/ServiceScope.astro';
+import ServiceExperts from '../../components/sections/ServiceExperts.astro';
+import Button from '../../components/ui/Button.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import communicationPrImage from '../../assets/service-komunikatsii-pr.png';
+import digitalStrategyImage from '../../assets/service-digitalna-strategiya.png';
+import designMaterialsImage from '../../assets/service-dizayn-reklamni-materiali.png';
+import euVisibilityImage from '../../assets/service-eu-visibility-compliance.png';
+import podcastInterviewImage from '../../assets/service-podcast-interview.png';
+import eventsLogisticsImage from '../../assets/service-sabitiya-logistika.png';
+import videoFilmImage from '../../assets/service-video-filmovo-proizvodstvo.png';
+import webDevelopmentImage from '../../assets/service-ueb-razrabotka.png';
+
+export async function getStaticPaths() {
+  const solutions = await getCollection('resheniya', ({ data }) => !data.draft);
+  return solutions.map((solution) => ({ params: { slug: solution.id }, props: { solution } }));
+}
+
+const { solution } = Astro.props;
+const { Content } = await render(solution);
+const { title, description, heroStatement, heroDetails, problems, difference, process, inclusions } = solution.data;
+const hasStructuredContent = Boolean(problems || difference || process || inclusions);
+
+const relatedProjects = (
+  await getCollection('portfolio', ({ data }) =>
+    (import.meta.env.DEV || !data.draft) && data.serviceIds.includes(solution.id),
+  )
+).sort((a, b) => Number(b.data.year ?? 0) - Number(a.data.year ?? 0));
+
+const clients = await getCollection('clients', ({ data }) => !data.draft);
+const clientNames = Object.fromEntries(clients.map((client) => [client.id, client.data.name]));
+const allExperts = await getCollection('eksperti', ({ data }) => data.active && !data.draft);
+const relatedExperts = (
+  await Promise.all(
+    allExperts.map(async (expert) => ({
+      expert,
+      services: await getEntries(expert.data.services),
+    })),
+  )
+)
+  .filter(({ services }) => services.some((service) => service.id === solution.id))
+  .map(({ expert }) => expert)
+  .slice(0, 3);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: 'Решения', item: new URL('/resheniya/', Astro.url).href },
+    { '@type': 'ListItem', position: 3, name: title, item: Astro.url.href },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
+  <article>
+    <div class="service-breadcrumbs-bar">
+      <nav class="service-shell service-breadcrumbs" aria-label="Навигация">
+        <a href="/">Начало</a><span aria-hidden="true">/</span>
+        <a href="/resheniya/">Решения</a><span aria-hidden="true">/</span>
+        <span aria-current="page">{title}</span>
+      </nav>
+    </div>
+
+    <ServiceHero title={title} statement={heroStatement ?? description} details={heroDetails ?? description} image={solution.id === 'komunikatsii-i-pr' ? communicationPrImage : solution.id === 'digitalna-strategiya' ? digitalStrategyImage : solution.id === 'dizayn-i-reklamni-materiali' ? designMaterialsImage : solution.id === 'eu-visibility-compliance' ? euVisibilityImage : solution.id === 'podkast-i-intervyu-formati' ? podcastInterviewImage : solution.id === 'sabitiya-i-logistika' ? eventsLogisticsImage : solution.id === 'video-i-filmovo-proizvodstvo' ? videoFilmImage : solution.id === 'ueb-razrabotka' ? webDevelopmentImage : undefined} />
+    {problems && <ServiceProblem {...problems} />}
+    {difference && <ServiceDifference {...difference} />}
+    {process && <ServiceProcess {...process} />}
+    {inclusions && <ServiceScope {...inclusions} />}
+
+    {!hasStructuredContent && (
+      <section class="service-fallback" aria-label={`Повече за ${title}`}>
+        <div class="service-shell service-fallback__body"><Content /></div>
+      </section>
+    )}
+
+    {relatedProjects.length > 0 && <ServiceProjects projects={relatedProjects} clientNames={clientNames} />}
+    <ServiceExperts experts={relatedExperts} />
+
+    <section class="service-cta" aria-labelledby="service-cta-title">
+      <div class="service-shell service-cta__inner">
+        <div><p>Следващата стъпка</p><h2 id="service-cta-title">Нека подредим комуникацията ви</h2></div>
+        <Button href="/kontakti/" size="lg">Започнете разговор</Button>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .service-shell{width:min(calc(100% - 2 * var(--layout-gutter-mobile)),var(--layout-content-max));margin-inline:auto}
+  .service-breadcrumbs-bar{background:var(--color-surface);border-block:1px solid var(--color-border)}
+  .service-breadcrumbs{display:flex;overflow:hidden;min-height:2.75rem;align-items:center;gap:var(--space-2);color:var(--color-text-muted);font-family:var(--font-ui);font-size:.875rem;line-height:1.5;white-space:nowrap}
+  .service-breadcrumbs a{display:inline-flex;align-items:center;min-height:2.75rem;color:var(--color-text-muted);font-weight:500;text-decoration-color:transparent;text-decoration-thickness:1px;text-underline-offset:var(--space-1);transition:color var(--dur-2) ease,text-decoration-color var(--dur-2) ease}
+  .service-breadcrumbs a:hover{color:var(--color-vamo-red);text-decoration-color:currentColor}
+  .service-breadcrumbs a:focus-visible{border-radius:var(--radius-control);outline:2px solid var(--color-focus);outline-offset:2px}
+  .service-breadcrumbs span[aria-hidden='true']{color:var(--color-neutral-400)}
+  .service-breadcrumbs span[aria-current='page']{overflow:hidden;color:var(--color-text);font-weight:600;text-overflow:ellipsis}
+  .service-fallback{padding-block:var(--layout-section-padding-mobile)}
+  .service-fallback__body{max-width:48rem}
+  .service-fallback__body :global(h2){margin-block:var(--space-10) var(--space-4);font-size:var(--type-section-title)}
+  .service-fallback__body :global(p),.service-fallback__body :global(li){color:var(--color-text-muted);font-size:1.0625rem;line-height:1.7}
+  .service-cta__inner>div>p{font-family:var(--font-heading);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .service-cta__inner>div>p{color:var(--color-accent-on-dark)}
+  .service-cta h2{margin-block-start:var(--space-3);font-size:var(--type-cta-title);font-weight:700;line-height:1.15;letter-spacing:-.02em}
+  .service-cta{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-vamo-black);color:var(--color-text-inverse)}
+  .service-cta__inner{display:grid;gap:var(--space-8)}
+  .service-cta__inner :global(.button){justify-self:start}
+  @media(min-width:48rem){
+    .service-shell{width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max))}
+    .service-fallback{padding-block:var(--layout-section-padding-desktop)}
+    .service-cta{padding-block:var(--layout-anchor-padding-desktop)}
+    .service-cta__inner{grid-template-columns:minmax(0,1fr) auto;align-items:end}
+    .service-cta h2{white-space:nowrap}
+    .service-cta__inner :global(.button){justify-self:end}
+  }
+</style>

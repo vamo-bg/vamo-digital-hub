@@ -1,0 +1,24 @@
+<form class="contact-form" aria-describedby="contact-form-status">
+  <fieldset>
+    <legend class="sr-only">Форма за запитване</legend>
+    <div class="contact-form__grid">
+      <label><span>Име и организация</span><input type="text" name="name" autocomplete="name" placeholder="Вашето име" /></label>
+      <label><span>Имейл</span><input type="email" name="email" autocomplete="email" placeholder="name@example.com" /></label>
+      <label><span>Телефон</span><input type="tel" name="phone" autocomplete="tel" placeholder="Вашият телефон" required /></label>
+      <label><span>Каква е задачата?</span><textarea name="message" rows="5" placeholder="Кратко опишете контекста и какво искате да постигнете."></textarea></label>
+    </div>
+    <div class="contact-form__footer"><label class="contact-form__consent"><input type="checkbox" name="consent" /><span>Съгласен/съгласна съм предоставените данни да бъдат използвани за отговор на запитването.</span></label><button type="button">Изпратете запитването</button></div>
+  </fieldset>
+</form>
+<style>
+  .contact-form{padding:var(--space-6);border:1px solid var(--color-border-strong);border-radius:var(--radius-surface);background:var(--color-cream)}
+  .contact-form fieldset{display:grid;gap:var(--space-6);min-width:0;margin:0;padding:0;border:0}
+  .contact-form__grid{display:grid;gap:var(--space-5)}
+  .contact-form label:not(.contact-form__consent){display:grid;gap:var(--space-2);color:var(--color-text);font-family:var(--font-ui);font-size:.9375rem;font-weight:700;line-height:1.4}
+  .contact-form label span em{color:var(--color-text-muted);font-style:normal;font-weight:400}
+  .contact-form input,.contact-form textarea{width:100%;border:1px solid var(--color-border-strong);border-radius:var(--radius-control);background:var(--color-surface);color:var(--color-text);font:inherit;font-weight:400;line-height:1.5}
+  .contact-form input{min-height:3rem;padding-inline:var(--space-4)}.contact-form textarea{min-height:8.5rem;padding:var(--space-3) var(--space-4);resize:vertical}
+  .contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--color-neutral-600);opacity:1}
+  .contact-form__footer{display:grid;gap:var(--space-5);align-items:center}.contact-form__consent{display:grid;grid-template-columns:var(--space-5) minmax(0,1fr);gap:var(--space-3);align-items:start;color:var(--color-text-muted);font-size:.875rem;line-height:1.5}.contact-form__consent input{width:var(--space-5);height:var(--space-5);margin:0}.contact-form button{min-height:3rem;justify-self:start;padding:var(--space-3) var(--space-6);border:1px solid var(--color-vamo-red);border-radius:var(--radius-control);background-color:var(--color-vamo-red) !important;color:var(--color-white) !important;font-family:var(--font-heading);font-size:.9375rem;font-weight:600;cursor:pointer;opacity:1 !important;filter:none !important;transition:background-color var(--dur-1) ease,transform var(--dur-1) var(--ease-out-quad)}.contact-form button:hover{background-color:var(--color-primary-hover) !important}.contact-form button:active{transform:translateY(1px)}.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media(min-width:48rem){.contact-form{padding:var(--space-8)}.contact-form__grid{grid-template-columns:1fr}.contact-form__footer{grid-template-columns:1fr}.contact-form button{justify-self:start}}
+</style>

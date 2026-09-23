@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  id: string;
+  name: string;
+  role: string;
+  shortBio: string;
+  photo?: ImageMetadata;
+  photoAlt?: string;
+}
+
+const { id, name, role, shortBio, photo, photoAlt } = Astro.props;
+---
+
+<aside class="article-author" aria-label={`Автор: ${name}`}>
+  {photo && <Image class="article-author__photo" src={photo} alt={photoAlt ?? name} widths={[160, 240]} sizes="96px" loading="lazy" />}
+  <div class="article-author__content">
+    <p class="article-author__label">Автор</p>
+    <h2>{name}</h2>
+    <p class="article-author__role">{role}</p>
+    <p class="article-author__bio">{shortBio}</p>
+  </div>
+  <a href={`/ekspertna-mrezha/${id}/`}>Вижте профила <span aria-hidden="true">→</span></a>
+</aside>
+
+<style>
+  .article-author{display:grid;gap:var(--space-5);padding:var(--space-6);border:1px solid var(--color-border-strong);border-radius:var(--radius-surface);background:var(--color-cream)}
+  .article-author__photo{width:6rem;height:6rem;border:1px solid var(--color-border-strong);border-radius:var(--radius-full);object-fit:cover}
+  .article-author__content{display:grid;align-content:start;gap:var(--space-2)}
+  .article-author__label{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.6875rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+  .article-author h2{font-size:var(--type-card-title);font-weight:600;line-height:1.2;letter-spacing:-.02em}
+  .article-author__role{color:var(--color-text);font-size:.9375rem;font-weight:700;line-height:1.5}
+  .article-author__bio{max-width:54ch;color:var(--color-text-muted);font-size:1rem;line-height:1.6}
+  .article-author a{display:inline-flex;align-items:center;gap:var(--space-2);justify-self:start;color:var(--color-text);font-size:.9375rem;font-weight:700;text-decoration-color:var(--color-border-strong);text-underline-offset:var(--space-1)}
+  .article-author a span{color:var(--color-vamo-red);transition:transform var(--dur-2) var(--ease-out-quart)}
+  .article-author a:hover span{transform:translateX(var(--space-1))}
+  .article-author a:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px}
+  @media(min-width:48rem){.article-author{grid-template-columns:auto minmax(0,1fr) auto;align-items:center;padding:var(--space-8)}.article-author a{justify-self:end}}
+</style>

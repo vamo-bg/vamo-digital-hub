@@ -1,0 +1,298 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../../resources/VAMO-color.png';
+import { site } from '../../data/site';
+
+const pageLinks = [
+  { label: 'Начало', href: '/' },
+  { label: 'Кои сме ние', href: '/za-nas/' },
+  { label: 'Как работим', href: '/kak-rabotim/' },
+  { label: 'Клиенти', href: '/klienti/' },
+  { label: 'Референции', href: '/referentsii/' },
+  { label: 'Експертна мрежа', href: '/ekspertna-mrezha/' },
+  { label: 'Портфолио', href: '/portfolio/' },
+  { label: 'Блог', href: '/blog/' },
+  { label: 'Контакт', href: '/kontakti/' },
+];
+
+const solutionLinks = [
+  { label: 'Дизайн и рекламни материали', href: '/resheniya/dizayn-i-reklamni-materiali/' },
+  { label: 'Подкаст и интервю формати', href: '/resheniya/podkast-i-intervyu-formati/' },
+  { label: 'Събития и логистика', href: '/resheniya/sabitiya-i-logistika/' },
+  { label: 'EU Visibility & Compliance', href: '/resheniya/eu-visibility-compliance/' },
+  { label: 'Комуникации и PR', href: '/resheniya/komunikatsii-i-pr/' },
+  { label: 'Видео и филмово производство', href: '/resheniya/video-i-filmovo-proizvodstvo/' },
+  { label: 'Всички решения', href: '/resheniya/' },
+];
+
+const contactLinks = Object.values(site.contact);
+const mediaLinks = [
+  { label: 'VAMO.eu', href: 'https://vamo.eu/' },
+  { label: 'Balkanite.net', href: 'https://balkanite.net/' },
+  { label: 'Komentari.bg', href: 'https://komentari.bg/' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@VamoBG' },
+];
+
+const legalLinks = [
+  { label: 'Карта на сайта', href: '/karta-na-sayta/' },
+  { label: 'Политика за поверителност', href: '/politika-za-poveritelnost/' },
+  { label: 'Общи условия', href: '/obshti-usloviya/' },
+  { label: 'Бисквитки', href: '/biskvitki/' },
+];
+
+const currentYear = new Date().getFullYear();
+---
+
+<div class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__frame">
+      <div class="site-footer__grid">
+        <section class="site-footer__brand" aria-labelledby="footer-brand-title">
+          <a class="site-footer__logo" href="/" aria-label="VAMO, начало">
+            <Image src={logo} alt="" width={440} height={132} widths={[440, 880]} sizes="220px" />
+          </a>
+          <p id="footer-brand-title">
+            <strong>{site.tagline}</strong>, {site.description}
+          </p>
+          <ul class="site-footer__socials" aria-label="Социални мрежи">
+            {site.socials.map((social) => (
+              <li>
+                {social.url ? (
+                  <a
+                    class="site-footer__social"
+                    href={social.url}
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <i class:list={['ph', `ph-${social.icon}`]} aria-hidden="true" />
+                  </a>
+                ) : (
+                  <span class="site-footer__social" aria-label={`${social.label} — линкът предстои`}>
+                    <i class:list={['ph', `ph-${social.icon}`]} aria-hidden="true" />
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <nav class="site-footer__media" aria-labelledby="footer-media-title">
+            <h2 id="footer-media-title">Медии и платформи</h2>
+            <ul>{mediaLinks.map((link) => <li><a href={link.href} target="_blank" rel="noreferrer">{link.label}</a></li>)}</ul>
+          </nav>
+        </section>
+
+        <nav class="site-footer__nav" aria-labelledby="footer-pages-title">
+          <h2 id="footer-pages-title">Страници</h2>
+          <ul>{pageLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}</ul>
+        </nav>
+
+        <nav class="site-footer__nav site-footer__solutions" aria-labelledby="footer-solutions-title">
+          <h2 id="footer-solutions-title">Решения</h2>
+          <ul>{solutionLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}</ul>
+        </nav>
+
+        <section class="site-footer__contacts" aria-labelledby="footer-contacts-title">
+          <h2 id="footer-contacts-title">Контакти</h2>
+          <ul>
+            {contactLinks.map((link) => (
+              <li>
+                <a href={link.href}>
+                  <i class:list={['ph', `ph-${link.icon}`]} aria-hidden="true" />
+                  <span>{link.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      <div class="site-footer__legal">
+        <p><strong>{currentYear}© {site.legalName}</strong>, Всички права запазени</p>
+        <span class="site-footer__legal-separator" aria-hidden="true">|</span>
+        <nav aria-label="Правна информация">
+          <ul>
+            {legalLinks.map((link, index) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+                {index < legalLinks.length - 1 && (
+                  <span class="site-footer__legal-separator" aria-hidden="true">|</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-footer {
+    background: var(--color-footer-bg);
+    color: var(--color-red-100);
+    font-family: var(--font-ui);
+  }
+
+  .site-footer__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--space-6);
+  }
+
+  .site-footer__frame {
+    padding: var(--space-8) var(--space-6);
+    border: 1px solid var(--color-footer-frame-border);
+    border-radius: var(--radius-xl);
+    background: linear-gradient(
+      180deg,
+      var(--color-footer-frame-start) 0%,
+      var(--color-footer-frame-end) 100%
+    );
+    box-shadow: 0 0.75rem 1.1875rem -0.6875rem rgb(0 0 0 / 8%);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: var(--space-10);
+  }
+
+  .site-footer__brand { display: grid; align-content: start; gap: var(--space-6); }
+
+  .site-footer__logo {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 2.75rem;
+    align-items: center;
+    transition: opacity 220ms ease;
+  }
+  .site-footer__logo:hover { opacity: 0.88; }
+  .site-footer__logo:focus-visible { opacity: 0.88; }
+
+  .site-footer__logo img {
+    width: 13.75rem;
+    height: auto;
+    filter: grayscale(1) brightness(0) invert(1);
+  }
+
+  .site-footer__brand p {
+    max-width: 42ch;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .site-footer__brand strong,
+  .site-footer h2,
+  .site-footer__legal strong { color: var(--color-white); }
+
+  .site-footer h2 {
+    margin: 0 0 var(--space-4);
+    padding-inline-start: var(--space-1);
+    border-inline-start: 2px solid var(--color-footer-heading-border);
+    color: var(--color-white);
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .site-footer ul { margin: 0; padding: 0; list-style: none; }
+  .site-footer__nav ul, .site-footer__contacts ul { display: grid; gap: var(--space-1); }
+
+  .site-footer__nav a,
+  .site-footer__contacts a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-red-100);
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: color var(--dur-1) ease;
+  }
+
+  .site-footer__nav a:hover,
+  .site-footer__contacts a:hover { color: var(--color-white); }
+
+  .site-footer__contacts i {
+    flex: 0 0 auto;
+    color: var(--color-white);
+    font-size: 1.125rem;
+  }
+
+  .site-footer__socials { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  .site-footer__social { 
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border-radius: var(--radius-full);
+    background: var(--color-footer-social-bg);
+    color: var(--color-white);
+    font-size: 1.125rem;
+  }
+
+  .site-footer__media { margin-block-start: var(--space-8); }
+  .site-footer__media h2 { margin-block-end: var(--space-3); }
+  .site-footer__media ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+  .site-footer__media a { min-height: 2.25rem; color: var(--color-red-100); font-size: .875rem; line-height: 1.35; text-decoration: none; transition: color var(--dur-1) ease; }
+  .site-footer__media a:hover { color: var(--color-white); }
+
+  .site-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2) var(--space-3);
+    margin-block-start: var(--space-10);
+    padding-block-start: var(--space-5);
+    border-block-start: 1px dotted var(--color-footer-legal-border);
+    color: var(--color-footer-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .site-footer__legal p { margin: 0; }
+  .site-footer__legal ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
+  .site-footer__legal a { color: inherit; text-underline-offset: 0.2em; }
+  .site-footer__legal a:hover { color: var(--color-white); }
+  .site-footer__legal-separator {
+    margin-inline: var(--space-2);
+    color: var(--color-footer-heading-border);
+  }
+  .site-footer a:focus-visible { outline-color: var(--color-white); }
+
+  @media (min-width: 48rem) {
+    .site-footer__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--space-8);
+    }
+
+    .site-footer__frame {
+      padding: var(--space-12) var(--space-10);
+    }
+
+    .site-footer__grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(8rem, 0.65fr) minmax(11rem, 0.8fr) minmax(15rem, 1.15fr);
+      gap: var(--space-8);
+    }
+
+    .site-footer__nav a,
+    .site-footer__contacts a { min-height: 2.25rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-footer__nav a,
+    .site-footer__contacts a { transition: none; }
+  }
+</style>

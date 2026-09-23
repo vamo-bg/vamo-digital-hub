@@ -1,0 +1,247 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import Button from '../ui/Button.astro';
+
+export interface LeadSpec {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  /**
+   * Register of the chapter. It changes the label of the media frame and the
+   * wording around the action, never the structure.
+   */
+  variant: 'film' | 'exhibition' | 'platform' | 'editorial';
+  title: string;
+  statement: string;
+  details?: string;
+  specs?: LeadSpec[];
+  action?: { label: string; url: string };
+  image?: ImageMetadata;
+  imageAlt?: string;
+  /** Follows the hero without inserting another chapter between them. */
+  seamless?: boolean;
+}
+
+const {
+  variant,
+  title,
+  statement,
+  details,
+  specs = [],
+  action,
+  image,
+  imageAlt = '',
+  seamless = true,
+} = Astro.props;
+
+const hasMeta = specs.length > 0 || Boolean(action);
+/* The second column only exists when there is something to put in it, so the
+ * chapter never renders a half-empty spread. */
+const hasSide = Boolean(details) || hasMeta;
+---
+
+<section
+  class:list={['lead', `lead--${variant}`, { 'lead--seamless': seamless }]}
+  aria-labelledby="project-lead-title"
+>
+  <div class="lead__shell">
+    <header class="lead__head">
+      <h2 id="project-lead-title">{title}</h2>
+    </header>
+
+    <div class:list={['lead__content', { 'lead__content--solo': !hasSide }]}> 
+      <p class="lead__statement">{statement}</p>
+
+      {hasSide && (
+        <div class="lead__side">
+          {details && <p class="lead__details">{details}</p>}
+
+          {hasMeta && (
+            <div class="lead__meta">
+              {specs.length > 0 && (
+                <dl class="lead__specs">
+                  {specs.map((spec) => (
+                    <div>
+                      <dt>{spec.label}</dt>
+                      <dd>{spec.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+
+              {action && (
+                <Button href={action.url} size="lg" target="_blank" rel="noreferrer">
+                  {action.label}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+
+  {image && (
+    <div class="lead__media">
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[720, 1080, 1440, 1920]}
+        sizes="100vw"
+        loading="lazy"
+      />
+    </div>
+  )}
+</section>
+
+<style>
+  .lead {
+    padding-block: var(--layout-section-padding-mobile);
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+  /* A seamless lead follows the hero structurally, while its light surface
+     still opens a distinct editorial chapter. */
+  .lead--seamless {
+    background-color: var(--color-background);
+  }
+
+  .lead__shell {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .lead h2 {
+    max-width: 16ch;
+    font-size: var(--type-section-title);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .lead__head {
+    padding-block-end: var(--space-6);
+    border-block-end: 1px dotted var(--color-border-strong);
+  }
+
+  .lead__content {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  /* The statement is the chapter's voice: larger than body, quieter than the
+     heading, and held to a readable measure. */
+  .lead__statement {
+    max-width: 43ch;
+    font-family: var(--font-heading);
+    font-size: var(--type-feature-title);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+
+  .lead__side {
+    display: grid;
+    gap: var(--space-8);
+    align-content: start;
+  }
+
+  .lead__details {
+    max-width: 52ch;
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .lead__meta {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-8);
+    padding-block-start: var(--space-8);
+    border-block-start: 1px dotted var(--color-border-strong);
+  }
+
+  .lead__specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, max-content));
+    gap: var(--space-6) var(--space-12);
+    margin: 0;
+  }
+
+  .lead__specs div {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .lead__specs dt {
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .lead__specs dd {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+
+  .lead__media {
+    margin-block-start: var(--space-12);
+  }
+
+  .lead__media :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  @media (min-width: 48rem) {
+    .lead {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .lead__shell {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      gap: var(--space-10);
+    }
+
+    .lead__content {
+      grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+      align-items: start;
+      column-gap: var(--space-16);
+    }
+
+    .lead__content--solo {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .lead__specs {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+  }
+</style>

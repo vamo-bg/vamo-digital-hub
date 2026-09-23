@@ -1,0 +1,182 @@
+---
+import { getCollection } from 'astro:content';
+
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+import ClientLogo from '../ui/ClientLogo.astro';
+
+const clients = (await getCollection('clients', ({ data }) => !data.draft))
+  .filter((client) => client.data.featuredInSection)
+  .sort(
+    (a, b) =>
+      (a.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (b.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) ||
+      a.data.name.localeCompare(b.data.name, 'bg'),
+  )
+  .slice(0, site.clientsSection.limit);
+const featuredClients = clients.slice(0, 4);
+const gridClients = clients.slice(4);
+
+const previewClients = import.meta.env.DEV && clients.length === 0
+  ? Array.from({ length: site.clientsSection.previewCount }, (_, index) => ({
+      name: `Лого ${String(index + 1).padStart(2, '0')}`,
+    }))
+  : [];
+
+const shouldRender = clients.length > 0 || previewClients.length > 0;
+---
+
+{shouldRender && (
+  <section class="clients-section" aria-labelledby="clients-section-title">
+    <div class="clients-section__inner">
+      <div class="clients-section__heading">
+        <div>
+          <h2 id="clients-section-title">Партньори и организации, с които сме работили</h2>
+          <p>
+            Дългосрочни отношения с бизнеси, институции и организации от различни сфери.
+          </p>
+        </div>
+
+        {clients.length > 0 && (
+          <Button href={site.clientsSection.archiveHref} variant="ghost" size="md">
+            Вижте всички клиенти
+          </Button>
+        )}
+      </div>
+
+      <div class="clients-section__layout" aria-label="Избрани клиенти и партньори">
+        <div class="clients-section__featured">
+          {(featuredClients.length ? featuredClients : previewClients.slice(0, 4)).map((client) => (
+            <ClientLogo
+              name={'data' in client ? client.data.name : client.name}
+              logo={'data' in client ? client.data.logo : undefined}
+              website={'data' in client ? client.data.website : undefined}
+              isPreview={!('data' in client)}
+            />
+          ))}
+        </div>
+
+        <div class="clients-section__grid">
+          {(gridClients.length ? gridClients : previewClients.slice(4)).map((client) => (
+            <ClientLogo
+              name={'data' in client ? client.data.name : client.name}
+              logo={'data' in client ? client.data.logo : undefined}
+              website={'data' in client ? client.data.website : undefined}
+              isPreview={!('data' in client)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .clients-section {
+    background-color: var(--color-cream);
+  }
+
+  .clients-section__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .clients-section__heading {
+    display: grid;
+    gap: var(--space-6);
+    align-items: end;
+  }
+
+  .clients-section__heading h2 {
+    max-width: 27ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .clients-section__heading p {
+    max-width: 64ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .clients-section__layout {
+    display: grid;
+    gap: var(--space-6);
+    margin-block-start: var(--space-8);
+  }
+
+  .clients-section__featured,
+  .clients-section__grid {
+    display: grid;
+    border: 1px solid var(--color-border);
+  }
+
+  .clients-section__featured {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .clients-section__featured :global(.client-logo) {
+    min-height: 12rem;
+  }
+
+  .clients-section__featured :global(.client-logo img) {
+    max-width: 13rem;
+    height: 5.25rem;
+  }
+
+  .clients-section__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .clients-section__grid :global(.client-logo img) {
+    max-width: 11rem;
+    height: 4.25rem;
+  }
+
+  .clients-section__featured :global(.client-logo:not(:nth-child(2n))),
+  .clients-section__grid :global(.client-logo:not(:nth-child(3n))) {
+    border-inline-end: 1px solid var(--color-border);
+  }
+
+  .clients-section__featured :global(.client-logo:nth-child(-n + 2)),
+  .clients-section__grid :global(.client-logo:nth-child(-n + 3)) {
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  @media (min-width: 48rem) {
+    .clients-section__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .clients-section__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .clients-section__layout {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.65fr);
+      margin-block-start: var(--space-10);
+    }
+
+    .clients-section__featured {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .clients-section__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

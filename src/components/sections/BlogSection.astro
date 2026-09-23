@@ -1,0 +1,122 @@
+---
+import { getCollection } from 'astro:content';
+
+import { site } from '../../data/site';
+import BlogTeaser from '../ui/BlogTeaser.astro';
+
+const allArticles = await getCollection('blog');
+const articles = allArticles
+  .filter((article) => !article.data.draft)
+  .sort(
+    (a, b) =>
+      b.data.pubDate.getTime() - a.data.pubDate.getTime() ||
+      (a.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (b.data.sectionOrder ?? Number.MAX_SAFE_INTEGER),
+  )
+  .slice(0, site.blogSection.limit);
+
+const publishedArticles = articles.map((article) => ({
+  id: article.id,
+  ...article.data,
+}));
+const shouldRender = publishedArticles.length > 0;
+---
+
+{shouldRender && (
+  <section class="blog-section" aria-labelledby="blog-section-title">
+    <div class="blog-section__inner">
+      <div class="blog-section__heading">
+        <div>
+          <h2 id="blog-section-title">Последни статии</h2>
+          <p>
+            Практични идеи за стратегия, комуникация и дигитално присъствие — събрани от реалната работа на VAMO.
+          </p>
+        </div>
+      </div>
+
+      <div class="blog-section__editorial">
+        {publishedArticles.map((article) => (
+          <BlogTeaser
+            id={article.id}
+            title={article.title}
+            description={article.description}
+            pubDate={article.pubDate}
+            cover={article.cover}
+            coverAlt={article.coverAlt}
+            variant="standard"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .blog-section {
+    background-color: var(--color-neutral-100);
+  }
+
+  .blog-section__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .blog-section__heading {
+    display: grid;
+    gap: var(--space-6);
+    align-items: end;
+  }
+
+  .blog-section__heading h2 {
+    max-width: 32ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .blog-section__heading p {
+    max-width: 64ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .blog-section__editorial {
+    display: grid;
+    gap: var(--space-8);
+    margin-block-start: var(--space-8);
+  }
+
+  @media (min-width: 48rem) {
+    .blog-section__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .blog-section__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .blog-section__editorial {
+      margin-block-start: var(--space-10);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .blog-section__editorial {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: var(--space-8);
+    }
+  }
+</style>

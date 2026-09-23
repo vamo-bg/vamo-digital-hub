@@ -1,0 +1,230 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'portfolio'>;
+  clientName: string;
+  serviceNames: string[];
+  featured?: boolean;
+  preview?: boolean;
+}
+
+const {
+  project,
+  clientName,
+  serviceNames,
+  featured = false,
+  preview = false,
+} = Astro.props;
+const { title, description, coverImage, coverAlt, year, projectType } = project.data;
+---
+
+<article class:list={['archive-card', { 'archive-card--featured': featured }] }>
+  <a href={`/portfolio/${project.id}/`} aria-label={`Вижте проекта: ${title}`}>
+    <div class="archive-card__media">
+      {
+        coverImage ? (
+          <Image
+            src={coverImage}
+            alt={coverAlt ?? ''}
+            widths={[560, 900, 1280, 1600]}
+            sizes={featured ? '(min-width: 64rem) 60vw, 100vw' : '(min-width: 64rem) 42vw, 100vw'}
+            loading={featured ? 'eager' : 'lazy'}
+          />
+        ) : (
+          <span class="archive-card__placeholder" aria-hidden="true">
+            <span>VAMO</span>
+          </span>
+        )
+      }
+      {preview && <span class="archive-card__preview">Примерен проект</span>}
+    </div>
+
+    <div class="archive-card__content">
+      <p class="archive-card__meta">
+        <span>{clientName}</span>
+        {year && <span>{year}</span>}
+        {projectType && <span>{projectType}</span>}
+      </p>
+      <h2>{title}</h2>
+      <p class="archive-card__description">{description}</p>
+      {serviceNames.length > 0 && (
+        <ul aria-label="Свързани решения">
+          {serviceNames.map((service) => <li>{service}</li>)}
+        </ul>
+      )}
+      <span class="archive-card__action">Разгледайте проекта <span aria-hidden="true">→</span></span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .archive-card,
+  .archive-card > a {
+    min-width: 0;
+    height: 100%;
+  }
+
+  .archive-card > a {
+    display: grid;
+    overflow: hidden;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-cream);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color var(--dur-2) ease;
+  }
+
+  .archive-card__media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background-color: var(--color-neutral-200);
+  }
+
+  .archive-card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform var(--dur-4) var(--ease-out-cubic);
+  }
+
+  .archive-card__placeholder {
+    display: grid;
+    min-height: 100%;
+    place-items: center;
+    background-color: var(--color-neutral-800);
+    color: var(--color-neutral-400);
+  }
+
+  .archive-card__placeholder span {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 8vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  .archive-card__preview {
+    position: absolute;
+    inset-block-start: var(--space-4);
+    inset-inline-start: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .archive-card__content {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+    padding: var(--space-6) var(--space-6) var(--space-8);
+  }
+
+  .archive-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .archive-card__meta span + span::before {
+    content: '·';
+    margin-inline-end: var(--space-4);
+    color: var(--color-neutral-400);
+  }
+
+  .archive-card h2 {
+    font-size: var(--type-feature-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .archive-card__description {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .archive-card ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+    padding: 0;
+    color: var(--color-neutral-800);
+    font-size: 0.8125rem;
+    list-style: none;
+  }
+
+  .archive-card li + li::before {
+    content: '/';
+    margin-inline-end: var(--space-4);
+    color: var(--color-neutral-400);
+  }
+
+  .archive-card__action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-start: var(--space-2);
+    font-weight: 700;
+  }
+
+  .archive-card__action > span {
+    color: var(--color-vamo-red);
+    transition: transform var(--dur-2) ease;
+  }
+
+  .archive-card > a:hover .archive-card__media :global(img) {
+    transform: scale(1.015);
+  }
+
+  .archive-card > a:hover {
+    border-color: var(--color-neutral-400);
+  }
+
+  .archive-card > a:hover .archive-card__action > span {
+    transform: translateX(var(--space-1));
+  }
+
+  .archive-card > a:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
+  @media (min-width: 64rem) {
+    .archive-card--featured > a {
+      grid-template-columns: minmax(0, 1.1fr) minmax(20rem, .9fr);
+      align-items: stretch;
+    }
+
+    .archive-card--featured .archive-card__media {
+      align-self: start;
+    }
+
+    .archive-card--featured .archive-card__content {
+      align-content: center;
+      padding: var(--space-10);
+    }
+
+    .archive-card--featured h2 {
+      font-size: var(--type-section-title-anchor);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .archive-card__media :global(img),
+    .archive-card__action > span {
+      transition: none;
+    }
+  }
+</style>

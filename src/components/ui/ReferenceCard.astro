@@ -1,0 +1,214 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  title: string;
+  projectTitle?: string;
+  clientName?: string;
+  previewImage?: ImageMetadata;
+  previewAlt?: string;
+  isPreview?: boolean;
+}
+
+const {
+  title,
+  projectTitle,
+  clientName,
+  previewImage,
+  previewAlt,
+  isPreview = false,
+} = Astro.props;
+---
+
+<article class:list={['reference-card', { 'reference-card--preview': isPreview }]}>
+  <div class="reference-card__document">
+    {previewImage ? (
+      <Image
+        src={previewImage}
+        alt={previewAlt ?? title}
+        widths={[360, 540, 720]}
+        sizes="(min-width: 64rem) 30vw, (min-width: 48rem) 50vw, 100vw"
+        loading="lazy"
+      />
+    ) : (
+      <div class="reference-card__placeholder" aria-hidden="true">
+        <span class="reference-card__placeholder-mark">VAMO</span>
+        <span class="reference-card__placeholder-line reference-card__placeholder-line--title"></span>
+        <span class="reference-card__placeholder-line"></span>
+        <span class="reference-card__placeholder-line"></span>
+        <span class="reference-card__placeholder-line reference-card__placeholder-line--short"></span>
+        <span class="reference-card__placeholder-signature"></span>
+      </div>
+    )}
+  </div>
+
+  <div class="reference-card__content">
+    {isPreview && <span class="reference-card__status">Примерна визуализация</span>}
+    <h3>{title}</h3>
+    {clientName && <p class="reference-card__client">{clientName}</p>}
+    {projectTitle && <p class="reference-card__project">Проект: {projectTitle}</p>}
+
+  </div>
+</article>
+
+<style>
+  .reference-card {
+    display: grid;
+    min-width: 0;
+    height: 100%;
+    grid-template-columns: minmax(7.5rem, 0.8fr) minmax(0, 1.2fr);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-cream);
+  }
+
+  .reference-card__document {
+    padding: var(--space-4);
+    background-color: var(--color-neutral-200);
+  }
+
+  .reference-card__document :global(img),
+  .reference-card__placeholder {
+    width: min(100%, 18rem);
+    aspect-ratio: 4 / 5;
+    margin-inline: auto;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-white);
+  }
+
+  .reference-card__document :global(img) {
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .reference-card__placeholder {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-6);
+  }
+
+  .reference-card__placeholder-mark {
+    color: var(--color-vamo-red);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .reference-card__placeholder-line {
+    width: 100%;
+    height: 1px;
+    margin-block-start: var(--space-4);
+    background-color: var(--color-neutral-300);
+  }
+
+  .reference-card__placeholder-line--title {
+    width: 62%;
+    height: var(--space-2);
+    margin-block-start: var(--space-10);
+    background-color: var(--color-neutral-800);
+  }
+
+  .reference-card__placeholder-line--short {
+    width: 72%;
+  }
+
+  .reference-card__placeholder-signature {
+    width: 42%;
+    height: var(--space-6);
+    margin-block-start: auto;
+    border-block-end: 1px solid var(--color-neutral-400);
+  }
+
+  .reference-card__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-4);
+  }
+
+  .reference-card__status {
+    margin-block-end: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .reference-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .reference-card__client {
+    margin-block-start: var(--space-3);
+    color: var(--color-vamo-red);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .reference-card__project {
+    margin-block-start: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .reference-card__action,
+  .reference-card__pending {
+    min-height: 2.75rem;
+    margin-block-start: auto;
+    padding-block-start: var(--space-5);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .reference-card__action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-neutral-300);
+    text-underline-offset: var(--space-1);
+  }
+
+  .reference-card__action span {
+    color: var(--color-vamo-red);
+  }
+
+  .reference-card__action:hover {
+    color: var(--color-vamo-red);
+    text-decoration-color: currentColor;
+  }
+
+  .reference-card__action:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .reference-card__pending {
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  @media (min-width: 48rem) {
+    .reference-card {
+      grid-template-columns: none;
+      grid-template-rows: auto 1fr;
+    }
+
+    .reference-card__document {
+      padding: var(--space-6) var(--space-6) 0;
+    }
+
+    .reference-card__content {
+      padding: var(--space-6);
+    }
+  }
+</style>

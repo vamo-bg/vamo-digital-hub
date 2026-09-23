@@ -1,29 +1,36 @@
 ---
-import Button from '../components/ui/Button.astro';
+import Hero from '../components/sections/Hero.astro';
+import CapacitySection from '../components/sections/CapacitySection.astro';
+import ProblemsSection from '../components/sections/ProblemsSection.astro';
+import AudienceSection from '../components/sections/AudienceSection.astro';
+import ProcessSection from '../components/sections/ProcessSection.astro';
+import ExpertNetworkSection from '../components/sections/ExpertNetworkSection.astro';
+import OutcomesSection from '../components/sections/OutcomesSection.astro';
+import SolutionsSection from '../components/sections/SolutionsSection.astro';
+import EvidenceSection from '../components/sections/EvidenceSection.astro';
+import ClientsSection from '../components/sections/ClientsSection.astro';
+import ProjectsSection from '../components/sections/ProjectsSection.astro';
+import BlogSection from '../components/sections/BlogSection.astro';
+import FinalCtaSection from '../components/sections/FinalCtaSection.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="VAMO"
-  description="Новият уебсайт на VAMO е в процес на разработка."
+  title="Стратегия, комуникация и публичност с реален резултат"
+  description="VAMO подрежда стратегия, съдържание и публичност за бизнеси, институции и проекти — от ясната посока до реалното изпълнение."
+  image="/og-home.jpg"
 >
-  <section aria-labelledby="page-title">
-    <p>VAMO</p>
-    <h1 id="page-title">Новият ни уебсайт идва скоро.</h1>
-    <p>В момента изграждаме по-бързо и по-достъпно дигитално преживяване.</p>
-    <div class="actions" aria-label="Примери за бутони">
-      <Button href="#" variant="primary">Основно действие</Button>
-      <Button variant="secondary">Вторично действие</Button>
-      <Button variant="ghost" size="sm">Текстово действие</Button>
-    </div>
-  </section>
+  <Hero />
+  <CapacitySection />
+  <ProblemsSection />
+  <AudienceSection />
+  <ProcessSection />
+  <ProjectsSection />
+  <EvidenceSection />
+  <ExpertNetworkSection />
+  <OutcomesSection />
+  <SolutionsSection />
+  <ClientsSection />
+  <BlogSection />
+  <FinalCtaSection />
 </BaseLayout>
-
-<style>
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-block-start: var(--space-6);
-  }
-</style>

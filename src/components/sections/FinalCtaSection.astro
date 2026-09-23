@@ -1,0 +1,78 @@
+---
+import Button from '../ui/Button.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  href?: string;
+  actionLabel?: string;
+}
+
+const {
+  title = 'Нека подредим следващата ви стъпка',
+  description =
+    'Започваме с разговор за реалната ви ситуация, целите и местата, в които в момента губите възможности.',
+  href = '/kontakti/',
+  actionLabel = 'Заявете диагностичен разговор',
+} = Astro.props;
+---
+
+<section class="final-cta" aria-labelledby="final-cta-title">
+  <div class="final-cta__inner">
+    <div class="final-cta__copy">
+      <h2 id="final-cta-title">{title}</h2>
+      <p>{description}</p>
+    </div>
+
+    <Button href={href} variant="primary" size="lg">{actionLabel}</Button>
+  </div>
+</section>
+
+<style>
+  .final-cta {
+    background-color: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .final-cta__inner {
+    display: grid;
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    gap: var(--space-8);
+    align-items: end;
+    margin-inline: auto;
+    padding-block: var(--layout-anchor-padding-mobile);
+  }
+
+  .final-cta h2 {
+    max-width: 20ch;
+    color: var(--color-text-inverse);
+    font-size: var(--type-section-title-anchor);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .final-cta p {
+    max-width: 58ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-neutral-300);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 48rem) {
+    .final-cta__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+  }
+</style>

@@ -1,0 +1,414 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface ProofDocument {
+  title: string;
+  previewImage: ImageMetadata;
+  previewAlt: string;
+  transcript: string;
+  excerpt?: string;
+  author?: string;
+  authorPosition?: string;
+  organization?: string;
+}
+
+export interface ProofReview {
+  quote: string;
+  person: string;
+  position?: string;
+}
+
+interface Props {
+  surface: 'cream' | 'muted';
+  documents?: ProofDocument[];
+  review?: ProofReview;
+}
+
+const { surface, documents = [], review } = Astro.props;
+
+/**
+ * One quote carries the chapter. A documented excerpt outranks a free-form
+ * review, because it is the text a third party actually signed.
+ */
+const primary = documents[0];
+const quote = primary?.excerpt ?? review?.quote;
+const attribution = primary
+  ? [primary.author, primary.authorPosition, primary.organization]
+      .filter(Boolean)
+      .join(', ')
+  : [review?.person, review?.position].filter(Boolean).join(', ');
+---
+
+{
+  (documents.length > 0 || review) && (
+    <section
+      class:list={['proof', `proof--${surface}`]}
+      aria-labelledby="project-proof-title"
+    >
+      <div class="proof__shell">
+        <h2 id="project-proof-title">Доказателството</h2>
+
+        <div class:list={['proof__body', { 'proof__body--quote-only': !primary }]}> 
+          <div class="proof__copy">
+            {quote && (
+              <figure class="proof__quote">
+                <blockquote>
+                  <p>„{quote}“</p>
+                </blockquote>
+                {attribution && <figcaption>{attribution}</figcaption>}
+              </figure>
+            )}
+
+            {primary && (
+              <section class="proof__transcript" aria-labelledby="proof-transcript-title">
+                <h3 id="proof-transcript-title">Пълен текст на документа</h3>
+                <div
+                  class="proof__transcript-body"
+                  tabindex="0"
+                  aria-label="Пълен текст на референцията — област с превъртане"
+                >
+                  {primary.transcript
+                    .split(/\n{2,}/)
+                    .map((paragraph) => <p>{paragraph.trim()}</p>)}
+                </div>
+              </section>
+            )}
+          </div>
+
+          {primary && (
+            <div class="proof__document">
+              <button
+                class="proof__preview"
+                type="button"
+                aria-label={`Увеличете документа: ${primary.title}`}
+                data-proof-open
+              >
+                <Image
+                  src={primary.previewImage}
+                  alt={primary.previewAlt}
+                  widths={[400, 640, 900]}
+                  sizes="(min-width: 64rem) 30vw, 100vw"
+                  loading="lazy"
+                />
+                <span aria-hidden="true">Увеличете</span>
+              </button>
+              <p class="proof__document-title">{primary.title}</p>
+            </div>
+          )}
+        </div>
+
+        {documents.length > 1 && (
+          <ul class="proof__more">
+            {documents.slice(1).map((document) => (
+              <li>
+                <span>{document.title}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {primary && (
+          <dialog class="proof__lightbox" data-proof-dialog aria-label={primary.title}>
+            <button class="proof__lightbox-close" type="button" data-proof-close>
+              <span aria-hidden="true">×</span>
+              <span class="sr-only">Затворете документа</span>
+            </button>
+            <div class="proof__lightbox-inner">
+              <Image
+                src={primary.previewImage}
+                alt={primary.previewAlt}
+                widths={[900, 1400, 1800]}
+                sizes="min(90vw, 75rem)"
+                loading="lazy"
+              />
+              <p>{primary.title}</p>
+            </div>
+          </dialog>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<script>
+  const initializeProofLightboxes = () => {
+    document.querySelectorAll<HTMLElement>('.proof').forEach((section) => {
+      if (section.dataset.lightboxReady === 'true') return;
+
+      const openButton = section.querySelector<HTMLButtonElement>('[data-proof-open]');
+      const closeButton = section.querySelector<HTMLButtonElement>('[data-proof-close]');
+      const dialog = section.querySelector<HTMLDialogElement>('[data-proof-dialog]');
+      if (!openButton || !closeButton || !dialog) return;
+
+      const close = () => {
+        if (dialog.open) dialog.close();
+      };
+
+      openButton.addEventListener('click', () => dialog.showModal());
+      closeButton.addEventListener('click', close);
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) close();
+      });
+      dialog.addEventListener('close', () => openButton.focus());
+      section.dataset.lightboxReady = 'true';
+    });
+  };
+
+  initializeProofLightboxes();
+  document.addEventListener('astro:page-load', initializeProofLightboxes);
+</script>
+
+<style>
+  .proof {
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .proof--cream {
+    background-color: var(--color-background);
+  }
+
+  .proof--muted {
+    background-color: var(--color-surface);
+  }
+
+  .proof__shell {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+  }
+
+  .proof h2 {
+    font-size: var(--type-section-title);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .proof__body {
+    display: grid;
+    gap: var(--space-10);
+    margin-block-start: var(--space-10);
+  }
+
+  .proof__quote blockquote {
+    margin: 0;
+  }
+
+  .proof__quote p {
+    max-width: 30ch;
+    font-family: var(--font-heading);
+    font-size: var(--type-feature-title);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+
+  .proof__quote figcaption {
+    max-width: 40ch;
+    margin-block-start: var(--space-5);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .proof__copy {
+    min-width: 0;
+  }
+
+  /* The scan is shown as a sheet of paper, not as a card. */
+  .proof__preview {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 24rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-white);
+    cursor: zoom-in;
+  }
+
+  .proof__preview :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-border-strong);
+    background-color: var(--color-white);
+  }
+
+  .proof__preview > span {
+    position: absolute;
+    right: var(--space-3);
+    bottom: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .proof__preview:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
+  .proof__document-title {
+    max-width: 24rem;
+    margin-block-start: var(--space-4);
+    font-family: var(--font-heading);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .proof__pdf {
+    display: inline-block;
+    margin-block-start: var(--space-2);
+    color: var(--color-vamo-red);
+    font-size: 0.9375rem;
+    text-underline-offset: 0.2em;
+  }
+
+  .proof__transcript {
+    margin-block-start: var(--space-8);
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .proof__transcript h3 {
+    margin: 0;
+    padding-block: var(--space-4);
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .proof__transcript-body {
+    max-width: 68ch;
+    padding-block-end: var(--space-6);
+  }
+
+  .proof__transcript-body:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .proof__transcript-body p {
+    color: var(--color-neutral-800);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .proof__transcript-body p + p {
+    margin-block-start: var(--space-4);
+  }
+
+  .proof__more {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-8) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .proof__more a {
+    color: var(--color-text);
+    font-size: 0.9375rem;
+  }
+
+  .proof__lightbox {
+    width: min(calc(100% - (2 * var(--layout-gutter-mobile))), 75rem);
+    max-width: none;
+    max-height: 92vh;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-white);
+  }
+
+  .proof__lightbox::backdrop {
+    background: rgb(15 14 13 / 92%);
+  }
+
+  .proof__lightbox-inner {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+  }
+
+  .proof__lightbox-inner :global(img) {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 82vh;
+    object-fit: contain;
+    background: var(--color-white);
+  }
+
+  .proof__lightbox-inner p {
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .proof__lightbox-close {
+    position: fixed;
+    top: var(--space-4);
+    right: var(--space-4);
+    z-index: 1;
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 45%);
+    border-radius: var(--radius-control);
+    background: var(--color-text);
+    color: var(--color-white);
+    font-size: 1.75rem;
+    line-height: 1;
+    place-items: center;
+    cursor: pointer;
+  }
+
+  .proof__lightbox-close:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 48rem) {
+    .proof {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .proof__shell {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .proof__body {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+
+    .proof__body--quote-only {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .proof__transcript-body {
+      max-height: 24rem;
+      padding-inline-end: var(--space-5);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-color: var(--color-border-strong) transparent;
+      scrollbar-width: thin;
+    }
+  }
+</style>

@@ -1,0 +1,146 @@
+---
+import { getCollection } from 'astro:content';
+
+import { site } from '../../data/site';
+import Button from '../ui/Button.astro';
+import ProjectShowcaseCard from '../ui/ProjectShowcaseCard.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  useAllWhenEmpty?: boolean;
+  uniformCards?: boolean;
+}
+
+const {
+  title = 'Проекти, в които стратегията става резултат',
+  description = 'Реални реализации, които свързват експертност, съдържание и прецизно изпълнение.',
+  useAllWhenEmpty = false,
+  uniformCards = false,
+} = Astro.props;
+
+const allProjects = await getCollection('portfolio');
+const clients = await getCollection('clients', ({ data }) => !data.draft);
+const clientById = new Map(clients.map((client) => [client.id, client.data.name]));
+
+const featuredProjects = allProjects
+  .filter((project) => !project.data.draft && project.data.featuredInSection)
+  .sort(
+    (a, b) =>
+      (a.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (b.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) ||
+      a.data.title.localeCompare(b.data.title, 'bg'),
+  )
+  .slice(0, site.projectsSection.limit);
+const projects = (useAllWhenEmpty && featuredProjects.length === 0
+  ? allProjects.filter((project) => !project.data.draft)
+  : featuredProjects
+).slice(0, site.projectsSection.limit);
+
+const visibleProjects = projects;
+const shouldRender = visibleProjects.length > 0;
+---
+
+{shouldRender && (
+  <section class="projects-section" aria-labelledby="projects-section-title">
+    <div class="projects-section__inner">
+      <div class="projects-section__heading">
+        <div>
+          <h2 id="projects-section-title">{title}</h2>
+          <p>{description}</p>
+        </div>
+
+        {projects.length > 0 && (
+          <Button href={site.projectsSection.archiveHref} variant="ghost" size="md">
+            Вижте всички проекти
+          </Button>
+        )}
+      </div>
+
+      <div class="projects-section__showcase">
+        {visibleProjects.map((project, index) => (
+          <ProjectShowcaseCard
+            id={project.id}
+            title={project.data.title}
+            clientName={clientById.get(project.data.clientId)}
+            projectType={project.data.projectType}
+            year={project.data.year}
+            coverImage={project.data.coverImage}
+            coverAlt={project.data.coverAlt}
+            variant={uniformCards || index === 0 ? 'featured' : 'standard'}
+            isPreview={false}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .projects-section {
+    background-color: var(--color-neutral-100);
+  }
+
+  .projects-section__inner {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--layout-anchor-padding-mobile);
+  }
+
+  .projects-section__heading {
+    display: grid;
+    gap: var(--space-6);
+    align-items: end;
+  }
+
+  .projects-section__heading h2 {
+    max-width: 38ch;
+    font-size: var(--type-section-title-anchor);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .projects-section__heading p {
+    max-width: 64ch;
+    margin-block-start: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .projects-section__showcase {
+    display: grid;
+    gap: var(--space-5);
+    margin-block-start: var(--space-8);
+  }
+
+  @media (min-width: 48rem) {
+    .projects-section__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+
+    .projects-section__heading {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .projects-section__showcase {
+      margin-block-start: var(--space-10);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .projects-section__showcase {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

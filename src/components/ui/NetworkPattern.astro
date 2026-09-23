@@ -1,0 +1,69 @@
+<div class="network-pattern" aria-hidden="true">
+  <svg viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice">
+    <g class="network-pattern__lines">
+      <path d="M-60 180 168 110 336 218 540 92 735 188 946 76 1168 184 1500 72" />
+      <path d="M-30 510 164 392 372 520 570 340 792 470 1010 302 1240 430 1490 318" />
+      <path d="M168 110 164 392M336 218 372 520M540 92 570 340M735 188 792 470M946 76 1010 302M1168 184 1240 430" />
+      <path d="M164 392 336 218 570 340 735 188 1010 302 1168 184" />
+      <path d="M372 520 570 340 792 470 1010 302 1240 430" />
+    </g>
+
+    <g class="network-pattern__nodes">
+      <circle cx="168" cy="110" r="2.5" />
+      <circle cx="336" cy="218" r="2" />
+      <circle cx="540" cy="92" r="2.5" />
+      <circle cx="570" cy="340" r="2" />
+      <circle cx="735" cy="188" r="2" />
+      <circle cx="792" cy="470" r="2.5" />
+      <circle cx="946" cy="76" r="2" />
+      <circle cx="1010" cy="302" r="2.5" />
+      <circle cx="1168" cy="184" r="2" />
+      <circle cx="1240" cy="430" r="2.5" />
+    </g>
+
+    <g class="network-pattern__accents">
+      <circle cx="540" cy="92" r="3" />
+      <circle cx="792" cy="470" r="3" />
+      <circle cx="1168" cy="184" r="3" />
+    </g>
+  </svg>
+</div>
+
+<style>
+  .network-pattern {
+    position: absolute;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    inset: 0;
+  }
+
+  .network-pattern svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .network-pattern__lines {
+    fill: none;
+    opacity: 0.12;
+    stroke: var(--color-neutral-400);
+    stroke-width: 0.8;
+  }
+
+  .network-pattern__nodes {
+    fill: var(--color-neutral-300);
+    opacity: 0.28;
+  }
+
+  .network-pattern__accents {
+    fill: var(--color-vamo-red);
+    opacity: 0.55;
+  }
+
+  @media (max-width: 47.99rem) {
+    .network-pattern {
+      opacity: 0.65;
+    }
+
+  }
+</style>

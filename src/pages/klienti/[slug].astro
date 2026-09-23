@@ -1,0 +1,63 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/ui/Button.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import ProjectArchiveCard from '../../components/ui/ProjectArchiveCard.astro';
+
+export async function getStaticPaths() {
+  const clients = await getCollection('clients', ({ data }) => !data.draft);
+  return clients.map((client) => ({ params: { slug: client.id }, props: { client } }));
+}
+
+const { client } = Astro.props;
+const { name, description, logo, website } = client.data;
+// Local preview keeps the client/project relationship visible while an
+// editorial project is still in review. Production never renders drafts.
+const allProjects = await getCollection(
+  'portfolio',
+  ({ data }) => import.meta.env.DEV || !data.draft,
+);
+const projects = allProjects.filter((project) => project.data.clientId === client.id);
+const services = await getCollection('resheniya', ({ data }) => !data.draft);
+const serviceById = new Map(services.map((service) => [service.id, service.data.title]));
+const pageUrl = new URL(`/klienti/${client.id}/`, Astro.site ?? Astro.url).href;
+const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+  { '@type': 'ListItem', position: 2, name: 'Клиенти', item: new URL('/klienti/', Astro.site ?? Astro.url).href },
+  { '@type': 'ListItem', position: 3, name, item: pageUrl },
+] };
+---
+
+<BaseLayout title={name} description={description} image={logo?.src}>
+  <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
+  <article class="client-profile">
+    <div class="client-profile__crumbs"><nav class="client-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><a href="/klienti/">Клиенти</a><span aria-hidden="true">/</span><span aria-current="page">{name}</span></nav></div>
+    <header class="client-hero"><NetworkPattern /><div class="client-shell client-hero__inner"><div><p class="eyebrow">Клиент</p><h1>{name}</h1><p class="client-hero__summary">{description}</p>{website && <Button href={website} target="_blank" rel="noreferrer" variant="primary" size="md">Посетете сайта</Button>}</div>{logo && <div class="client-hero__identity"><Image src={logo} alt={`Лого на ${name}`} widths={[320, 640]} sizes="(min-width: 48rem) 20rem, 12rem" loading="eager" /></div>}</div></header>
+    <section class="client-projects" aria-labelledby="projects-title"><div class="client-shell"><div class="section-head"><h2 id="projects-title">Проекти, реализирани заедно</h2><p>{projects.length > 0 ? 'Конкретни реализации, в които работата с клиента е видима от задачата до резултата.' : 'Проектните истории за този клиент се подготвят.'}</p></div>{projects.length > 0 && <div class="client-projects__grid">{projects.map((project, index) => <ProjectArchiveCard project={project} clientName={name} serviceNames={project.data.serviceIds.map((id) => serviceById.get(id)).filter((service): service is string => service !== undefined)} featured={index === 0} preview={project.data.draft} />)}</div>}</div></section>
+    <section class="client-cta"><div class="client-shell client-cta__inner"><div><h2>Имате подобна задача?</h2><p>Нека обсъдим как да превърнем нуждата ви в ясен проект с правилните хора и последователни стъпки.</p></div><Button href="/kontakti/" size="md">Започнете разговор</Button></div></section>
+  </article>
+</BaseLayout>
+
+<style>
+  .client-profile { background:var(--color-cream); }
+  .client-shell { width:min(calc(100% - (2 * var(--layout-gutter-mobile))),var(--layout-content-max)); margin-inline:auto; }
+  .client-profile__crumbs { border-block:1px solid var(--color-border); background:var(--color-surface); }
+  .breadcrumbs { display:flex; min-height:2.75rem; align-items:center; gap:var(--space-2); overflow:hidden; color:var(--color-text-muted); font-size:.875rem; white-space:nowrap; }
+  .breadcrumbs a { color:inherit; text-decoration:none; } .breadcrumbs a:hover { color:var(--color-vamo-red); } .breadcrumbs span[aria-current='page'] { overflow:hidden; color:var(--color-text); font-weight:600; text-overflow:ellipsis; }
+  .client-hero { position:relative; overflow:hidden; background:var(--color-vamo-black); color:var(--color-text-inverse); }
+  .client-hero > :global(.network-pattern) { opacity:.7; }
+  .client-hero__inner { position:relative; z-index:1; display:grid; gap:var(--space-8); align-items:center; padding-block:var(--space-12); }
+  .eyebrow { color:var(--color-accent-on-dark); font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+  .client-hero h1 { max-width:17ch; margin-block:var(--space-3) var(--space-5); font-size:var(--type-page-title); font-weight:700; line-height:1.08; letter-spacing:-.03em; text-wrap:balance; }
+  .client-hero__summary { max-width:52ch; margin-block-end:var(--space-6); color:var(--color-neutral-300); font-size:1.125rem; line-height:1.6; text-wrap:pretty; }
+  .client-hero__identity { display:grid; width:min(100%,16rem); aspect-ratio:1; place-items:center; justify-self:center; overflow:hidden; border:1px solid var(--color-neutral-700); border-radius:var(--radius-surface); background:var(--color-cream); }
+  .client-hero__identity :global(img) { width:100%; height:100%; object-fit:contain; padding:var(--space-6); }
+  .client-projects { padding-block:var(--layout-section-padding-mobile); }
+  .section-head { display:grid; gap:var(--space-4); max-width:58rem; } .section-head h2,.client-cta h2 { font-size:var(--type-section-title); font-weight:600; letter-spacing:-.02em; } .section-head p,.client-cta p { color:var(--color-text-muted); line-height:1.6; }
+  .client-projects__grid { display:grid; gap:var(--space-12); margin-block-start:var(--space-10); }
+  .client-cta { background:var(--color-neutral-100); } .client-cta__inner { display:grid; gap:var(--space-6); align-items:end; padding-block:var(--space-10); }
+  @media (min-width:48rem) { .client-shell { width:min(calc(100% - (2 * var(--layout-gutter-desktop))),var(--layout-content-max)); } .client-hero__inner { grid-template-columns:minmax(0,1fr) minmax(14rem,20rem); padding-block:var(--space-16); } .client-hero__identity { justify-self:end; width:20rem; } .client-projects { padding-block:var(--layout-section-padding-desktop); } .client-cta__inner { grid-template-columns:minmax(0,1fr) auto; padding-block:var(--space-12); } }
+  @media (min-width:64rem) { .client-projects__grid { grid-template-columns:1fr; gap:var(--space-10); } }
+</style>

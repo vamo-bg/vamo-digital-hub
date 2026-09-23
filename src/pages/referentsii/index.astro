@@ -1,0 +1,379 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const projects = (await getCollection('portfolio', ({ data }) => !data.draft))
+  .sort(
+    (a, b) =>
+      (Number(b.data.year ?? 0) - Number(a.data.year ?? 0)) ||
+      a.data.title.localeCompare(b.data.title, 'bg'),
+  );
+
+type PortfolioProject = (typeof projects)[number];
+type ReferenceDocument = PortfolioProject['data']['referenceDocuments'][number];
+type ReviewItem = {
+  project: PortfolioProject;
+  quote: string;
+  person?: string;
+  position?: string;
+  reference?: ReferenceDocument;
+};
+
+const reviews: ReviewItem[] = projects.flatMap((project): ReviewItem[] => {
+  if (project.data.review) {
+    return [{
+      project,
+      quote: project.data.review.quote,
+      person: project.data.review.person,
+      position: project.data.review.position,
+      reference: undefined,
+    }];
+  }
+
+  return project.data.referenceDocuments
+    .filter((reference) => reference.featuredInSection)
+    .map((reference) => ({
+      project,
+      quote: reference.excerpt || reference.transcript,
+      person: reference.author,
+      position: reference.authorPosition,
+      reference,
+    }));
+});
+
+const clients = await getCollection('clients', ({ data }) => !data.draft);
+const clientById = new Map(clients.map((client) => [client.id, client]));
+---
+
+<BaseLayout
+  title="Референции"
+  description="Референции и отзиви от клиенти за реализирани проекти с VAMO."
+>
+  <div class="page-shell">
+    <header class="page-intro">
+      <div class="page-intro__heading">
+        <span class="page-intro__eyebrow">Референции</span>
+        <h1>Какво казват клиентите за нас</h1>
+      </div>
+      <p class="page-intro__summary">
+        Обратна връзка от хората и организациите, с които сме реализирали
+        конкретни проекти.
+      </p>
+    </header>
+
+    {
+      reviews.length > 0 ? (
+        <ul class="reviews-grid" aria-label="Референции за VAMO">
+          {reviews.map(({ project, quote, person, position, reference }, index) => {
+            const client = clientById.get(project.data.clientId);
+
+            return (
+              <li>
+                <article class:list={['review-card', reference?.previewImage && 'review-card--document', index === 0 && 'review-card--featured']} aria-labelledby={`review-${project.id}`}>
+                  <div class="review-card__top">
+                    {reference?.previewImage && (
+                      <a class="review-card__document" href={`/portfolio/${project.id}/`} aria-label={`Вижте проекта: ${project.data.title}`}>
+                        <Image
+                          src={reference.previewImage}
+                          alt={reference.previewAlt ?? `Референция за ${project.data.title}`}
+                          widths={[480, 720, 960]}
+                          sizes="(min-width: 64rem) 30vw, 100vw"
+                          loading={index === 0 ? 'eager' : 'lazy'}
+                        />
+                      </a>
+                    )}
+                    <div class="review-card__quote">
+                      <p>„{quote}“</p>
+                    </div>
+                  </div>
+                  <footer class="review-card__footer">
+                    <div class="review-card__author">
+                      <p class="review-card__person">{person}</p>
+                      {position && <p class="review-card__position">{position}</p>}
+                    </div>
+                    <div class="review-card__source">
+                      {client && (
+                        <p class="review-card__client">
+                          <span class="review-card__label">Клиент:</span>{' '}
+                          <a href={`/klienti/${client.id}/`}>{client.data.name}</a>
+                        </p>
+                      )}
+                      <p class="review-card__project">
+                        Проект:{' '}
+                        <a href={`/portfolio/${project.id}/`}>
+                          {project.data.title}
+                        </a>
+                      </p>
+                    </div>
+                  </footer>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p class="empty-state">В момента няма публикувани референции.</p>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .page-shell {
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    padding-block: var(--space-16) var(--space-24);
+  }
+
+  .page-intro {
+    display: grid;
+    gap: var(--space-10);
+    padding-block-end: var(--space-16);
+    border-block-end: 1px solid var(--color-border-strong);
+  }
+
+  .page-intro__heading {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .page-intro__eyebrow {
+    color: var(--color-vamo-red);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .page-intro h1 {
+    max-width: 18ch;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .page-intro__summary {
+    max-width: 34rem;
+    padding-inline-start: var(--space-5);
+    border-inline-start: 1px solid var(--color-border-strong);
+    color: var(--color-neutral-800);
+    font-size: 1rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    margin: var(--space-16) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .review-card {
+    display: grid;
+    gap: var(--space-8);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background-color: var(--color-surface);
+  }
+
+  .review-card__top {
+    display: grid;
+    gap: var(--space-8);
+    min-width: 0;
+  }
+
+  .review-card__document {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    text-decoration: none;
+  }
+
+  .review-card__document :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: top center;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-white);
+    transition: transform var(--dur-3) var(--ease-out-cubic);
+  }
+
+  .review-card__document:hover :global(img) {
+    transform: translateY(-2px);
+  }
+
+  .review-card__document:hover {
+    color: var(--color-vamo-red);
+  }
+
+  .review-card__document:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .review-card__quote {
+    margin: 0;
+    margin-inline: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .review-card__quote p {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: none;
+    text-wrap: wrap;
+  }
+
+  .review-card__footer {
+    display: grid;
+    gap: var(--space-6);
+    padding-block-start: var(--space-6);
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .review-card__source {
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .review-card__author {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .review-card__person {
+    font-weight: 600;
+  }
+
+  .review-card__position {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .review-card__source {
+    display: grid;
+    gap: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .review-card__source a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .review-card__client,
+  .review-card__project {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .review-card__source a:hover {
+    color: var(--color-vamo-red);
+  }
+
+  .empty-state {
+    margin-block-start: var(--space-12);
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .page-shell {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      padding-block: var(--space-20) var(--space-32);
+    }
+
+    .page-intro {
+      grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+      align-items: end;
+      gap: var(--space-12);
+      padding-block-end: var(--space-20);
+    }
+
+    .page-intro h1 {
+      font-size: 3.5rem;
+    }
+
+    .page-intro__summary {
+      font-size: 1.0625rem;
+    }
+
+    .review-card {
+      padding: var(--space-8);
+    }
+
+    .review-card__quote p {
+      font-size: 1.5rem;
+    }
+
+    .review-card__footer {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: end;
+      gap: var(--space-10);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .page-intro h1 {
+      font-size: 4.5rem;
+    }
+
+    .page-intro__summary {
+      font-size: 1.125rem;
+    }
+
+    .reviews-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-10);
+      margin-block-start: var(--space-24);
+    }
+
+    .review-card--featured {
+      grid-column: 1 / -1;
+      grid-template-columns: minmax(0, 1fr);
+      padding: var(--space-10);
+    }
+
+    .review-card--featured .review-card__top,
+    .review-card--document:not(.review-card--featured) .review-card__top {
+      width: 100%;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: var(--space-10);
+    }
+
+    .review-card__footer {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      align-items: end;
+      gap: var(--space-6);
+    }
+
+    .review-card--featured .review-card__document :global(img) {
+      max-height: 28rem;
+    }
+
+    .review-card__quote p {
+      font-size: 1.25rem;
+    }
+  }
+</style>

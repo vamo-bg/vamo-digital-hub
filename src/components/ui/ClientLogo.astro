@@ -1,0 +1,116 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  name: string;
+  logo?: ImageMetadata;
+  website?: string;
+  href?: string;
+  isPreview?: boolean;
+}
+
+const { name, logo, website, href, isPreview = false } = Astro.props;
+const destination = href ?? website;
+const isExternal = !href && Boolean(website);
+---
+
+<div class:list={['client-logo', { 'client-logo--preview': isPreview, 'client-logo--text': !logo }]}>
+  {destination && !isPreview ? (
+    <a
+      href={destination}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      aria-label={href ? `Вижте профила на ${name}` : `Сайт на ${name}`}
+    >
+      {logo ? (
+        <Image
+          src={logo}
+          alt={name}
+          widths={[180, 280, 360]}
+          sizes="(min-width: 64rem) 16vw, (min-width: 48rem) 25vw, 50vw"
+          loading="lazy"
+        />
+      ) : null}
+      <span class="client-logo__name">{name}</span>
+    </a>
+  ) : (
+    <div class="client-logo__content">
+      {logo ? (
+        <Image
+          src={logo}
+          alt={name}
+          widths={[180, 280, 360]}
+          sizes="(min-width: 64rem) 16vw, (min-width: 48rem) 25vw, 50vw"
+          loading="lazy"
+        />
+      ) : null}
+      <span class="client-logo__name">{name}</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .client-logo {
+    min-width: 0;
+  }
+
+  .client-logo > a,
+  .client-logo__content {
+    display: grid;
+    min-height: 9rem;
+    height: 100%;
+    place-items: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    color: var(--color-text);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .client-logo > a {
+    transition: background-color var(--dur-2) ease;
+  }
+
+  .client-logo > a:hover {
+    background-color: var(--color-neutral-100);
+  }
+
+  .client-logo > a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: -2px;
+  }
+
+  .client-logo :global(img) {
+    width: auto;
+    max-width: 10rem;
+    height: 3.5rem;
+    object-fit: contain;
+    filter: grayscale(1);
+  }
+
+  .client-logo__name {
+    max-width: 18ch;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .client-logo--preview .client-logo__name {
+    color: var(--color-neutral-400);
+  }
+
+  .client-logo--text .client-logo__name {
+    max-width: 16ch;
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -.02em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .client-logo > a {
+      transition: none;
+    }
+  }
+</style>

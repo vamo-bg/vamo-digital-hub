@@ -1,0 +1,125 @@
+---
+import type { SiteMetric } from '../../data/site';
+
+interface Props {
+  items: readonly SiteMetric[];
+  columns?: 1 | 2 | 3 | 4;
+  align?: 'start' | 'center';
+  size?: 'compact' | 'default' | 'large';
+}
+
+const {
+  items,
+  columns = Math.min(Math.max(items.length, 1), 4) as 1 | 2 | 3 | 4,
+  align = 'start',
+  size = 'default',
+} = Astro.props;
+---
+
+<dl
+  class:list={['stats', `stats--${align}`, `stats--${size}`]}
+  style={`--stats-columns: ${columns}`}
+>
+  {items.map((item) => (
+    <div class="stats__item">
+      <dt class="stats__label">{item.label}</dt>
+      <dd class="stats__value">
+        <span>{item.value}</span>{item.suffix && <span>{item.suffix}</span>}
+      </dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border-block: 1px solid var(--stats-divider-color, var(--color-border));
+  }
+
+  .stats__item {
+    display: grid;
+    min-width: 0;
+    grid-template-rows: auto minmax(2.625rem, auto);
+    align-content: center;
+    gap: var(--space-3);
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .stats__item:nth-child(odd) {
+    border-inline-end: 1px solid var(--stats-divider-color, var(--color-border));
+  }
+
+  .stats__item:nth-child(n + 3) {
+    border-block-start: 1px solid var(--stats-divider-color, var(--color-border));
+  }
+
+  .stats__label {
+    grid-row: 2;
+    max-width: 18ch;
+    color: var(--stats-label-color, var(--color-text-muted));
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .stats__value {
+    grid-row: 1;
+    margin: 0;
+    color: var(--stats-value-color, var(--color-text));
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stats--center .stats__item {
+    align-items: center;
+    text-align: center;
+  }
+
+  .stats--center .stats__label {
+    margin-inline: auto;
+  }
+
+  .stats--compact .stats__item {
+    gap: var(--space-2);
+    padding-block: var(--space-6);
+  }
+
+  .stats--compact .stats__value {
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+  }
+
+  .stats--large .stats__value {
+    font-size: clamp(3rem, 12vw, 4.5rem);
+  }
+
+  @media (min-width: 48rem) {
+    .stats {
+      grid-template-columns: repeat(var(--stats-columns), minmax(0, 1fr));
+    }
+
+    .stats__item {
+      min-height: 11rem;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .stats--compact .stats__item {
+      min-height: var(--space-32);
+      padding-block: var(--space-4);
+    }
+
+    .stats__item:nth-child(n) {
+      border-block-start: 0;
+      border-inline-end: 0;
+    }
+
+    .stats__item:not(:last-child) {
+      border-inline-end: 1px solid var(--stats-divider-color, var(--color-border));
+    }
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import ExpertCard from '../ui/ExpertCard.astro';
+
+interface Props {
+  experts: CollectionEntry<'eksperti'>[];
+}
+
+const { experts } = Astro.props;
+---
+
+{
+  experts.length > 0 && (
+    <section class="project-experts" aria-labelledby="project-experts-title">
+      <div class="project-experts__inner">
+        <div class="project-experts__heading">
+          <h2 id="project-experts-title">Експертите зад проекта</h2>
+          <p>
+            Хората, които водят стратегията, координацията и реализацията.
+          </p>
+        </div>
+
+        <div class="project-experts__list">
+          {experts.map((expert) => <ExpertCard expert={expert} />)}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .project-experts {
+    padding-block: var(--layout-section-padding-mobile);
+    background-color: var(--color-vamo-black);
+  }
+
+  .project-experts__inner {
+    display: grid;
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    gap: var(--space-10);
+  }
+
+  .project-experts__heading {
+    display: grid;
+    max-width: 40rem;
+    gap: var(--space-4);
+    color: var(--color-text-inverse);
+  }
+
+  .project-experts h2 {
+    font-size: var(--type-section-title-anchor);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .project-experts__heading p {
+    color: var(--color-neutral-300);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  .project-experts__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 48rem) {
+    .project-experts {
+      padding-block: var(--layout-section-padding-desktop);
+    }
+
+    .project-experts__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      grid-template-columns: minmax(16rem, 0.75fr) minmax(0, 1.25fr);
+      align-items: start;
+      gap: var(--space-16);
+    }
+
+    .project-experts__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
