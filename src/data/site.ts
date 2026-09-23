@@ -68,6 +68,12 @@ export interface SiteBlogSection {
   archiveHref: string;
 }
 
+export interface SitePostalAddress {
+  street: string;
+  locality: string;
+  country: string;
+}
+
 export interface SiteAnalytics {
   /** Контейнер на Google Tag Manager. Оттам се управляват GA4 и рекламните тагове. */
   gtmId: string;
@@ -95,12 +101,19 @@ export interface SiteConfig {
   projectsSection: SiteProjectsSection;
   blogSection: SiteBlogSection;
   analytics: SiteAnalytics;
+  /** Разбит по полета за структурираните данни; за показване служи `contact.address`. */
+  postalAddress: SitePostalAddress;
 }
 
 export const site: SiteConfig = {
   name: 'VAMO',
   analytics: {
     gtmId: 'GTM-NWS7CNRK',
+  },
+  postalAddress: {
+    street: 'ул. „Доктор Христо Татарчев“ 24 (партер)',
+    locality: 'Благоевград',
+    country: 'BG',
   },
   legalName: 'ВАМО ЕООД',
   tagline: 'VAMO е система за растеж',

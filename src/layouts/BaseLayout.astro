@@ -60,17 +60,42 @@ const socialImageUrl = new URL(
 );
 const hasHeader = Astro.slots.has('header');
 const hasFooter = Astro.slots.has('footer');
+const siteOrigin = new URL('/', Astro.site ?? Astro.url).href;
+
+/**
+ * Записът за организацията. `@id` го прави именуван обект, към който другите
+ * схеми на сайта сочат, вместо всяка да описва фирмата наново.
+ *
+ * `description` съединява девиза и текста, защото сам по себе си текстът
+ * започва с „която“ и е изречение без начало.
+ *
+ * Всяко поле тук отговаря на нещо видимо на страницата — адресът и телефонът
+ * стоят във футъра. Маркирането на невидимо съдържание е нарушение, не трик.
+ */
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': `${siteOrigin}#organization`,
   name: site.legalName,
-  url: new URL('/', Astro.site ?? Astro.url).href,
+  alternateName: site.name,
+  url: siteOrigin,
   logo: new URL('/favicon-192.png', Astro.site ?? Astro.url).href,
-  description: site.description,
+  description: `${site.tagline}, ${site.description}`,
+  telephone: site.contact.phone.href.replace('tel:', ''),
+  email: site.contact.email.href.replace('mailto:', ''),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.postalAddress.street,
+    addressLocality: site.postalAddress.locality,
+    addressCountry: site.postalAddress.country,
+  },
+  sameAs: site.socials
+    .map((social) => social.url)
+    .filter((url): url is string => typeof url === 'string'),
   contactPoint: {
     '@type': 'ContactPoint',
-    telephone: '+359899180790',
-    email: 'office@vamo.bg',
+    telephone: site.contact.phone.href.replace('tel:', ''),
+    email: site.contact.email.href.replace('mailto:', ''),
     contactType: 'customer support',
     availableLanguage: 'Bulgarian',
   },

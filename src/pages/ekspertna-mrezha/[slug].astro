@@ -43,13 +43,67 @@ const allServices = await getCollection('resheniya', ({ data }) => !data.draft);
 const serviceNames = Object.fromEntries(allServices.map((service) => [service.id, service.data.title]));
 const heroHighlights = expert.data.heroHighlights ?? expertise.slice(0, 3);
 const displayName = name.replace(/^(доц\.?\s*д-р|доц\.?|д-р|проф\.?)\s*/i, '').trim();
+
+/**
+ * Страницата описва човек, затова го казва и на машините. Без това седемнайсет
+ * профила изглеждаха просто като текст на сайта на фирмата.
+ *
+ * Всяко поле сочи към нещо видимо: `jobTitle` е ролята под името, `knowsAbout`
+ * са изброените компетентности, `image` е портретът. `worksFor` сочи към
+ * записа за фирмата от BaseLayout по неговия `@id`, вместо да я описва пак.
+ */
+const siteOrigin = new URL('/', Astro.site ?? Astro.url).href;
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': new URL(`/ekspertna-mrezha/${expert.id}/`, Astro.site ?? Astro.url).href + '#person',
+  name,
+  jobTitle: role,
+  description: shortBio,
+  url: new URL(`/ekspertna-mrezha/${expert.id}/`, Astro.site ?? Astro.url).href,
+  ...(photo ? { image: new URL(photo.src, Astro.site ?? Astro.url).href } : {}),
+  ...(expertise.length > 0 ? { knowsAbout: expertise } : {}),
+  worksFor: { '@id': `${siteOrigin}#organization` },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: siteOrigin },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Експертна мрежа',
+      item: new URL('/ekspertna-mrezha/', Astro.site ?? Astro.url).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name,
+      item: new URL(`/ekspertna-mrezha/${expert.id}/`, Astro.site ?? Astro.url).href,
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title={seoTitle ?? name}
   description={seoDescription ?? shortBio}
-
+  image={photo}
 >
+  <script
+    slot="head"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(personSchema)}
+  ></script>
+  <script
+    slot="head"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(breadcrumbSchema)}
+  ></script>
   <article class="expert-profile">
     <div class="expert-profile__breadcrumbs-bar">
       <nav class="expert-profile__shell expert-profile__breadcrumbs" aria-label="Навигация">

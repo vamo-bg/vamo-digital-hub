@@ -138,6 +138,45 @@ for (const chapter of chapterTones) {
 const lastChapter = chapterTones.at(-1);
 const codaPrecededByDark = !hasCodaContext && lastChapter?.tone === 'dark';
 
+const siteOrigin = new URL('/', Astro.site ?? Astro.url).href;
+const projectUrl = new URL(`/portfolio/${project.id}/`, Astro.site ?? Astro.url).href;
+
+/**
+ * Страницата описва свършена работа, не статия и не продукт. `CreativeWork` е
+ * типът, който казва точно това.
+ *
+ * `creator` сочи към записа за фирмата по `@id`, вместо да я описва наново.
+ * `contributor` са експертите, които вече имат свой `Person` запис на техните
+ * страници — така двете се свързват в един граф, а не стоят като отделни
+ * острови.
+ *
+ * Полета се добавят само когато записът наистина ги носи.
+ */
+const projectSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': `${projectUrl}#project`,
+  name: title,
+  description,
+  url: projectUrl,
+  inLanguage: 'bg',
+  creator: { '@id': `${siteOrigin}#organization` },
+  ...(coverImage ? { image: new URL(coverImage.src, Astro.site ?? Astro.url).href } : {}),
+  ...(year ? { dateCreated: String(year) } : {}),
+  ...(projectType ? { genre: projectType } : {}),
+  ...(location ? { locationCreated: { '@type': 'Place', name: location } } : {}),
+  ...(experts.length > 0
+    ? {
+        contributor: experts.map((expert) => ({
+          '@type': 'Person',
+          '@id':
+            new URL(`/ekspertna-mrezha/${expert.id}/`, Astro.site ?? Astro.url).href + '#person',
+          name: expert.data.name,
+        })),
+      }
+    : {}),
+};
+
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -170,6 +209,12 @@ const breadcrumbSchema = {
   image={coverImage}
   noindex={draft}
 >
+  <script
+    slot="head"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(projectSchema)}
+  ></script>
   <script
     slot="head"
     type="application/ld+json"
