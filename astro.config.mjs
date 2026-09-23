@@ -6,12 +6,14 @@ import { defineConfig, envField } from 'astro/config';
 export default defineConfig({
   site: 'https://vamo.bg',
   output: 'static',
-  integrations: [
-    mdx(),
-    sitemap({
-      filter: (page) => !page.includes('/break-tests/'),
-    }),
-  ],
+  integrations: [mdx(), sitemap()],
+  build: {
+    // По подразбиране е `_astro`. Името се вижда във всеки URL на снимка или
+    // стил, затова го държим четимо. Файловете вътре запазват отпечатъка от
+    // съдържанието си — от него зависи дали браузърът може да ги кешира
+    // безсрочно, затова той остава.
+    assets: 'assets',
+  },
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',
