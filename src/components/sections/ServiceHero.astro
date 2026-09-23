@@ -30,7 +30,8 @@ const { title, statement, details, image, backgroundImage } = Astro.props;
     </div>
 
     <div class="service-hero__visual" aria-hidden="true">
-      {image && <Image src={image} alt="" width={720} height={720} loading="eager" />}
+      {image && <Image src={image} alt="" width={720} height={720} loading="eager"
+            fetchpriority="high" />}
       {!image && <>
         <span class="service-hero__orbit service-hero__orbit--one"></span>
         <span class="service-hero__orbit service-hero__orbit--two"></span>

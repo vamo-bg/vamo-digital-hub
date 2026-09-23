@@ -57,7 +57,8 @@ const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'Breadcrum
         </div>
         <aside class="portfolio-intro__media" aria-label="Избран кадър от проект">
           <div class="portfolio-intro__media-frame">
-            <Image src={portfolioHero} alt="Визуална карта на проектите и експертизата на VAMO" widths={[480, 720, 960, 1200]} sizes="(min-width: 64rem) 40rem, (min-width: 48rem) 50vw, 100vw" loading="eager" />
+            <Image src={portfolioHero} alt="Визуална карта на проектите и експертизата на VAMO" widths={[480, 720, 960, 1200]} sizes="(min-width: 64rem) 40rem, (min-width: 48rem) 50vw, 100vw" loading="eager"
+            fetchpriority="high" />
           </div>
         </aside>
       </div>
