@@ -1,0 +1,68 @@
+name: Deploy
+
+# Всеки push към main билдва сайта и качва само променените файлове към хостинга.
+# "Run workflow" в раздела Actions пуска същото ръчно, без нов commit.
+on:
+  # ВРЕМЕННО ИЗКЛЮЧЕНО до първото успешно пробно пускане.
+  # Разкоментирай двата реда, за да тръгва деплоят автоматично при всеки push.
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Пробно пускане — показва какво би се качило, без да пипа сървъра'
+        type: boolean
+        default: false
+
+# Два деплоя никога не текат едновременно към един и същ сървър.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy to vamo.bg
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Изтегляне на кода
+        uses: actions/checkout@v4
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Инсталиране на зависимостите
+        run: npm ci
+
+      # Счупен тип или невалидно съдържание спира деплоя, преди да стигне до сървъра.
+      - name: Проверка на типовете и съдържанието
+        run: npm run check
+
+      - name: Билд
+        run: npm run build
+
+      # Действието пази списък на състоянието на сървъра и при всяко следващо
+      # пускане качва единствено разликите.
+      - name: Качване по FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/
+          server-dir: ./
+          dry-run: ${{ inputs.dry_run == true }}
+          # Никога да не трие целия сървър преди качване.
+          dangerous-clean-slate: false
+          log-level: standard
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
