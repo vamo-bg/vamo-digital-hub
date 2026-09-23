@@ -28,3 +28,12 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Working material — not used by the build.
+# Kept out of the public repository: original scans and client answers can
+# contain signatures, personal data and commercial terms.
+content-inbox/
+resources/answers/
+
+# Local tooling output
+.impeccable/
