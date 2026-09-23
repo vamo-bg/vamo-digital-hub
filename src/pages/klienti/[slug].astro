@@ -30,7 +30,7 @@ const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'Breadcrum
 ] };
 ---
 
-<BaseLayout title={name} description={description} image={logo?.src}>
+<BaseLayout title={name} description={description}>
   <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
   <article class="client-profile">
     <div class="client-profile__crumbs"><nav class="client-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><a href="/klienti/">Клиенти</a><span aria-hidden="true">/</span><span aria-current="page">{name}</span></nav></div>

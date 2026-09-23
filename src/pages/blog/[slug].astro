@@ -55,7 +55,7 @@ const articleSchema = {
 };
 ---
 
-<BaseLayout title={title} description={description} image={cover?.src}>
+<BaseLayout title={title} description={description} image={cover}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(articleSchema)}></script>
   <article aria-labelledby="article-title">

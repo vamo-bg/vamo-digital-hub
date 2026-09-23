@@ -1,4 +1,7 @@
 ---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
@@ -9,7 +12,11 @@ interface Props {
   title: string;
   description: string;
   canonical?: URL | string;
-  image?: URL | string;
+  /**
+   * Картинка за споделяне. Подай `ImageMetadata` и се изрязва на 1200×630;
+   * подай низ и се ползва както е. Без нея върви общата картичка на сайта.
+   */
+  image?: ImageMetadata | URL | string;
   noindex?: boolean;
 }
 
@@ -24,7 +31,33 @@ const {
 const siteName = import.meta.env.PUBLIC_SITE_NAME ?? site.name;
 const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
 const canonicalUrl = new URL(canonical, Astro.site ?? Astro.url);
-const socialImageUrl = image ? new URL(image, Astro.site ?? Astro.url) : undefined;
+/**
+ * Facebook, LinkedIn и X показват 1200×630. Всичко друго го режат сами, обикновено
+ * през средата на лицето или текста. Затова тук се изрязва предварително, а
+ * страница без своя картинка ползва общата — празният правоъгълник при
+ * споделяне изглежда по-зле от всяка картинка.
+ */
+/* Астро не увеличава изображения над оригинала, затова картинка, по-малка от
+ * картичката, би излязла умалена. По-добре общата, отколкото размазана. */
+const canMakeCard =
+  image && typeof image === 'object' && 'src' in image
+    ? image.width >= 1200 && image.height >= 630
+    : false;
+
+const socialImage = canMakeCard
+  ? await getImage({
+      src: image as ImageMetadata,
+      width: 1200,
+      height: 630,
+      fit: 'cover',
+      format: 'jpeg',
+    })
+  : null;
+
+const socialImageUrl = new URL(
+  socialImage?.src ?? (canMakeCard ? undefined : typeof image === 'string' || image instanceof URL ? image : undefined) ?? '/og-home.jpg',
+  Astro.site ?? Astro.url,
+);
 const hasHeader = Astro.slots.has('header');
 const hasFooter = Astro.slots.has('footer');
 const organizationSchema = {
@@ -120,12 +153,14 @@ const organizationSchema = {
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    {socialImageUrl && <meta property="og:image" content={socialImageUrl} />}
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
-    <meta name="twitter:card" content={socialImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
+    <meta name="twitter:image" content={socialImageUrl} />
 
     <title>{pageTitle}</title>
     <script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
