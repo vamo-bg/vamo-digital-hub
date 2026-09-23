@@ -14,16 +14,16 @@
     "check": "astro check"
   },
   "dependencies": {
-    "@astrojs/mdx": "latest",
-    "@astrojs/sitemap": "latest",
+    "@astrojs/mdx": "^7.0.3",
+    "@astrojs/sitemap": "^3.7.3",
     "@phosphor-icons/web": "^2.1.2",
-    "@tailwindcss/vite": "latest",
-    "astro": "latest",
-    "sharp": "latest",
-    "tailwindcss": "latest"
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.1.1",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@astrojs/check": "latest",
-    "typescript": "latest"
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3"
   }
 }
