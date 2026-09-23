@@ -1,0 +1,246 @@
+---
+/**
+ * Съгласие за бисквитки и Consent Mode v2.
+ *
+ * Скриптът, който задава изходното състояние, стои в BaseLayout и се изпълнява
+ * преди Tag Manager. Тук е само лентата и записването на избора.
+ *
+ * Изборът се пази в localStorage под `vamo-consent`. Изтриването му връща
+ * лентата — това е и начинът, по който връзката „Настройки за бисквитки“ във
+ * футъра работи.
+ */
+---
+
+<div
+  class="consent"
+  data-consent-banner
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="consent-title"
+  aria-describedby="consent-text"
+  hidden
+>
+  <div class="consent__inner">
+    <div class="consent__copy">
+      <p class="consent__title" id="consent-title">Бисквитки</p>
+      <p class="consent__text" id="consent-text">
+        Използваме бисквитки, за да разберем как се ползва сайтът и да го
+        подобряваме. Без вашето съгласие не се зареждат аналитични и рекламни
+        бисквитки. Повече в <a href="/biskvitki/">политиката за бисквитки</a>.
+      </p>
+    </div>
+
+    <div class="consent__actions">
+      <button class="consent__button consent__button--ghost" type="button" data-consent-decline>
+        Само необходимите
+      </button>
+      <button class="consent__button consent__button--primary" type="button" data-consent-accept>
+        Приемам всички
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'vamo-consent';
+
+  const GRANTED = {
+    ad_storage: 'granted',
+    ad_user_data: 'granted',
+    ad_personalization: 'granted',
+    analytics_storage: 'granted',
+  } as const;
+
+  const DENIED = {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+  } as const;
+
+  type ConsentState = typeof GRANTED | typeof DENIED;
+
+  const pushConsent = (state: ConsentState, choice: 'accepted' | 'declined') => {
+    const layer = ((window as any).dataLayer ||= []);
+    // Същата форма, която Google очаква: gtag('consent', 'update', {...}).
+    layer.push(['consent', 'update', state]);
+    layer.push({ event: 'consent_update', consent_choice: choice });
+  };
+
+  /**
+   * Consent Mode спира новото събиране, но не премахва вече записаното. При
+   * оттегляне на съгласие бисквитките трябва да си отидат, затова ги трием
+   * по име — за всички варианти на път и домейн, с които може да са зададени.
+   */
+  const clearMeasurementCookies = () => {
+    const prefixes = ['_ga', '_gid', '_gcl', '_gac', '_fbp', '_fbc'];
+    const host = location.hostname;
+    const domains = [undefined, host, `.${host}`, `.${host.split('.').slice(-2).join('.')}`];
+
+    document.cookie.split(';').forEach((entry) => {
+      const name = entry.split('=')[0]?.trim();
+      if (!name || !prefixes.some((prefix) => name.startsWith(prefix))) return;
+      domains.forEach((domain) => {
+        document.cookie =
+          `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/` +
+          (domain ? `; domain=${domain}` : '');
+      });
+    });
+  };
+
+  const remember = (state: ConsentState, choice: 'accepted' | 'declined') => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, choice, at: Date.now() }));
+    } catch {
+      // Частен режим или блокирано хранилище: изборът важи за текущата сесия.
+    }
+  };
+
+  const initializeConsent = () => {
+    const banner = document.querySelector<HTMLElement>('[data-consent-banner]');
+    if (!banner || banner.dataset.ready === 'true') return;
+    banner.dataset.ready = 'true';
+
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(STORAGE_KEY);
+    } catch {
+      stored = null;
+    }
+
+    // Показваме лентата само ако човекът още не е избрал.
+    if (!stored) banner.hidden = false;
+
+    const decide = (state: ConsentState, choice: 'accepted' | 'declined') => {
+      pushConsent(state, choice);
+      remember(state, choice);
+      if (choice === 'declined') clearMeasurementCookies();
+      banner.hidden = true;
+    };
+
+    banner
+      .querySelector('[data-consent-accept]')
+      ?.addEventListener('click', () => decide(GRANTED, 'accepted'));
+    banner
+      .querySelector('[data-consent-decline]')
+      ?.addEventListener('click', () => decide(DENIED, 'declined'));
+
+    // Връзката във футъра отваря лентата отново.
+    document.querySelectorAll('[data-consent-reopen]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch {
+          /* без значение — лентата се показва така или иначе */
+        }
+        banner.hidden = false;
+        banner.querySelector<HTMLButtonElement>('[data-consent-accept]')?.focus();
+      });
+    });
+  };
+
+  initializeConsent();
+  document.addEventListener('astro:page-load', initializeConsent);
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    z-index: 60;
+    inset-block-end: 0;
+    inset-inline: 0;
+    border-block-start: 1px solid var(--color-border-strong);
+    background-color: var(--color-background);
+  }
+
+  .consent[hidden] {
+    display: none;
+  }
+
+  .consent__inner {
+    display: grid;
+    width: min(
+      calc(100% - (2 * var(--layout-gutter-mobile))),
+      var(--layout-content-max)
+    );
+    margin-inline: auto;
+    gap: var(--space-5);
+    padding-block: var(--space-5);
+  }
+
+  .consent__title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .consent__text {
+    max-width: 68ch;
+    margin-block-start: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .consent__text a {
+    color: var(--color-text);
+    text-underline-offset: 0.2em;
+  }
+
+  .consent__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .consent__button {
+    min-height: 2.75rem;
+    padding: var(--space-3) var(--space-5);
+    border: 1px solid var(--color-vamo-red);
+    border-radius: var(--radius-control, var(--radius-md));
+    font-family: var(--font-heading);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--dur-2) ease;
+  }
+
+  .consent__button--primary {
+    background-color: var(--color-vamo-red);
+    color: var(--color-white);
+  }
+
+  .consent__button--primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .consent__button--ghost {
+    border-color: var(--color-border-strong);
+    background-color: transparent;
+    color: var(--color-text);
+  }
+
+  .consent__button--ghost:hover {
+    border-color: var(--color-text);
+  }
+
+  .consent__button:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  @media (min-width: 48rem) {
+    .consent__inner {
+      width: min(
+        calc(100% - (2 * var(--layout-gutter-desktop))),
+        var(--layout-content-max)
+      );
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: var(--space-10);
+      padding-block: var(--space-6);
+    }
+  }
+</style>

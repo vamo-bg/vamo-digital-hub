@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import ConsentBanner from '../components/layout/ConsentBanner.astro';
 import { site } from '../data/site';
 
 interface Props {
@@ -48,6 +49,54 @@ const organizationSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+
+    {/*
+      Consent Mode v2. Трябва да се изпълни преди Tag Manager, иначе тагове
+      могат да се задействат, преди да е обявено, че съгласие няма.
+      Всичко по избор е `denied`; ако посетителят вече е избрал, изборът се
+      възстановява веднага, за да не се чака повторно решение.
+    */}
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+        wait_for_update: 500,
+      });
+      gtag('set', 'ads_data_redaction', true);
+      gtag('set', 'url_passthrough', true);
+
+      try {
+        var vamoConsent = localStorage.getItem('vamo-consent');
+        if (vamoConsent) {
+          var parsed = JSON.parse(vamoConsent);
+          if (parsed && parsed.state) gtag('consent', 'update', parsed.state);
+        }
+      } catch (error) {
+        /* Частен режим или блокирано хранилище: оставаме на `denied`. */
+      }
+    </script>
+
+    <script is:inline define:vars={{ gtmId: site.analytics.gtmId }}>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', gtmId);
+    </script>
+
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
@@ -83,6 +132,15 @@ const organizationSchema = {
     <slot name="head" />
   </head>
   <body>
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${site.analytics.gtmId}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+        title="Google Tag Manager"></iframe>
+    </noscript>
+
     <a class="skip-link" href="#main-content">Към основното съдържание</a>
     <header class="page-header">
       {hasHeader ? <slot name="header" /> : <Header />}
@@ -93,6 +151,8 @@ const organizationSchema = {
     <footer>
       {hasFooter ? <slot name="footer" /> : <Footer />}
     </footer>
+
+    <ConsentBanner />
   </body>
 </html>
 

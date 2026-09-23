@@ -68,6 +68,11 @@ export interface SiteBlogSection {
   archiveHref: string;
 }
 
+export interface SiteAnalytics {
+  /** Контейнер на Google Tag Manager. Оттам се управляват GA4 и рекламните тагове. */
+  gtmId: string;
+}
+
 export interface SiteConfig {
   name: string;
   legalName: string;
@@ -89,10 +94,14 @@ export interface SiteConfig {
   clientsSection: SiteClientsSection;
   projectsSection: SiteProjectsSection;
   blogSection: SiteBlogSection;
+  analytics: SiteAnalytics;
 }
 
 export const site: SiteConfig = {
   name: 'VAMO',
+  analytics: {
+    gtmId: 'GTM-NWS7CNRK',
+  },
   legalName: 'ВАМО ЕООД',
   tagline: 'VAMO е система за растеж',
   description:
