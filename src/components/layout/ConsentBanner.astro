@@ -14,28 +14,22 @@
 <div
   class="consent"
   data-consent-banner
-  role="dialog"
-  aria-modal="false"
-  aria-labelledby="consent-title"
-  aria-describedby="consent-text"
+  role="region"
+  aria-label="Съгласие за бисквитки"
   hidden
 >
   <div class="consent__inner">
-    <div class="consent__copy">
-      <p class="consent__title" id="consent-title">Бисквитки</p>
-      <p class="consent__text" id="consent-text">
-        Използваме бисквитки, за да разберем как се ползва сайтът и да го
-        подобряваме. Без вашето съгласие не се зареждат аналитични и рекламни
-        бисквитки. Повече в <a href="/biskvitki/">политиката за бисквитки</a>.
-      </p>
-    </div>
+    <p class="consent__text">
+      Използваме бисквитки за анализ на трафика. Без съгласие не се зареждат.{' '}
+      <a href="/biskvitki/">Политика за бисквитки</a>
+    </p>
 
     <div class="consent__actions">
       <button class="consent__button consent__button--ghost" type="button" data-consent-decline>
         Само необходимите
       </button>
       <button class="consent__button consent__button--primary" type="button" data-consent-accept>
-        Приемам всички
+        Приемам
       </button>
     </div>
   </div>
@@ -145,13 +139,15 @@
 </script>
 
 <style>
+  /* Изискването е задължително, но не бива да заема екрана. Плитка лента,
+     дребен текст, бутони в един ред — включително на телефон. */
   .consent {
     position: fixed;
     z-index: 60;
     inset-block-end: 0;
     inset-inline: 0;
-    border-block-start: 1px solid var(--color-border-strong);
-    background-color: var(--color-background);
+    border-block-start: 1px solid var(--color-border);
+    background-color: var(--color-surface);
   }
 
   .consent[hidden] {
@@ -165,55 +161,53 @@
       var(--layout-content-max)
     );
     margin-inline: auto;
-    gap: var(--space-5);
-    padding-block: var(--space-5);
-  }
-
-  .consent__title {
-    font-family: var(--font-heading);
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.3;
+    gap: var(--space-3);
+    padding-block: var(--space-3);
   }
 
   .consent__text {
-    max-width: 68ch;
-    margin-block-start: var(--space-2);
     color: var(--color-text-muted);
-    font-size: 0.9375rem;
-    line-height: 1.6;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    text-wrap: pretty;
   }
 
   .consent__text a {
     color: var(--color-text);
+    white-space: nowrap;
     text-underline-offset: 0.2em;
   }
 
+  /* Двата избора стоят рамо до рамо и на най-тесния екран: отказът не бива
+     да е по-труден от приемането. */
   .consent__actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 
   .consent__button {
-    min-height: 2.75rem;
-    padding: var(--space-3) var(--space-5);
-    border: 1px solid var(--color-vamo-red);
-    border-radius: var(--radius-control, var(--radius-md));
-    font-family: var(--font-heading);
-    font-size: 0.9375rem;
-    font-weight: 600;
+    min-height: 2.25rem;
+    flex: 1 1 0;
+    padding-inline: var(--space-3);
+    border: 1px solid transparent;
+    border-radius: var(--radius-control, var(--radius-sm));
+    font-family: var(--font-ui);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    white-space: nowrap;
     cursor: pointer;
-    transition: background-color var(--dur-2) ease;
+    transition: background-color var(--dur-2) ease, border-color var(--dur-2) ease;
   }
 
   .consent__button--primary {
+    border-color: var(--color-vamo-red);
     background-color: var(--color-vamo-red);
     color: var(--color-white);
   }
 
   .consent__button--primary:hover {
     background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
   }
 
   .consent__button--ghost {
@@ -239,8 +233,16 @@
       );
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
-      column-gap: var(--space-10);
-      padding-block: var(--space-6);
+      column-gap: var(--space-8);
+      padding-block: var(--space-3);
+    }
+
+    .consent__actions {
+      flex: 0 0 auto;
+    }
+
+    .consent__button {
+      flex: 0 0 auto;
     }
   }
 </style>
