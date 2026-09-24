@@ -1,5 +1,6 @@
 @import 'tailwindcss';
-@import '@phosphor-icons/web/regular';
+/* Вградено копие с font-display: swap, не пакетния import — виж коментара в файла. */
+@import './vendor/phosphor-regular.css';
 @import './fonts.css';
 @import './tokens.css';
 
