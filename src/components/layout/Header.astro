@@ -138,10 +138,14 @@ const isCurrent = (href: string) => href === '/' ? currentPath === href : curren
     const currentScrollY = Math.max(window.scrollY, 0);
     const delta = currentScrollY - previousScrollY;
     const headerIsActive = siteHeader.matches(':focus-within') || Boolean(siteHeader.querySelector('details[open]'));
+    // Четено преди write-а отдолу нарочно: `data-scrolled` носи само box-shadow
+    // (виж `.site-header[data-scrolled]`), не променя височината — но ред
+    // read-след-write кара браузъра да преизчисли layout-а синхронно.
+    const headerHeight = siteHeader.offsetHeight;
 
     siteHeader.toggleAttribute('data-scrolled', currentScrollY > 0);
 
-    if (currentScrollY <= siteHeader.offsetHeight || headerIsActive || delta < -6) {
+    if (currentScrollY <= headerHeight || headerIsActive || delta < -6) {
       siteHeader.dataset.scrollState = 'visible';
     } else if (delta > 6) {
       siteHeader.dataset.scrollState = 'hidden';
