@@ -50,7 +50,7 @@ export async function getStaticPaths() {
 
 const { solution } = Astro.props;
 const { Content } = await render(solution);
-const { title, description, heroStatement, heroDetails, problems, difference, process, inclusions } = solution.data;
+const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions } = solution.data;
 const hasStructuredContent = Boolean(problems || difference || process || inclusions);
 
 const relatedProjects = (
@@ -85,7 +85,7 @@ const breadcrumbSchema = {
 };
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={seoTitle ?? title} description={seoDescription ?? description}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
   <article>
     <div class="service-breadcrumbs-bar">

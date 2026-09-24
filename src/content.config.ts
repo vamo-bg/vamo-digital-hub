@@ -18,6 +18,10 @@ const clients = defineCollection({
       featuredInSection: z.boolean().default(false),
       sectionOrder: z.number().int().nonnegative().optional(),
       order: z.number().int().nonnegative().optional(),
+      // За <title>/<meta description> — `name`/`description` остават късия
+      // етикет за картите в мрежата. Виж `eksperti` за същия модел.
+      seoTitle: z.string().min(1).optional(),
+      seoDescription: shortDescription.optional(),
       draft,
     }),
 });
@@ -27,6 +31,10 @@ const about = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: shortDescription,
+    // `title` захранва и breadcrumb-а (къс label) — SEO <title> има нужда от
+    // отделно, по-богато поле. Виж `eksperti` за същия модел.
+    seoTitle: z.string().min(1).optional(),
+    seoDescription: shortDescription.optional(),
     heroTitle: z.string().min(1),
     heroSummary: z.string().min(1),
     story: z.object({
@@ -53,6 +61,10 @@ const process = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: shortDescription,
+    // `title` захранва и breadcrumb-а (къс label) — SEO <title> има нужда от
+    // отделно, по-богато поле. Виж `eksperti` за същия модел.
+    seoTitle: z.string().min(1).optional(),
+    seoDescription: shortDescription.optional(),
     heroTitle: z.string().min(1),
     heroSummary: z.string().min(1),
     steps: z
@@ -143,6 +155,10 @@ const resheniya = defineCollection({
         .optional(),
       featuredInSection: z.boolean().default(false),
       sectionOrder: z.number().int().nonnegative().optional(),
+      // За <title>/<meta description> — `title`/`description` остават късия
+      // етикет за картите в мрежата. Виж `eksperti` за същия модел.
+      seoTitle: z.string().min(1).optional(),
+      seoDescription: shortDescription.optional(),
       draft,
     }),
 });

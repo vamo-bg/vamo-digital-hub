@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 }
 
 const { client } = Astro.props;
-const { name, description, logo, website } = client.data;
+const { name, description, logo, website, seoTitle, seoDescription } = client.data;
 // Local preview keeps the client/project relationship visible while an
 // editorial project is still in review. Production never renders drafts.
 const allProjects = await getCollection(
@@ -30,7 +30,7 @@ const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'Breadcrum
 ] };
 ---
 
-<BaseLayout title={name} description={description}>
+<BaseLayout title={seoTitle ?? name} description={seoDescription ?? description}>
   <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
   <article class="client-profile">
     <div class="client-profile__crumbs"><nav class="client-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><a href="/klienti/">Клиенти</a><span aria-hidden="true">/</span><span aria-current="page">{name}</span></nav></div>

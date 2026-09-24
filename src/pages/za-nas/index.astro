@@ -9,7 +9,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const about = await getEntry('about', 'za-nas');
 if (!about) throw new Error('Липсва съдържание за страницата „За нас“.');
 
-const { title, description, heroTitle, heroSummary, story, principles, audiences } = about.data;
+const { title, description, seoTitle, seoDescription, heroTitle, heroSummary, story, principles, audiences } = about.data;
 const ecosystemLinks = [
   { name: 'VAMO.bg', description: 'Стратегически център и вход към работа.', href: 'https://vamo.bg/' },
   { name: 'Balkanite.net', description: 'Медия, истории и регионално съдържание.', href: 'https://balkanite.net/' },
@@ -36,7 +36,7 @@ const breadcrumbSchema = {
   не се сещаше да я върне. Недовършен текст в индекса е по-малка загуба от
   страница, която липсва месеци.
 */}
-<BaseLayout title={title} description={description}>
+<BaseLayout title={seoTitle ?? title} description={seoDescription ?? description}>
   <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
   <article class="about-page">
     <div class="about-crumbs"><nav class="about-shell breadcrumbs" aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav></div>

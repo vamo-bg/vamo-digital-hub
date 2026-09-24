@@ -5,6 +5,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const title = 'Карта на сайта';
 const description = 'Пълен преглед на страниците, услугите, проектите, експертите, клиентите и публикациите на VAMO.';
+// `title` захранва и breadcrumb-а (къс label), затова SEO <title> е отделен.
+const seoTitle = 'Карта на сайта — всички страници';
 const pageUrl = new URL('/karta-na-sayta/', Astro.site ?? Astro.url).href;
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -51,7 +53,7 @@ const legalPages = [
 ];
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={seoTitle} description={description}>
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   </Fragment>

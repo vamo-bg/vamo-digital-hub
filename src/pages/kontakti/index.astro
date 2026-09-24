@@ -7,6 +7,8 @@ import { site } from '../../data/site';
 
 const title = 'Контакт';
 const description = 'Свържете се с VAMO. Започваме с разговор за вашата задача, контекст и следващ смислен ход.';
+// `title` захранва и breadcrumb-а (къс label), затова SEO <title> е отделен.
+const seoTitle = 'Контакти — свържете се с нас';
 const pageUrl = new URL('/kontakti/', Astro.site ?? Astro.url).href;
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -20,7 +22,7 @@ const breadcrumbSchema = {
 const contactMethods = [site.contact.email, site.contact.phone, site.contact.viber, site.contact.messenger];
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={seoTitle} description={description}>
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   </Fragment>
