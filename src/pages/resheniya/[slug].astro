@@ -19,6 +19,30 @@ import eventsLogisticsImage from '../../assets/service-sabitiya-logistika.png';
 import videoFilmImage from '../../assets/service-video-filmovo-proizvodstvo.png';
 import webDevelopmentImage from '../../assets/service-ueb-razrabotka.png';
 
+const solutionImages = {
+  'komunikatsii-i-pr': communicationPrImage,
+  'digitalna-strategiya': digitalStrategyImage,
+  'dizayn-i-reklamni-materiali': designMaterialsImage,
+  'eu-visibility-compliance': euVisibilityImage,
+  'podkast-i-intervyu-formati': podcastInterviewImage,
+  'sabitiya-i-logistika': eventsLogisticsImage,
+  'video-i-filmovo-proizvodstvo': videoFilmImage,
+  'ueb-razrabotka': webDevelopmentImage,
+} as const;
+
+// Огледално на resheniya/index.astro — снимката е декоративна (hero визуалът
+// е aria-hidden), но описанието остава полезно за image search/AI индексиране.
+const solutionImageAlt = {
+  'komunikatsii-i-pr': 'Абстрактна 3D визуализация на светещ възел, излъчващ сигнал към свързани точки — символ на комуникация и обхват.',
+  'digitalna-strategiya': 'Абстрактна 3D визуализация на пътека от свързани точки, водеща до осветен връх — символ на стратегическа посока.',
+  'dizayn-i-reklamni-materiali': 'Композиция от печатни рекламни материали — плакати, визитки, руло с банер и цветова палитра.',
+  'eu-visibility-compliance': 'Абстрактна 3D визуализация на документ, свързан с прозрачни панели — символ на отчетност по европейски проекти.',
+  'podkast-i-intervyu-formati': 'Абстрактна 3D визуализация на микрофони и икони на диалог, свързани около звукова вълна.',
+  'sabitiya-i-logistika': 'Абстрактна 3D визуализация на сграда, камион, календар и локация, свързани в мрежа — символ на логистика за събития.',
+  'video-i-filmovo-proizvodstvo': 'Абстрактна 3D визуализация на камера, осветление, микрофон, филмова ролка и монтажен екран, свързани в мрежа.',
+  'ueb-razrabotka': 'Абстрактна 3D визуализация на централен възел, свързан с устройства и екрани — символ на уеб разработка.',
+} as const;
+
 export async function getStaticPaths() {
   const solutions = await getCollection('resheniya', ({ data }) => !data.draft);
   return solutions.map((solution) => ({ params: { slug: solution.id }, props: { solution } }));
@@ -72,7 +96,13 @@ const breadcrumbSchema = {
       </nav>
     </div>
 
-    <ServiceHero title={title} statement={heroStatement ?? description} details={heroDetails ?? description} image={solution.id === 'komunikatsii-i-pr' ? communicationPrImage : solution.id === 'digitalna-strategiya' ? digitalStrategyImage : solution.id === 'dizayn-i-reklamni-materiali' ? designMaterialsImage : solution.id === 'eu-visibility-compliance' ? euVisibilityImage : solution.id === 'podkast-i-intervyu-formati' ? podcastInterviewImage : solution.id === 'sabitiya-i-logistika' ? eventsLogisticsImage : solution.id === 'video-i-filmovo-proizvodstvo' ? videoFilmImage : solution.id === 'ueb-razrabotka' ? webDevelopmentImage : undefined} />
+    <ServiceHero
+      title={title}
+      statement={heroStatement ?? description}
+      details={heroDetails ?? description}
+      image={solutionImages[solution.id as keyof typeof solutionImages]}
+      imageAlt={solutionImageAlt[solution.id as keyof typeof solutionImageAlt]}
+    />
     {problems && <ServiceProblem {...problems} />}
     {difference && <ServiceDifference {...difference} />}
     {process && <ServiceProcess {...process} />}

@@ -26,6 +26,20 @@ const solutionImages = {
   'ueb-razrabotka': webDevelopmentImage,
 } as const;
 
+// Заглавието на картата вече е достъпното име на връзката (aria-labelledby).
+// Тук описваме самата илюстрация — различна информация, не дублиране — най-вече
+// за image search/AI индексиране, а не защото screen reader има нужда от нея.
+const solutionImageAlt = {
+  'komunikatsii-i-pr': 'Абстрактна 3D визуализация на светещ възел, излъчващ сигнал към свързани точки — символ на комуникация и обхват.',
+  'digitalna-strategiya': 'Абстрактна 3D визуализация на пътека от свързани точки, водеща до осветен връх — символ на стратегическа посока.',
+  'dizayn-i-reklamni-materiali': 'Композиция от печатни рекламни материали — плакати, визитки, руло с банер и цветова палитра.',
+  'eu-visibility-compliance': 'Абстрактна 3D визуализация на документ, свързан с прозрачни панели — символ на отчетност по европейски проекти.',
+  'podkast-i-intervyu-formati': 'Абстрактна 3D визуализация на микрофони и икони на диалог, свързани около звукова вълна.',
+  'sabitiya-i-logistika': 'Абстрактна 3D визуализация на сграда, камион, календар и локация, свързани в мрежа — символ на логистика за събития.',
+  'video-i-filmovo-proizvodstvo': 'Абстрактна 3D визуализация на камера, осветление, микрофон, филмова ролка и монтажен екран, свързани в мрежа.',
+  'ueb-razrabotka': 'Абстрактна 3D визуализация на централен възел, свързан с устройства и екрани — символ на уеб разработка.',
+} as const;
+
 const solutions = (await getCollection('resheniya', ({ data }) => !data.draft)).sort(
   (a, b) =>
     (a.data.order ?? Number.MAX_SAFE_INTEGER) -
@@ -62,7 +76,7 @@ const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'Breadcrum
           {solutions.map((solution) => (
             <li>
               <a class="solution-grid-item" href={`/resheniya/${solution.id}/`} aria-labelledby={`solution-${solution.id}`}>
-                <div class="solution-grid-item__media">{solutionImages[solution.id as keyof typeof solutionImages] && <Image src={solutionImages[solution.id as keyof typeof solutionImages]} alt="" width={720} height={720} loading="lazy" />}</div>
+                <div class="solution-grid-item__media">{solutionImages[solution.id as keyof typeof solutionImages] && <Image src={solutionImages[solution.id as keyof typeof solutionImages]} alt={solutionImageAlt[solution.id as keyof typeof solutionImageAlt] ?? ''} width={720} height={720} loading="lazy" />}</div>
                 <div class="solution-grid-item__overlay">
                   <h2 id={`solution-${solution.id}`}>{solution.data.title}</h2>
                   <p>{solution.data.description}</p>

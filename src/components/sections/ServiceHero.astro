@@ -9,10 +9,11 @@ interface Props {
   statement: string;
   details: string;
   image?: ImageMetadata;
+  imageAlt?: string;
   backgroundImage?: ImageMetadata;
 }
 
-const { title, statement, details, image, backgroundImage } = Astro.props;
+const { title, statement, details, image, imageAlt, backgroundImage } = Astro.props;
 ---
 
 <header class="service-hero" style={backgroundImage ? `--service-hero-bg: url('${backgroundImage.src}')` : undefined}>
@@ -30,7 +31,7 @@ const { title, statement, details, image, backgroundImage } = Astro.props;
     </div>
 
     <div class="service-hero__visual" aria-hidden="true">
-      {image && <Image src={image} alt="" width={720} height={720} loading="eager"
+      {image && <Image src={image} alt={imageAlt ?? ''} width={720} height={720} loading="eager"
             fetchpriority="high" />}
       {!image && <>
         <span class="service-hero__orbit service-hero__orbit--one"></span>
