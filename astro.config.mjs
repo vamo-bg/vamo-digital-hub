@@ -20,6 +20,8 @@ export default defineConfig({
           '/obshti-usloviya/',
           '/politika-za-poveritelnost/',
           '/biskvitki/',
+          // Стига се до нея само след изпратена форма; самостоятелно не казва нищо.
+          '/thanks/',
         ].some((path) => page.endsWith(path)),
     }),
   ],

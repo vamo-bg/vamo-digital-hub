@@ -1,0 +1,72 @@
+---
+/**
+ * Страницата след изпратено запитване.
+ *
+ * `noindex`, защото няма смисъл да се появява в търсене — стига се до нея само
+ * след попълнена форма, а самостоятелно не казва нищо. Изключена е и от
+ * sitemap-а в `astro.config.mjs`.
+ *
+ * Показва и другите начини за контакт: ако писмото се загуби някъде по пътя,
+ * човекът има как да ни намери, без да търси из сайта.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../data/site';
+
+const title = 'Благодарим за запитването';
+const description = 'Получихме вашето запитване и ще се свържем с вас.';
+---
+
+<BaseLayout title={title} description={description} noindex>
+  <article class="thanks">
+    <section class="thanks__content" aria-labelledby="thanks-title">
+      <div class="thanks__shell">
+        <p class="thanks__eyebrow">Запитването е изпратено</p>
+        <h1 id="thanks-title">Благодарим — получихме го</h1>
+        <p class="thanks__lead">
+          Ще прегледаме какво ни описахте и ще се свържем с вас. Ако сте оставили
+          имейл, вече получихте и потвърждение.
+        </p>
+
+        <div class="thanks__direct">
+          <p class="thanks__direct-title">Ако е спешно, обадете се</p>
+          <ul>
+            <li><a href={site.contact.phone.href}>{site.contact.phone.label}</a></li>
+            <li><a href={site.contact.email.href}>{site.contact.email.label}</a></li>
+          </ul>
+        </div>
+
+        <nav class="thanks__actions" aria-label="Къде да продължите">
+          <a class="thanks__primary" href="/">Към началната страница</a>
+          <a class="thanks__secondary" href="/portfolio/">Вижте проектите</a>
+        </nav>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .thanks { display:grid; min-block-size:clamp(30rem, 66vh, 46rem); background:var(--color-cream); }
+  .thanks__content { display:grid; align-items:center; padding-block:var(--layout-anchor-padding-mobile); border-block:1px solid var(--color-border); background:var(--color-neutral-100); }
+  .thanks__shell { width:min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline:auto; }
+  .thanks__eyebrow { color:var(--color-vamo-red); font-family:var(--font-heading); font-size:.75rem; font-weight:600; letter-spacing:.12em; line-height:1.4; text-transform:uppercase; }
+  .thanks h1 { max-width:16ch; margin-block-start:var(--space-3); font-size:var(--type-page-title); font-weight:700; letter-spacing:-.03em; line-height:1.08; text-wrap:balance; }
+  .thanks__lead { max-width:52ch; margin-block-start:var(--space-5); color:var(--color-text-muted); font-size:1.125rem; line-height:1.6; text-wrap:pretty; }
+
+  .thanks__direct { margin-block-start:var(--space-8); padding-inline-start:var(--space-5); border-inline-start:2px solid var(--color-border-strong); }
+  .thanks__direct-title { color:var(--color-text-muted); font-family:var(--font-heading); font-size:.6875rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+  .thanks__direct ul { display:grid; gap:var(--space-2); margin:var(--space-3) 0 0; padding:0; list-style:none; }
+  .thanks__direct a { color:var(--color-text); font-family:var(--font-heading); font-size:1.0625rem; font-weight:600; text-underline-offset:.2em; }
+
+  .thanks__actions { display:flex; flex-wrap:wrap; gap:var(--space-3); margin-block-start:var(--space-8); }
+  .thanks__actions a { display:inline-flex; min-height:2.75rem; align-items:center; justify-content:center; padding-inline:var(--space-5); border-radius:var(--radius-control); font-family:var(--font-ui); font-size:1rem; font-weight:700; text-decoration:none; transition:background-color var(--dur-2) var(--ease-out-quad), border-color var(--dur-2) var(--ease-out-quad); }
+  .thanks__primary { background:var(--color-vamo-red); color:var(--color-text-inverse); }
+  .thanks__primary:hover { background:var(--color-primary-hover); }
+  .thanks__secondary { border:1px solid var(--color-border-strong); color:var(--color-text); }
+  .thanks__secondary:hover { border-color:var(--color-text); }
+  .thanks__actions a:focus-visible { outline:2px solid var(--color-focus); outline-offset:3px; }
+
+  @media (min-width:48rem) {
+    .thanks__content { padding-block:var(--layout-anchor-padding-desktop); }
+    .thanks__shell { width:min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
+  }
+</style>
