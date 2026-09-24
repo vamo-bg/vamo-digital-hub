@@ -11,6 +11,25 @@
  * Montserrat и PT Sans са под SIL Open Font License.
  */
 
+/*
+ * `@phosphor-icons/web/regular` (@import в global.css) носи собствен
+ * @font-face с `font-display: block` — не се пипа през node_modules,
+ * презаписва се при всеки `npm install`. Браузърите ползват последното
+ * съвпадащо @font-face правило за същия family/weight/style, затова това тук
+ * го замества: `swap` вместо `block` спестява ~200ms в PageSpeed, а за
+ * икона-глиф няма легитимен "провален" вид на fallback-а — той е невидим и
+ * при двете стойности, докато истинският шрифт не пристигне. Файлът е копие
+ * на същия `Phosphor.woff2` (MIT лиценз), самостоятелно хостнат по същата
+ * причина като Montserrat/PT Sans.
+ */
+@font-face {
+  font-family: 'Phosphor';
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url('/fonts/phosphor-regular.woff2') format('woff2');
+}
+
 @font-face {
   font-family: 'Montserrat';
   font-style: normal;
