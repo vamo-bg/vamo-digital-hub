@@ -54,12 +54,14 @@ ErrorDocument 404 /404.html
 # Кирилица в текстовите файлове
 # ---------------------------------------------------------------------------
 # .txt файловете (llms.txt) тръгват без charset в Content-Type. Браузърът и AI
-# ботовете гадаят кодировка и показват кирилицата като йероглифи. `AddCharset`
-# е грешният инструмент — той е за content negotiation, не добавя нищо в
-# отговора без вариант на файла за всеки charset. `AddType` наистина слага
-# charset в Content-Type-a.
-<IfModule mod_mime.c>
-  AddType 'text/plain; charset=UTF-8' .txt
+# ботовете гадаят кодировка и показват кирилицата като йероглифи. И `AddCharset`,
+# и `AddType` минават през mod_mime — а то не се разпознава на този сървър
+# (проверено на живо: и двете паднаха тихо). `Header set` през mod_headers
+# работи тук, затова заобикаля MIME регистрацията и налага заглавието direct.
+<IfModule mod_headers.c>
+  <FilesMatch "\.txt$">
+    Header set Content-Type "text/plain; charset=UTF-8"
+  </FilesMatch>
 </IfModule>
 
 # ---------------------------------------------------------------------------
