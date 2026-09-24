@@ -146,12 +146,18 @@ const organizationSchema = {
       `gtm.js` и `gtag/js` тежат общо ~1MB неминифициран JS — измерено на живо,
       те са реалната причина зад бавния LCP на mobile, не CSS или снимките.
       `j.async = true` пуска свалянето неблокиращо, но изпълнението им (парсене
-      + рънване на целия tag container) е една тежка main-thread задача, която
-      се случва веднага щом пристигнат — точно докато браузърът се опитва да
-      нарисува hero-а. Затова стартът чака `load`: тагът тръгва едва след като
-      страницата вече е визуално готова, вместо да се бори с нея за same-thread
-      време. Съзнателен избор — много бързите bounce-ове (напускане преди
-      `load`) няма да се преброят в GA4/Ads.
+      + рънване на целия tag container) е една тежка main-thread задача.
+
+      Първият опит гейтваше старта само зад `load` — но под тежко throttling
+      `load` понякога пада точно докато браузърът композира hero снимката, и
+      GTM пак печели main thread-а: LCP си остана 6+ секунди на част от
+      измерванията (виж `performance.md`). Затова тук е по-строго: GTM тръгва
+      при **първото потребителско действие** (скрол, клик, движение на
+      мишката, допир, клавиш) — до тогава страницата гарантирано вече е
+      нарисувана, защото посетителят реагира на нещо видимо — или при
+      fallback таймер 4s след `load`, за посетители, които не са пипнали нищо.
+      Съзнателен избор на клиента: посещения, които си тръгват без нито едно
+      действие и преди fallback-а, няма да се преброят в GA4/Ads.
     */}
     <script is:inline define:vars={{ gtmId: site.analytics.gtmId }}>
       function vamoLoadGtm() {
@@ -166,10 +172,25 @@ const organizationSchema = {
           f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', gtmId);
       }
-      if (document.readyState === 'complete') {
+
+      var vamoGtmStarted = false;
+      function vamoStartGtm() {
+        if (vamoGtmStarted) return;
+        vamoGtmStarted = true;
         vamoLoadGtm();
+      }
+
+      ['mousemove', 'scroll', 'touchstart', 'keydown', 'click'].forEach(function (evt) {
+        window.addEventListener(evt, vamoStartGtm, { passive: true, once: true });
+      });
+
+      function vamoScheduleGtmFallback() {
+        setTimeout(vamoStartGtm, 4000);
+      }
+      if (document.readyState === 'complete') {
+        vamoScheduleGtmFallback();
       } else {
-        window.addEventListener('load', vamoLoadGtm);
+        window.addEventListener('load', vamoScheduleGtmFallback);
       }
     </script>
 
