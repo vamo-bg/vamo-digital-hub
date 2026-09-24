@@ -43,6 +43,10 @@ jobs:
       - name: Билд
         run: npm run build
 
+      # Само блогът пази дата на промяна в схемата си — вижда scripts/add-sitemap-lastmod.mjs.
+      - name: Lastmod в sitemap
+        run: npm run sitemap:lastmod
+
       # Страница с noindex в sitemap е противоречива инструкция към Google.
       # Проверката гледа готовия изход, не намерението, и спира деплоя.
       - name: Проверка на sitemap

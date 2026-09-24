@@ -142,17 +142,35 @@ const organizationSchema = {
       }
     </script>
 
+    {/*
+      `gtm.js` и `gtag/js` тежат общо ~1MB неминифициран JS — измерено на живо,
+      те са реалната причина зад бавния LCP на mobile, не CSS или снимките.
+      `j.async = true` пуска свалянето неблокиращо, но изпълнението им (парсене
+      + рънване на целия tag container) е една тежка main-thread задача, която
+      се случва веднага щом пристигнат — точно докато браузърът се опитва да
+      нарисува hero-а. Затова стартът чака `load`: тагът тръгва едва след като
+      страницата вече е визуално готова, вместо да се бори с нея за same-thread
+      време. Съзнателен избор — много бързите bounce-ове (напускане преди
+      `load`) няма да се преброят в GA4/Ads.
+    */}
     <script is:inline define:vars={{ gtmId: site.analytics.gtmId }}>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', gtmId);
+      function vamoLoadGtm() {
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', gtmId);
+      }
+      if (document.readyState === 'complete') {
+        vamoLoadGtm();
+      } else {
+        window.addEventListener('load', vamoLoadGtm);
+      }
     </script>
 
     <meta name="generator" content={Astro.generator} />

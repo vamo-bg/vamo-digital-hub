@@ -12,6 +12,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "sitemap:lastmod": "node scripts/add-sitemap-lastmod.mjs",
     "check:sitemap": "node scripts/check-sitemap.mjs"
   },
   "dependencies": {
