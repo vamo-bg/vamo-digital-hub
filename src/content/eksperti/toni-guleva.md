@@ -15,7 +15,7 @@ expertise:
 services:
   - komunikatsii-i-pr
   - podkast-i-intervyu-formati
-featuredOnHome: true
+featuredOnHome: false
 homeOrder: 6
 active: true
 draft: false
