@@ -6,10 +6,11 @@ import Button from '../../components/ui/Button.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import AudienceSection from '../../components/sections/AudienceSection.astro';
 import EvidenceSection from '../../components/sections/EvidenceSection.astro';
+import { ivanFirst } from '../../lib/expert-order';
 
 const experts = (await getCollection('eksperti'))
   .filter((expert) => expert.data.active && !expert.data.draft)
-  .sort((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER));
+  .sort(ivanFirst((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER)));
 const founder = experts.find((expert) => expert.id === 'gergana-ivanova');
 const listedExperts = experts.filter((expert) => expert.id !== 'gergana-ivanova').slice(0, 15);
 const expertDirections = [

@@ -2,16 +2,18 @@
 import type { CollectionEntry } from 'astro:content';
 
 import ExpertCard from '../ui/ExpertCard.astro';
+import { ivanFirst } from '../../lib/expert-order';
 
 interface Props {
   experts: CollectionEntry<'eksperti'>[];
 }
 
 const { experts } = Astro.props;
+const orderedExperts = [...experts].sort(ivanFirst());
 ---
 
 {
-  experts.length > 0 && (
+  orderedExperts.length > 0 && (
     <section class="project-experts" aria-labelledby="project-experts-title">
       <div class="project-experts__inner">
         <div class="project-experts__heading">
@@ -22,7 +24,7 @@ const { experts } = Astro.props;
         </div>
 
         <div class="project-experts__list">
-          {experts.map((expert) => <ExpertCard expert={expert} />)}
+          {orderedExperts.map((expert) => <ExpertCard expert={expert} />)}
         </div>
       </div>
     </section>

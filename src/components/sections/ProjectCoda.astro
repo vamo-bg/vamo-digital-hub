@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 
 import Button from '../ui/Button.astro';
 import ExpertCard from '../ui/ExpertCard.astro';
+import { ivanFirst } from '../../lib/expert-order';
 
 interface Props {
   surface: 'cream' | 'muted';
@@ -23,6 +24,7 @@ const {
 
 const hasContext = Boolean(client) || experts.length > 0;
 const ctaOnDark = hasContext || !precededByDark;
+const orderedExperts = [...experts].sort(ivanFirst());
 ---
 
 {
@@ -45,11 +47,11 @@ const ctaOnDark = hasContext || !precededByDark;
             </div>
           )}
 
-          {experts.length > 0 && (
+          {orderedExperts.length > 0 && (
             <div class="coda__experts">
               <h3>Екип</h3>
               <div class="coda__experts-list">
-                {experts.map((expert) => <ExpertCard expert={expert} />)}
+                {orderedExperts.map((expert) => <ExpertCard expert={expert} />)}
               </div>
             </div>
           )}

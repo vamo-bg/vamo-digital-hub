@@ -10,6 +10,7 @@ import ProofChapter from '../../components/sections/ProofChapter.astro';
 import Button from '../../components/ui/Button.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ivanFirst } from '../../lib/expert-order';
 
 export async function getStaticPaths() {
   const projects = await getCollection(
@@ -67,7 +68,8 @@ const allExperts = await getCollection(
 );
 const experts = expertIds
   .map((id) => allExperts.find((expert) => expert.id === id))
-  .filter((expert): expert is (typeof allExperts)[number] => expert !== undefined);
+  .filter((expert): expert is (typeof allExperts)[number] => expert !== undefined)
+  .sort(ivanFirst());
 
 /* ---------------------------------------------------------------------------
  * Chapter resolution
