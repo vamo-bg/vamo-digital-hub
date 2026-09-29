@@ -42,7 +42,6 @@ const clientNames = Object.fromEntries(clients.map((client) => [client.id, clien
 const allServices = await getCollection('resheniya', ({ data }) => !data.draft);
 const serviceNames = Object.fromEntries(allServices.map((service) => [service.id, service.data.title]));
 const heroHighlights = expert.data.heroHighlights ?? expertise.slice(0, 3);
-const displayName = name.replace(/^(доц\.?\s*д-р|доц\.?|д-р|проф\.?)\s*/i, '').trim();
 
 /**
  * Страницата описва човек, затова го казва и на машините. Без това седемнайсет
@@ -153,7 +152,7 @@ const breadcrumbSchema = {
 
     <section class="expert-profile__about" aria-labelledby="expert-about-title">
       <div class="expert-profile__shell expert-profile__about-grid">
-        <h2 id="expert-about-title">За {displayName.split(' ')[0]}</h2>
+        <h2 id="expert-about-title">За {name}</h2>
         <ExpertBiography>
           <Content />
         </ExpertBiography>
