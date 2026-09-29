@@ -12,7 +12,8 @@ const experts = (await getCollection('eksperti'))
   .filter((expert) => expert.data.active && !expert.data.draft)
   .sort(ivanFirst((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER)));
 const founder = experts.find((expert) => expert.id === 'gergana-ivanova');
-const listedExperts = experts.filter((expert) => expert.id !== 'gergana-ivanova').slice(0, 15);
+// Архивът трябва да показва всички активни профили, а не само първите 15.
+const listedExperts = experts.filter((expert) => expert.id !== 'gergana-ivanova');
 const expertDirections = [
   { title: 'Видео и съдържание', text: 'Режисура, сценарий, заснемане, монтаж и формати за кампании и проекти.' },
   { title: 'Комуникации и публичност', text: 'PR стратегии, медийно присъствие и съдържание за институции.' },
