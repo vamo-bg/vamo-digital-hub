@@ -1,0 +1,59 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  items: CollectionEntry<'sertifikati'>[];
+  title?: string;
+  intro?: string;
+  linkHref?: string;
+  linkLabel?: string;
+}
+
+const { items, title = 'Обучения и квалификации', intro, linkHref, linkLabel = 'Виж всички документи' } = Astro.props;
+const sorted = [...items].sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+---
+
+<section class="certificates-section" aria-labelledby="certificates-title">
+  <div class="certificates-section__inner">
+    <div class="certificates-section__heading">
+      <p class="certificates-section__eyebrow">Документи и доказателства</p>
+      <h2 id="certificates-title">{title}</h2>
+      {intro && <p>{intro}</p>}
+    </div>
+    <div class="certificates-grid">
+      {sorted.map((item) => (
+        <article class="certificate-card">
+          <div>
+            <p class="certificate-card__issuer">{item.data.issuer}</p>
+            <h3>{item.data.title}</h3>
+            <p>{item.data.description}</p>
+          </div>
+          <div class="certificate-card__meta">
+            {item.data.year && <span>{item.data.year}</span>}
+            <a href={item.data.pdfHref} target="_blank" rel="noreferrer">Виж документа <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+    {linkHref && <a class="certificates-section__link" href={linkHref}>{linkLabel} <span aria-hidden="true">→</span></a>}
+  </div>
+</section>
+
+<style>
+  .certificates-section { padding-block: var(--layout-section-padding-mobile); background: var(--color-neutral-100); }
+  .certificates-section__inner { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .certificates-section__heading { max-width: 48rem; }
+  .certificates-section__eyebrow { margin: 0 0 var(--space-3); color: var(--color-vamo-red); font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .certificates-section h2 { margin: 0; font-size: var(--type-section-title); line-height: 1.15; letter-spacing: -.03em; }
+  .certificates-section__heading > p:last-child { max-width: 60ch; margin-block-start: var(--space-4); color: var(--color-text-muted); line-height: 1.65; }
+  .certificates-grid { display: grid; gap: var(--space-4); margin-block-start: var(--space-10); }
+  .certificate-card { display: grid; gap: var(--space-6); min-height: 13rem; padding: var(--space-6); border: 1px solid var(--color-border); border-radius: var(--radius-surface); background: var(--color-surface); }
+  .certificate-card__issuer { margin: 0 0 var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .certificate-card h3 { margin: 0; font-size: var(--type-card-title); line-height: 1.25; }
+  .certificate-card > div:first-child > p:last-child { margin-block-start: var(--space-3); color: var(--color-text-muted); line-height: 1.55; }
+  .certificate-card__meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-block-start: auto; color: var(--color-text-muted); font-size: .875rem; }
+  .certificate-card__meta a, .certificates-section__link { color: var(--color-vamo-red); font-weight: 700; text-decoration: none; }
+  .certificate-card__meta a:hover, .certificates-section__link:hover { text-decoration: underline; }
+  .certificates-section__link { display: inline-block; margin-block-start: var(--space-8); }
+  @media (min-width: 48rem) { .certificates-section { padding-block: var(--layout-section-padding-desktop); } .certificates-section__inner { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .certificates-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

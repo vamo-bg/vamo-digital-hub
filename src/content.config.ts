@@ -318,14 +318,19 @@ const blog = defineCollection({
 
 const sertifikati = defineCollection({
   loader: glob({ base: './src/content/sertifikati', pattern: contentPattern }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string().min(1),
-      issuer: z.string().min(1),
-      year,
-      image: image().optional(),
-      draft,
-    }),
+  schema: z.object({
+    title: z.string().min(1),
+    issuer: z.string().min(1),
+    year,
+    description: z.string().min(1),
+    category: z.enum(['registration', 'training']),
+    audience: z.enum(['company', 'gergana']),
+    pdfHref: z.string().min(1),
+    featuredOnAbout: z.boolean().default(false),
+    featuredOnGergana: z.boolean().default(false),
+    order: z.number().int().nonnegative().optional(),
+    draft,
+  }),
 });
 
 const legal = defineCollection({

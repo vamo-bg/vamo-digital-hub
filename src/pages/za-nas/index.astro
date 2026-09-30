@@ -1,13 +1,16 @@
 ---
-import { getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 
 import ExpertNetworkSection from '../../components/sections/ExpertNetworkSection.astro';
+import CertificatesSection from '../../components/sections/CertificatesSection.astro';
 import Button from '../../components/ui/Button.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const about = await getEntry('about', 'za-nas');
 if (!about) throw new Error('Липсва съдържание за страницата „За нас“.');
+const registrations = (await getCollection('sertifikati', ({ data }) => !data.draft && data.audience === 'company' && data.featuredOnAbout))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
 
 const { title, description, seoTitle, seoDescription, heroTitle, heroSummary, story, principles, audiences } = about.data;
 const ecosystemLinks = [
@@ -62,6 +65,7 @@ const breadcrumbSchema = {
     <section class="about-audiences" aria-labelledby="audiences-title"><div class="about-shell about-audiences__inner"><div class="about-section-heading"><h2 id="audiences-title">{audiences.title}</h2><p>{audiences.intro}</p></div><ul>{audiences.items.map((item) => <li>{item}</li>)}</ul></div></section>
     <section class="about-ecosystem" aria-labelledby="ecosystem-title"><div class="about-shell"><div class="about-section-heading"><p class="about-ecosystem__eyebrow">Свързани платформи</p><h2 id="ecosystem-title">Собствена медийна и дигитална екосистема</h2><p>Свързваме стратегия, съдържание и публичност в мрежа от платформи, които дават на проектите по-дълъг живот и по-широка видимост.</p></div><ul class="about-ecosystem__list">{ecosystemLinks.map((link) => <li><a href={link.href} target="_blank" rel="noreferrer"><span><strong>{link.name}</strong><small>{link.description}</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></li>)}</ul></div></section>
     <ExpertNetworkSection title="Експертите се включват според задачата" description="Когато проектът изисква специфична експертиза, събираме подходящите хора и координираме работата им в една посока." />
+    <CertificatesSection items={registrations} title="Регистрации и професионална основа" intro="VAMO съчетава продуцентски капацитет и доказан професионален статут, подкрепени от официални регистрации." linkHref="/sertifikati/" linkLabel="Виж обученията и квалификациите" />
     <section class="about-cta" aria-labelledby="about-cta-title"><div class="about-shell about-cta__inner"><h2 id="about-cta-title">Имате задача, която изисква точните хора?</h2><div class="about-cta__action"><p>Нека започнем с разговор за контекста, целта и възможния следващ ход.</p><Button href="/kontakti/" size="md">Свържете се с нас</Button></div></div></section>
   </article>
 </BaseLayout>

@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CertificatesSection from '../../components/sections/CertificatesSection.astro';
+
+const certificates = (await getCollection('sertifikati', ({ data }) => !data.draft && data.audience === 'gergana'))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+---
+
+<BaseLayout title="Обучения и квалификации | VAMO" description="Избрани обучения, квалификации и професионални документи на Гергана Иванова.">
+  <article class="certificates-page">
+    <div class="certificates-page__crumbs"><nav aria-label="Навигация по местоположението"><a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">Обучения и квалификации</span></nav></div>
+    <header class="certificates-page__hero">
+      <div class="certificates-page__inner">
+        <p class="certificates-page__eyebrow">Професионално развитие</p>
+        <h1>Обучения и квалификации</h1>
+        <p>Подбрани документи, които показват професионалната подготовка зад работата на VAMO.</p>
+      </div>
+    </header>
+    <CertificatesSection items={certificates} title="Документи от практиката" intro="Всеки документ е представен като отделен запис с посочен издател, година и публично достъпно копие." />
+  </article>
+</BaseLayout>
+
+<style>
+  .certificates-page { background: var(--color-cream); }
+  .certificates-page__crumbs { border-block: 1px solid var(--color-border); background: var(--color-surface); }
+  .certificates-page__crumbs nav, .certificates-page__inner { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .certificates-page__crumbs nav { display: flex; min-height: 2.75rem; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .certificates-page__crumbs a { color: inherit; text-decoration: none; } .certificates-page__crumbs a:hover { color: var(--color-vamo-red); }
+  .certificates-page__hero { padding-block: var(--layout-anchor-padding-mobile); background: var(--color-vamo-black); color: var(--color-text-inverse); }
+  .certificates-page__eyebrow { margin: 0 0 var(--space-4); color: var(--color-accent-on-dark); font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .certificates-page h1 { max-width: 18ch; margin: 0; font-size: var(--type-page-title); line-height: 1.08; letter-spacing: -.03em; }
+  .certificates-page__hero p:last-child { max-width: 52ch; margin-block-start: var(--space-5); color: var(--color-neutral-300); line-height: 1.65; }
+  @media (min-width: 48rem) { .certificates-page__crumbs nav, .certificates-page__inner { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .certificates-page__hero { padding-block: var(--layout-anchor-padding-desktop); } }
+</style>

@@ -6,6 +6,7 @@ import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import ExpertBiography from '../../components/sections/ExpertBiography.astro';
 import ExpertNetworkSection from '../../components/sections/ExpertNetworkSection.astro';
 import ExpertProjectsSection from '../../components/sections/ExpertProjectsSection.astro';
+import CertificatesSection from '../../components/sections/CertificatesSection.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -42,6 +43,10 @@ const clientNames = Object.fromEntries(clients.map((client) => [client.id, clien
 const allServices = await getCollection('resheniya', ({ data }) => !data.draft);
 const serviceNames = Object.fromEntries(allServices.map((service) => [service.id, service.data.title]));
 const heroHighlights = expert.data.heroHighlights ?? expertise.slice(0, 3);
+const qualifications = expert.id === 'gergana-ivanova'
+  ? (await getCollection('sertifikati', ({ data }) => !data.draft && data.audience === 'gergana'))
+      .filter((item) => item.data.featuredOnGergana)
+  : [];
 
 /**
  * Страницата описва човек, затова го казва и на машините. Без това седемнайсет
@@ -158,6 +163,16 @@ const breadcrumbSchema = {
         </ExpertBiography>
       </div>
     </section>
+
+    {qualifications.length > 0 && (
+      <CertificatesSection
+        items={qualifications}
+        title="Обучения и квалификации"
+        intro="Обученията са част от постоянния професионален процес и се прилагат в реални проекти."
+        linkHref="/sertifikati/"
+        linkLabel="Виж всички документи"
+      />
+    )}
 
     {services.length > 0 && (
       <section class="expert-profile__services" aria-labelledby="expert-services-title">
