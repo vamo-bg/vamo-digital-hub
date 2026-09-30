@@ -68,6 +68,12 @@ gallery:
 externalLinks:
   - label: "Посетете сайта на проекта"
     url: "https://ecocamp.vamo.bg/"
+  - label: "Гледайте видео от проекта"
+    url: "https://www.youtube.com/watch?v=BoB75vJL7CI"
+  - label: "Гледайте още от проекта"
+    url: "https://www.youtube.com/watch?v=9yXxZ38gcjk"
+  - label: "Вижте допълнителното видео"
+    url: "https://www.youtube.com/watch?v=wAmALNSw-y0"
 draft: false
 ---
 
