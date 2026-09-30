@@ -14,12 +14,14 @@ const allProjects = await getCollection('portfolio');
 const projects = allProjects
   .filter(({ data }) => import.meta.env.DEV || !data.draft)
   .sort((a, b) => {
+    const publishedA = a.data.publishedAt?.getTime() ?? 0;
+    const publishedB = b.data.publishedAt?.getTime() ?? 0;
     const orderA = a.data.sectionOrder ?? Number.MAX_SAFE_INTEGER;
     const orderB = b.data.sectionOrder ?? Number.MAX_SAFE_INTEGER;
     const yearA = Number(a.data.year ?? 0);
     const yearB = Number(b.data.year ?? 0);
 
-    return orderA - orderB || yearB - yearA || a.data.title.localeCompare(b.data.title, 'bg');
+    return publishedB - publishedA || orderA - orderB || yearB - yearA || a.data.title.localeCompare(b.data.title, 'bg');
   });
 
 const clients = await getCollection('clients', ({ data }) => !data.draft);

@@ -1,9 +1,10 @@
 ---
 title: "Картала – Белица: образователен и младежки еко-лагерен модел"
-clientId: "chitalishte"
+clientId: "chitalishte-georgi-todorov-belitsa"
 description: "Видеосъдържание и публичност за проект, който свързва природата, местното наследство и междупоколенческото учене в Белица."
 projectType: "Видеосъдържание и публичност по европейски проект"
 year: "2026–2027"
+publishedAt: "2026-09-30"
 location: "Белица"
 serviceIds:
   - "video-i-filmovo-proizvodstvo"

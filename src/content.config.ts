@@ -173,6 +173,7 @@ const portfolio = defineCollection({
       serviceIds: z.array(z.string().min(1)).min(1),
       projectType: z.string().min(1).optional(),
       year,
+      publishedAt: z.coerce.date().optional(),
       location: z.string().min(1).optional(),
       featuredInSection: z.boolean().default(false),
       sectionOrder: z.number().int().nonnegative().optional(),
