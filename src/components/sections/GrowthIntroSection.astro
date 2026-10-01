@@ -1,0 +1,70 @@
+<section class="growth-intro" aria-labelledby="growth-intro-title">
+  <div class="growth-intro__inner">
+    <h2 id="growth-intro-title">Превръщаме вашите идеи в съдържание, публичност и възможности за развитие</h2>
+    <div class="growth-intro__message">
+      <h3>
+        <span>Привличате реални запитвания</span>
+        <span>и изграждате ясна система за растеж</span>
+      </h3>
+      <p class="growth-intro__lead">Без да гадаете какво работи и къде изтича бюджетът ви.</p>
+      <p>Подреждаме стратегия, съдържание и публичност в ясна система, която води до реални резултати — не до хаотичен маркетинг.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .growth-intro {
+    background: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+  }
+
+  .growth-intro__inner {
+    display: grid;
+    gap: var(--space-10);
+    width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max));
+    margin-inline: auto;
+    padding-block: var(--layout-section-padding-mobile);
+  }
+
+  .growth-intro h2 {
+    max-width: 28ch;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .growth-intro__message {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 64ch;
+  }
+
+  .growth-intro h3 {
+    font-size: var(--type-feature-title);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .growth-intro h3 span { display: block; }
+  .growth-intro p { color: var(--color-neutral-300); font-size: 1.0625rem; line-height: 1.65; text-wrap: pretty; }
+  .growth-intro .growth-intro__lead { color: var(--color-text-inverse); font-weight: 600; }
+
+  @media (min-width: 48rem) {
+    .growth-intro__inner {
+      width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max));
+      padding-block: var(--layout-section-padding-desktop);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .growth-intro__inner {
+      grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+  }
+</style>

@@ -7,6 +7,7 @@ interface Props {
   title?: string;
   lead?: string;
   description?: string;
+  detail?: string;
   primaryHref?: string;
   primaryLabel?: string;
   secondaryHref?: string;
@@ -15,12 +16,13 @@ interface Props {
 
 const {
   title,
-  lead = 'Без да гадаете какво работи и къде изтича бюджетът ви.',
-  description = 'Подреждаме стратегия, съдържание и публичност в ясна система, която води до реални резултати — не до хаотичен маркетинг.',
-  primaryHref = '/kontakti/',
-  primaryLabel = 'Започни с безплатна диагностика',
-  secondaryHref = '/resheniya/',
-  secondaryLabel = 'Виж решенията',
+  lead = 'Вярваме, че когато разказваме за доброто — ние го умножаваме.',
+  description = 'Вече 26 години ВАМО създава филми, съдържание и комуникации, които дават видимост на хората, пазят природното и културното наследство и подкрепят развитието на общностите.',
+  detail = 'Днес събираме този опит във VAMO Digital Hub — общ дом за нашите проекти, експерти и партньорства.',
+  primaryHref = '/portfolio/',
+  primaryLabel = 'Разгледайте проектите',
+  secondaryHref = '/za-nas/',
+  secondaryLabel = 'Запознайте се с ВАМО',
 } = Astro.props;
 ---
 
@@ -35,16 +37,17 @@ const {
             ) : (
               <>
                 <span class="hero__title-line">
-                  Привличате <span class="hero__title-accent">реални запитвания</span>
+                  Разказваме <span class="hero__title-accent">стойностните истории.</span>
                 </span>
                 <span class="hero__title-line">
-                  и изграждате ясна <span class="hero__title-accent">система за растеж</span>
+                  Свързваме хора, идеи и възможности.
                 </span>
               </>
             )}
           </h1>
           <p class="hero__lead">{lead}</p>
           <p class="hero__description">{description}</p>
+          <p class="hero__description">{detail}</p>
 
           <div class="hero__actions">
             <Button href={primaryHref} variant="primary" size="lg">
@@ -56,13 +59,6 @@ const {
           </div>
         </div>
 
-        <div class="hero__meta" aria-hidden="true">
-          <span class="hero__path">Кратка диагностика</span>
-          <span class="hero__arrow">→</span>
-          <span class="hero__path">Яснота</span>
-          <span class="hero__arrow">→</span>
-          <span class="hero__path">Конкретни следващи стъпки</span>
-        </div>
       </div>
 
       <aside class="hero__right" aria-label="Основател на VAMO">
@@ -78,7 +74,6 @@ const {
           <span class="hero__founder-copy">
             <strong>Гергана Иванова</strong>
             <span>Основател на VAMO</span>
-            <q>Работите директно с мен — от диагнозата до изпълнението.</q>
           </span>
         </a>
       </aside>
@@ -155,26 +150,6 @@ const {
     margin-block-start: var(--space-4);
   }
 
-  .hero__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-    margin-block-start: var(--space-12);
-    color: var(--color-text-muted);
-    font-size: 0.9375rem;
-  }
-
-  .hero__path {
-    line-height: 1.5;
-  }
-
-  .hero__arrow {
-    color: var(--color-vamo-red);
-    font-weight: 700;
-    opacity: 0.65;
-  }
-
   .hero__right { display: grid; align-self: stretch; }
 
   .hero__founder {
@@ -191,21 +166,14 @@ const {
   .hero__founder-copy { display: grid; gap: var(--space-2); padding: var(--space-5); }
   .hero__founder-copy strong { font-size: 1.25rem; }
   .hero__founder-copy > span { color: var(--color-primary-hover); font-size: .85rem; font-weight: 700; }
-  .hero__founder-copy q { max-width: 26ch; color: var(--color-text-muted); font-size: .95rem; line-height: 1.45; }
   .hero__founder:hover :global(img), .hero__founder:focus-visible :global(img) { transform: scale(1.03); }
 
   @media (prefers-reduced-motion: no-preference) {
     .hero__content { animation: hero-enter var(--dur-5) var(--ease-out-quart) both; }
-    .hero__meta { animation: hero-meta-enter var(--dur-4) var(--ease-out-cubic) 120ms both; }
   }
 
   @keyframes hero-enter {
     from { opacity: 0; transform: translateY(var(--space-4)); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes hero-meta-enter {
-    from { opacity: 0; transform: translateY(var(--space-2)); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -224,10 +192,6 @@ const {
       gap: var(--space-12);
     }
 
-    .hero__title-line {
-      white-space: nowrap;
-    }
-
     .hero__content {
       gap: var(--space-8);
     }
@@ -241,9 +205,6 @@ const {
       margin-block-start: var(--space-6);
     }
 
-    .hero__meta {
-      margin-block-start: var(--space-16);
-    }
   }
 
   @media (min-width: 64rem) {
