@@ -27,7 +27,6 @@ const solutionLinks = [
 
 const contactLinks = Object.values(site.contact);
 const mediaLinks = [
-  { label: 'VAMO.eu', href: 'https://vamo.eu/' },
   { label: 'Balkanite.net', href: 'https://balkanite.net/' },
   { label: 'Komentari.bg', href: 'https://komentari.bg/' },
   { label: 'YouTube', href: 'https://www.youtube.com/@VamoBG' },
@@ -80,7 +79,7 @@ const currentYear = new Date().getFullYear();
           </ul>
           <nav class="site-footer__media" aria-labelledby="footer-media-title">
             <h2 id="footer-media-title">Медии и платформи</h2>
-            <ul>{mediaLinks.map((link) => <li><a href={link.href} target="_blank" rel="noreferrer">{link.label}</a></li>)}</ul>
+            <ul>{mediaLinks.map((link) => <li><a href={link.href} target="_blank" rel="nofollow noopener noreferrer">{link.label}</a></li>)}</ul>
           </nav>
         </section>
 
