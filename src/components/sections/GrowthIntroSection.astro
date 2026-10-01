@@ -1,3 +1,7 @@
+---
+import Button from '../ui/Button.astro';
+---
+
 <section class="growth-intro" aria-labelledby="growth-intro-title">
   <div class="growth-intro__inner">
     <h2 id="growth-intro-title">Превръщаме вашите идеи в съдържание, публичност и възможности за развитие</h2>
@@ -8,6 +12,9 @@
       </h3>
       <p class="growth-intro__lead">Без да гадаете какво работи и къде изтича бюджетът ви.</p>
       <p>Подреждаме стратегия, съдържание и публичност в ясна система, която води до реални резултати — не до хаотичен маркетинг.</p>
+      <div class="growth-intro__action">
+        <Button href="/kontakti/" variant="primary" size="lg">Обсъдете идеята си</Button>
+      </div>
     </div>
   </div>
 </section>
@@ -52,6 +59,7 @@
   .growth-intro h3 span { display: block; }
   .growth-intro p { color: var(--color-neutral-300); font-size: 1.0625rem; line-height: 1.65; text-wrap: pretty; }
   .growth-intro .growth-intro__lead { color: var(--color-text-inverse); font-weight: 600; }
+  .growth-intro__action { margin-block-start: var(--space-3); }
 
   @media (min-width: 48rem) {
     .growth-intro__inner {
