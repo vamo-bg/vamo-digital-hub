@@ -1,6 +1,8 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 
+import aboutHeroImage from '../../assets/about-hero.jpg';
 import ExpertNetworkSection from '../../components/sections/ExpertNetworkSection.astro';
 import CertificatesSection from '../../components/sections/CertificatesSection.astro';
 import Button from '../../components/ui/Button.astro';
@@ -51,13 +53,9 @@ const breadcrumbSchema = {
           <p>{heroSummary}</p>
           <Button href="/kontakti/" size="md" class="about-hero__cta">Нека поговорим</Button>
         </div>
-        <aside class="about-hero__media" aria-label="Място за медия към разказа за VAMO">
-          <div class="about-hero__media-frame" aria-hidden="true">
-            <span>VAMO</span>
-            <span>Истории в действие</span>
-          </div>
-          <p>Тук ще поставим реален кадър от екипа, работа на терен или завършен проект.</p>
-        </aside>
+        <div class="about-hero__media">
+          <Image class="about-hero__image" src={aboutHeroImage} alt="Екип на VAMO заснема занимание с деца" loading="eager" fetchpriority="high" />
+        </div>
       </div>
     </header>
     <section class="about-story" aria-labelledby="story-title"><div class="about-shell about-story__inner"><h2 id="story-title">{story.title}</h2><div class="about-story__copy"><p class="about-story__lead">{story.lead}</p>{story.details.map((detail) => <p>{detail}</p>)}</div></div></section>
@@ -81,13 +79,8 @@ const breadcrumbSchema = {
   .about-hero__copy { display: grid; gap: var(--space-6); align-content: end; }
   .about-hero__copy :global(.about-hero__cta) { inline-size: fit-content; justify-self: start; }
   .about-hero h1 { max-width: 16ch; font-size: var(--type-page-title); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; } .about-hero__copy > p { max-width: 58ch; color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
-  .about-hero__media { display: grid; gap: var(--space-3); max-width: 28rem; color: var(--color-neutral-300); font-size: 1rem; line-height: 1.55; }
-  .about-hero__media-frame { position: relative; display: flex; aspect-ratio: 4 / 3; flex-direction: column; justify-content: space-between; padding: var(--space-5); border: 1px solid var(--color-neutral-600); border-radius: var(--radius-surface); background: var(--color-neutral-800); overflow: hidden; color: var(--color-text-inverse); font-family: var(--font-heading); font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
-  .about-hero__media-frame::before, .about-hero__media-frame::after { position: absolute; content: ''; pointer-events: none; }
-  .about-hero__media-frame::before { inset: 0; border-inline-start: 1px solid var(--color-neutral-600); transform: translateX(57%) skewX(-28deg); }
-  .about-hero__media-frame::after { inset-inline: var(--space-5); inset-block-start: 50%; border-block-start: 1px solid var(--color-neutral-600); }
-  .about-hero__media-frame span { position: relative; z-index: 1; max-width: 12ch; }
-  .about-hero__media-frame span:last-child { align-self: end; color: var(--color-accent-on-dark); text-align: end; }
+  .about-hero__media { width: 100%; max-width: 28rem; }
+  .about-hero__media :global(.about-hero__image) { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius-surface); object-fit: cover; object-position: center; }
   .about-story, .about-principles, .about-audiences, .about-cta { padding-block: var(--layout-section-padding-mobile); }
   .about-story__inner { display: grid; gap: var(--space-8); } .about-story h2, .about-section-heading h2, .about-cta h2 { font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
   .about-story__copy { display: grid; gap: var(--space-4); max-width: 62ch; color: var(--color-text-muted); font-size: 1rem; line-height: 1.7; } .about-story__lead { color: var(--color-text); font-family: var(--font-heading); font-size: 1.25rem; font-weight: 500; line-height: 1.5; letter-spacing: -.02em; }
