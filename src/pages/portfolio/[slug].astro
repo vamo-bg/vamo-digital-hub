@@ -6,6 +6,7 @@ import ProductionSheet from '../../components/sections/ProductionSheet.astro';
 import ProjectCoda from '../../components/sections/ProjectCoda.astro';
 import ProjectFrames from '../../components/sections/ProjectFrames.astro';
 import ProjectLead from '../../components/sections/ProjectLead.astro';
+import ProjectVideos from '../../components/sections/ProjectVideos.astro';
 import ProofChapter from '../../components/sections/ProofChapter.astro';
 import Button from '../../components/ui/Button.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
@@ -48,6 +49,7 @@ const {
   expertIds,
   gallery,
   externalLinks,
+  videos,
   referenceDocuments,
   review,
   draft,
@@ -333,6 +335,8 @@ const breadcrumbSchema = {
     {showFrames && !isExhibitionLead && (
       <ProjectFrames title="Проектът в кадри" items={frameItems} />
     )}
+
+    <ProjectVideos items={videos} />
 
     {hasProof && (
       <ProofChapter

@@ -237,6 +237,18 @@ const portfolio = defineCollection({
           }),
         )
         .default([]),
+      videos: z
+        .array(
+          z.object({
+            title: z.string().min(1),
+            youtubeId: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
+            group: z.string().min(1),
+            relatedLink: z
+              .object({ label: z.string().min(1), url: z.url() })
+              .optional(),
+          }),
+        )
+        .default([]),
       referenceDocuments: z
         .array(
           z.object({
