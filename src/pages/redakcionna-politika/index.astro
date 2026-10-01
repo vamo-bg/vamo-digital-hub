@@ -1,0 +1,18 @@
+---
+import { getEntry, render } from 'astro:content';
+import LegalPagePlaceholder from '../../components/sections/LegalPagePlaceholder.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const entry = await getEntry('legal', 'redakcionna-politika');
+if (!entry) throw new Error('Липсва съдържание за страницата „Редакционна политика“.');
+const { Content } = await render(entry);
+const { title, description } = entry.data;
+---
+
+<BaseLayout title={title} description={description}>
+  <LegalPagePlaceholder
+    title={title}
+    summary={description}
+    contentHeading="Собственост и обществена мисия"
+  ><Content /></LegalPagePlaceholder>
+</BaseLayout>

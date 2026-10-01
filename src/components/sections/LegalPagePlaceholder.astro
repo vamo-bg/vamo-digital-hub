@@ -2,9 +2,10 @@
 interface Props {
   title: string;
   summary: string;
+  contentHeading?: string;
 }
 
-const { title, summary } = Astro.props;
+const { title, summary, contentHeading = 'Правна информация' } = Astro.props;
 ---
 
 <article class="legal-page">
@@ -32,8 +33,9 @@ const { title, summary } = Astro.props;
           <a class:list={{ active: title === 'Политика за поверителност' }} href="/politika-za-poveritelnost/">Политика за поверителност</a>
           <a class:list={{ active: title === 'Общи условия' }} href="/obshti-usloviya/">Общи условия</a>
           <a class:list={{ active: title === 'Бисквитки' }} href="/biskvitki/">Бисквитки</a>
+          <a class:list={{ active: title === 'Редакционна политика' }} href="/redakcionna-politika/">Редакционна политика</a>
         </nav>
-        <h2 id="legal-status-title">Правна информация</h2>
+        <h2 id="legal-status-title">{contentHeading}</h2>
       </div>
       <div class="legal-page__copy">
         <div class="legal-page__document"><slot /></div>
