@@ -65,10 +65,10 @@ gallery:
 videos:
   - title: "Първи ден: откриване на въжения парк и празник за 1 юни"
     youtubeId: "A5nZhFjBXAo"
-    group: "Откриване на Приключенски парк „Хисарлъка“"
+    group: "Събития и туристически тур"
   - title: "Втори ден: пресконференция, кръгла маса и туристически тур"
     youtubeId: "TFhY3BnO5B4"
-    group: "Туризъм и партньорство"
+    group: "Събития и туристически тур"
     relatedLink:
       label: "Вижте тематичен откъс"
       url: "https://www.youtube.com/watch?v=TFhY3BnO5B4&t=1641s"
