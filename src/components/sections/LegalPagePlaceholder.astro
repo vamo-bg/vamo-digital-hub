@@ -2,10 +2,9 @@
 interface Props {
   title: string;
   summary: string;
-  requirements: string[];
 }
 
-const { title, summary, requirements } = Astro.props;
+const { title, summary } = Astro.props;
 ---
 
 <article class="legal-page">
@@ -34,11 +33,10 @@ const { title, summary, requirements } = Astro.props;
           <a class:list={{ active: title === 'Общи условия' }} href="/obshti-usloviya/">Общи условия</a>
           <a class:list={{ active: title === 'Бисквитки' }} href="/biskvitki/">Бисквитки</a>
         </nav>
-        <p class="legal-page__status">Информационна версия</p>
         <h2 id="legal-status-title">Правна информация</h2>
       </div>
       <div class="legal-page__copy">
-        {Astro.slots.has('default') ? <div class="legal-page__document"><slot /></div> : <><p>Тази страница има готово място в сайта, но текстът ѝ не се публикува, докато не бъде прегледан и потвърден от отговорното лице или юрист.</p><ul>{requirements.map((requirement) => <li>{requirement}</li>)}</ul></>}
+        <div class="legal-page__document"><slot /></div>
       </div>
     </div>
   </section>
@@ -55,7 +53,7 @@ const { title, summary, requirements } = Astro.props;
   .breadcrumbs span[aria-hidden='true'] { color:var(--color-neutral-400); }
   .breadcrumbs span[aria-current='page'] { color:var(--color-text); font-weight:600; }
   .legal-page__hero { padding-block:var(--layout-anchor-padding-mobile); border-block-end:1px solid var(--color-border); background:var(--color-neutral-100); }
-  .legal-page__eyebrow,.legal-page__status { margin:0; color:var(--color-vamo-red); font-family:var(--font-heading); font-size:.75rem; font-weight:600; letter-spacing:.12em; line-height:1.4; text-transform:uppercase; }
+  .legal-page__eyebrow { margin:0; color:var(--color-vamo-red); font-family:var(--font-heading); font-size:.75rem; font-weight:600; letter-spacing:.12em; line-height:1.4; text-transform:uppercase; }
   .legal-page h1 { max-width:18ch; margin-block-start:var(--space-3); font-size:var(--type-page-title); font-weight:700; letter-spacing:-.03em; line-height:1.08; text-wrap:balance; }
   .legal-page__hero p:not(.legal-page__eyebrow) { max-width:55ch; margin-block-start:var(--space-5); color:var(--color-text-muted); font-size:1.125rem; line-height:1.6; text-wrap:pretty; }
   .legal-page__body { padding-block:var(--layout-anchor-padding-mobile); }
