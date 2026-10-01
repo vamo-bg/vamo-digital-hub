@@ -1,6 +1,8 @@
 ---
 import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 
+import aboutHeroImage from '../../assets/about-hero.jpg';
 import Button from '../../components/ui/Button.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import ProjectsSection from '../../components/sections/ProjectsSection.astro';
@@ -53,13 +55,9 @@ const breadcrumbSchema = {
           <Button href="/kontakti/" size="md">Нека обсъдим задачата</Button>
         </div>
 
-        <aside class="process-hero__media" aria-label="Място за реален кадър от работата на VAMO">
-          <div class="process-hero__media-frame" aria-hidden="true">
-            <span>Работа в действие</span>
-            <span>среща · терен · реализация</span>
-          </div>
-          <p>Тук ще поставим реален кадър от процеса по конкретна задача.</p>
-        </aside>
+        <div class="process-hero__media">
+          <Image class="process-hero__image" src={aboutHeroImage} alt="Екип на VAMO заснема занимание с деца" loading="eager" fetchpriority="high" />
+        </div>
       </div>
     </header>
 
@@ -166,13 +164,8 @@ const breadcrumbSchema = {
   .process-hero h1 { max-width: 12ch; font-size: var(--type-page-title); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
   .process-hero p { max-width: 58ch; color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
   .process-hero :global(.button) { justify-self: start; }
-  .process-hero__media { display: grid; gap: var(--space-3); max-width: 28rem; color: var(--color-neutral-300); font-size: 1rem; line-height: 1.55; }
-  .process-hero__media-frame { position: relative; display: flex; aspect-ratio: 4 / 3; flex-direction: column; justify-content: space-between; padding: var(--space-5); border: 1px solid var(--color-neutral-600); border-radius: var(--radius-surface); background: var(--color-neutral-800); overflow: hidden; color: var(--color-text-inverse); font-family: var(--font-heading); font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
-  .process-hero__media-frame::before, .process-hero__media-frame::after { position: absolute; content: ''; pointer-events: none; }
-  .process-hero__media-frame::before { inset: 0; border-inline-start: 1px solid var(--color-neutral-600); transform: translateX(57%) skewX(-28deg); }
-  .process-hero__media-frame::after { inset-inline: var(--space-5); inset-block-start: 50%; border-block-start: 1px solid var(--color-neutral-600); }
-  .process-hero__media-frame span { position: relative; z-index: 1; max-width: 14ch; }
-  .process-hero__media-frame span:last-child { align-self: end; color: var(--color-accent-on-dark); text-align: end; }
+  .process-hero__media { width: 100%; max-width: 28rem; }
+  .process-hero__media :global(.process-hero__image) { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius-surface); object-fit: cover; object-position: center; }
 
   .process-proof { background: var(--color-cream); }
   .process-proof__list { display: grid; margin: 0; padding: 0; border-block: 1px dotted var(--color-border-strong); list-style: none; }
