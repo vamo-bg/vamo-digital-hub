@@ -44,6 +44,7 @@ const {
   task,
   deliverables,
   outcome,
+  closingPlacement,
   resultSummary,
   results,
   expertIds,
@@ -322,6 +323,7 @@ const breadcrumbSchema = {
         goals={task?.goals}
         deliverables={deliverables}
         outcome={outcome}
+        closingBesideBody={closingPlacement === 'beside-body'}
         resultSummary={resultSummary}
         results={results}
         services={services}

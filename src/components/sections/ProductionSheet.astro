@@ -25,6 +25,7 @@ interface Props {
   goals?: string[];
   deliverables?: SheetDeliverable[];
   outcome?: string;
+  closingBesideBody?: boolean;
   resultSummary?: string;
   results?: SheetResult[];
   services?: SheetService[];
@@ -40,6 +41,7 @@ const {
   goals = [],
   deliverables = [],
   outcome,
+  closingBesideBody = false,
   resultSummary,
   results = [],
   services = [],
@@ -54,6 +56,7 @@ const hasWorks = deliverables.length > 0;
 const evidenceIsPortrait = evidence
   ? evidence.image.height > evidence.image.width
   : false;
+const splitClosing = closingBesideBody && !evidence && Boolean(outcome || resultSummary);
 ---
 
 <section
@@ -126,7 +129,10 @@ const evidenceIsPortrait = evidence
       </div>
     )}
 
-    <div class="sheet__body"><slot /></div>
+    <div class:list={['sheet__narrative', { 'sheet__narrative--split': splitClosing }]}>
+      <div class="sheet__body"><slot /></div>
+      {splitClosing && <p class="sheet__closing">{outcome ?? resultSummary}</p>}
+    </div>
   </div>
 
   {evidence && (
@@ -149,7 +155,7 @@ const evidenceIsPortrait = evidence
     </div>
   )}
 
-  {(outcome || resultSummary) && (
+  {(outcome || resultSummary) && !splitClosing && (
     <div class="sheet__shell">
       <p class="sheet__closing">{outcome ?? resultSummary}</p>
     </div>
@@ -379,9 +385,12 @@ const evidenceIsPortrait = evidence
     text-wrap: pretty;
   }
 
+  .sheet__narrative {
+    margin-block-start: var(--space-12);
+  }
+
   .sheet__body:not(:empty) {
     max-width: 68ch;
-    margin-block-start: var(--space-12);
   }
 
   .sheet__body :global(h2),
@@ -477,6 +486,17 @@ const evidenceIsPortrait = evidence
   }
 
   @media (min-width: 64rem) {
+    .sheet__narrative--split {
+      display: grid;
+      grid-template-columns: minmax(0, 0.62fr) minmax(0, 0.38fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+
+    .sheet__narrative--split .sheet__closing {
+      margin-block-start: var(--space-10);
+    }
+
     .sheet__intro {
       grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
       column-gap: var(--space-16);

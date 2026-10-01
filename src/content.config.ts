@@ -207,6 +207,7 @@ const portfolio = defineCollection({
         )
         .default([]),
       outcome: z.string().min(1).optional(),
+      closingPlacement: z.enum(['beside-body']).optional(),
       resultSummary: z.string().min(1).max(280).optional(),
       results: z
         .array(
