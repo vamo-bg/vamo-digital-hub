@@ -109,7 +109,7 @@ const currentYear = new Date().getFullYear();
       </div>
 
       <div class="site-footer__legal">
-        <p><strong>{currentYear}© {site.legalName}</strong>, Всички права запазени</p>
+        <p><strong>{currentYear} © {site.legalName}</strong>, всички права запазени</p>
         <span class="site-footer__legal-separator" aria-hidden="true">|</span>
         <nav aria-label="Правна информация">
           <ul>
@@ -254,7 +254,7 @@ const currentYear = new Date().getFullYear();
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: var(--space-2) var(--space-3);
+    gap: var(--space-1);
     margin-block-start: var(--space-10);
     padding-block-start: var(--space-5);
     border-block-start: 1px dotted var(--color-footer-legal-border);
@@ -265,11 +265,11 @@ const currentYear = new Date().getFullYear();
   }
 
   .site-footer__legal p { margin: 0; }
-  .site-footer__legal ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
+  .site-footer__legal ul { display: flex; flex-wrap: wrap; gap: var(--space-1); }
   .site-footer__legal a { color: inherit; text-underline-offset: 0.2em; }
   .site-footer__legal a:hover { color: var(--color-white); }
   .site-footer__legal-separator {
-    margin-inline: var(--space-2);
+    margin-inline: var(--space-1);
     color: var(--color-footer-heading-border);
   }
   .site-footer a:focus-visible { outline-color: var(--color-white); }
@@ -294,6 +294,11 @@ const currentYear = new Date().getFullYear();
 
     .site-footer__nav a,
     .site-footer__contacts a { min-height: 2.25rem; }
+  }
+
+  @media (min-width: 75rem) {
+    .site-footer__legal { flex-wrap: nowrap; font-size: 0.8125rem; white-space: nowrap; }
+    .site-footer__legal ul { flex-wrap: nowrap; }
   }
 
   @media (prefers-reduced-motion: reduce) {
