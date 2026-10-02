@@ -311,6 +311,7 @@ const blog = defineCollection({
       updatedDate: z.coerce.date().optional(),
       authorName: z.string().min(1).default('Екипът на VAMO'),
       authorId: z.string().min(1).optional(),
+      articleKind: z.enum(['practical', 'personal']).default('practical'),
       cover: image().optional(),
       coverAlt: z.string().min(1).optional(),
       readingTime: z.string().min(1).optional(),
