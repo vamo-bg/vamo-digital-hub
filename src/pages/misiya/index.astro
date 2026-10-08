@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageUrl = new URL('/misiya/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: 'Мисия', item: pageUrl },
+  ],
+};
+const ways = [
+  {
+    title: 'Документираме и съхраняваме',
+    description: 'Заснемаме места, обичаи, човешки истории и знания, за да оставим свидетелства за тях във времето.',
+  },
+  {
+    title: 'Даваме видимост',
+    description: 'Чрез филми и медийно съдържание помагаме на повече хора да откриват богатството на България и усилията на общностите, които се грижат за него.',
+  },
+  {
+    title: 'Свързваме поколенията',
+    description: 'Създаваме възможности паметта и опитът на възрастните да достигат до младите и да продължават да живеят чрез тях.',
+  },
+  {
+    title: 'Обединяваме хора и знания',
+    description: 'Във VAMO Digital Hub срещаме проекти, експерти и партньори, с които можем да продължим тази работа.',
+  },
+];
+---
+
+<BaseLayout
+  title="Нашата мисия"
+  description="Чрез филми, съдържание и партньорства ВАМО съхранява и популяризира природното, културното и историческото богатство на България."
+>
+  <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
+  <article class="mission-page">
+    <div class="mission-page__crumbs">
+      <nav class="mission-shell" aria-label="Навигация по местоположението">
+        <a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">Мисия</span>
+      </nav>
+    </div>
+
+    <header class="mission-hero">
+      <div class="mission-shell mission-hero__inner">
+        <div class="mission-hero__copy">
+          <p class="mission-eyebrow">Нашата мисия</p>
+          <h1>Съхраняваме паметта. Разказваме стойностните истории. Свързваме поколенията.</h1>
+          <p>България има природно, културно и историческо богатство, което заслужава да бъде познавано, пазено и предавано нататък. То живее в нашите планини и селища, в традициите и местните общности, в спомените и знанията на хората.</p>
+        </div>
+        <div class="mission-hero__placeholder" aria-label="Място за бъдеща снимка към мисията">
+          <span>Снимка за мисията</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="mission-statement" aria-labelledby="mission-statement-title">
+      <div class="mission-shell mission-statement__inner">
+        <h2 id="mission-statement-title">Защо работим</h2>
+        <div>
+          <p class="mission-statement__lead">Нашата мисия е чрез филми, съдържание и партньорства да съхраняваме и популяризираме това богатство и да правим неговите истории достъпни за следващите поколения.</p>
+          <p>Вече 26 години ВАМО работи с общини, културни институции, природни паркове, експерти и местни общности. Създаваме документални разкази, които срещат публиката с българската природа, историческите места, живите традиции и хората, които ги пазят.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mission-work" aria-labelledby="mission-work-title">
+      <div class="mission-shell">
+        <h2 id="mission-work-title">Как превръщаме мисията в работа</h2>
+        <div class="mission-work__grid">
+          {ways.map((way, index) => (
+            <article class="mission-work__item">
+              <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <h3>{way.title}</h3>
+              <p>{way.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="mission-films" aria-labelledby="mission-films-title">
+      <div class="mission-shell mission-films__inner">
+        <div>
+          <p class="mission-eyebrow">Филмово наследство</p>
+          <h2 id="mission-films-title">Филмите, чрез които разказваме България</h2>
+        </div>
+        <div>
+          <p>Зад мисията ни стоят конкретни истории и години работа на терен. Подбраният каталог представя филми на ВАМО, посветени на природното, културното и историческото наследство на България.</p>
+          <p>Всеки от тях е среща с място, общност или памет, които заслужават да останат видими.</p>
+          <a class="mission-films__link" href="/portfolio/">Разгледайте каталога на филмите <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mission-closing">
+      <div class="mission-shell">
+        <p>Вярваме, че когато разказваме за доброто — ние го умножаваме.</p>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .mission-page { background: var(--color-background); }
+  .mission-shell { width: min(calc(100% - 2 * var(--layout-gutter-mobile)), var(--layout-content-max)); margin-inline: auto; }
+  .mission-page__crumbs { border-block: 1px solid var(--color-border); background: var(--color-surface); }
+  .mission-page__crumbs nav { display: flex; min-height: 44px; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .mission-page__crumbs a { color: inherit; text-decoration: none; }
+  .mission-page__crumbs a:hover { color: var(--color-primary-hover); }
+  .mission-page__crumbs a:focus-visible, .mission-films__link:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+  .mission-hero, .mission-statement, .mission-work, .mission-films, .mission-closing { padding-block: var(--layout-anchor-padding-mobile); }
+  .mission-hero__inner { display: grid; gap: var(--space-10); align-items: center; }
+  .mission-hero__copy { display: grid; gap: var(--space-6); }
+  .mission-eyebrow { color: var(--color-primary); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  h1, h2, h3 { color: var(--color-text); font-family: var(--font-heading); letter-spacing: -.02em; }
+  h1 { max-width: 18ch; font-size: var(--type-page-title); line-height: 1.1; text-wrap: balance; }
+  h2 { font-size: var(--type-section-title-anchor); line-height: 1.2; text-wrap: balance; }
+  h3 { font-size: var(--type-card-title); line-height: 1.3; }
+  .mission-page p:not(.mission-eyebrow) { line-height: 1.65; }
+  .mission-hero__copy > p:last-child, .mission-statement p:not(.mission-statement__lead), .mission-work__item p, .mission-films p:not(.mission-eyebrow) { color: var(--color-text-muted); }
+  .mission-hero__placeholder { display: grid; min-height: 18rem; place-items: center; border: 1px solid var(--color-border-strong); border-radius: var(--radius-surface); background: var(--color-surface); color: var(--color-text-muted); font-size: .875rem; }
+  .mission-statement { background: var(--color-surface); }
+  .mission-statement__inner, .mission-films__inner { display: grid; gap: var(--space-8); }
+  .mission-statement__inner > div, .mission-films__inner > div:last-child { display: grid; gap: var(--space-6); }
+  .mission-statement__lead { font-family: var(--font-heading); font-size: var(--type-feature-title); font-weight: 600; line-height: 1.45 !important; }
+  .mission-work h2 { max-width: 25ch; }
+  .mission-work__grid { display: grid; gap: var(--space-8); margin-block-start: var(--space-12); }
+  .mission-work__item { display: grid; align-content: start; gap: var(--space-4); border-block-start: 1px solid var(--color-border-strong); padding-block-start: var(--space-5); }
+  .mission-work__item > span { color: var(--color-primary); font-family: var(--font-heading); font-weight: 700; }
+  .mission-films { background: var(--color-surface); }
+  .mission-films__inner > div:first-child { display: grid; align-content: start; gap: var(--space-4); }
+  .mission-films__link { justify-self: start; color: var(--color-primary-hover); font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: .25em; }
+  .mission-closing { background: var(--color-vamo-black); }
+  .mission-closing p { max-width: 30ch; color: var(--color-text-inverse); font-family: var(--font-heading); font-size: var(--type-section-title-anchor); font-weight: 600; line-height: 1.25 !important; text-wrap: balance; }
+  @media (min-width: 48rem) {
+    .mission-shell { width: min(calc(100% - 2 * var(--layout-gutter-desktop)), var(--layout-content-max)); }
+    .mission-hero, .mission-statement, .mission-work, .mission-films, .mission-closing { padding-block: var(--layout-anchor-padding-desktop); }
+    .mission-hero__inner { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--space-12); }
+    .mission-hero__placeholder { min-height: 26rem; }
+    .mission-statement__inner, .mission-films__inner { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--space-16); }
+    .mission-work__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

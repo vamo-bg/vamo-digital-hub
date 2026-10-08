@@ -8,6 +8,7 @@ interface Props {
   lead?: string;
   description?: string;
   detail?: string;
+  closing?: string;
   primaryHref?: string;
   primaryLabel?: string;
   secondaryHref?: string;
@@ -16,13 +17,14 @@ interface Props {
 
 const {
   title,
-  lead = 'Вярваме, че когато разказваме за доброто — ние го умножаваме.',
-  description = 'Вече 26 години ВАМО създава филми, съдържание и комуникации, които дават видимост на хората, пазят природното и културното наследство и подкрепят развитието на общностите.',
+  lead = 'Нашата мисия е да съхраняваме и популяризираме природното, културното и историческото богатство на България и да предаваме неговите истории на следващите поколения.',
+  description = 'Вече 26 години ВАМО създава филми, съдържание и комуникации, които дават видимост на стойностните хора и инициативи, пазят паметта и подкрепят развитието на общностите.',
   detail = 'Днес събираме този опит във VAMO Digital Hub — общ дом за нашите проекти, експерти и партньорства.',
+  closing = 'Вярваме, че когато разказваме за доброто — ние го умножаваме.',
   primaryHref = '/portfolio/',
   primaryLabel = 'Разгледайте проектите',
-  secondaryHref = '/za-nas/',
-  secondaryLabel = 'Запознайте се с ВАМО',
+  secondaryHref = '/misiya/',
+  secondaryLabel = 'Нашата мисия',
 } = Astro.props;
 ---
 
@@ -48,6 +50,7 @@ const {
           <p class="hero__lead">{lead}</p>
           <p class="hero__description">{description}</p>
           <p class="hero__description">{detail}</p>
+          <p class="hero__closing">{closing}</p>
 
           <div class="hero__actions">
             <Button href={primaryHref} variant="primary" size="lg">
@@ -139,6 +142,13 @@ const {
     color: var(--color-text-muted);
     font-size: 1.0625rem;
     line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .hero__closing {
+    color: var(--color-text);
+    font-weight: 700;
+    line-height: 1.6;
     text-wrap: pretty;
   }
 
