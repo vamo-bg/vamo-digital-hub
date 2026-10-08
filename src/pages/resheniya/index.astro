@@ -75,7 +75,7 @@ const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'Breadcrum
         <ul class="solutions-grid" aria-label="Решения на VAMO">
           {solutions.map((solution) => (
             <li>
-              <a class="solution-grid-item" href={`/resheniya/${solution.id}/`} aria-labelledby={`solution-${solution.id}`}>
+              <a class="solution-grid-item" href={`/resheniya/${solution.id}/`}>
                 <div class="solution-grid-item__media">{solutionImages[solution.id as keyof typeof solutionImages] && <Image src={solutionImages[solution.id as keyof typeof solutionImages]} alt={solutionImageAlt[solution.id as keyof typeof solutionImageAlt] ?? ''} width={720} height={720} loading="lazy" />}</div>
                 <div class="solution-grid-item__overlay">
                   <h2 id={`solution-${solution.id}`}>{solution.data.title}</h2>

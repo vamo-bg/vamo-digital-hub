@@ -11,7 +11,7 @@ const { name, role, shortBio, photo, photoAlt } = expert.data;
 ---
 
 <article class="expert-card">
-  <a class="expert-card__link" href={`/ekspertna-mrezha/${expert.id}/`} aria-label={`Вижте профила на ${name}`}>
+  <a class="expert-card__link" href={`/ekspertna-mrezha/${expert.id}/`}>
     <div class="expert-card__media">
       {photo ? (
         <Image

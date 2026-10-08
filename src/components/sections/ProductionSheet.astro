@@ -73,9 +73,8 @@ const splitClosing = closingBesideBody && !evidence && Boolean(outcome || result
       <dl class="sheet__figures">
         {results.map((result) => (
           <div>
-            <dd>{result.value}</dd>
             <dt>{result.label}</dt>
-            {result.detail && <p>{result.detail}</p>}
+            <dd>{result.value}{result.detail && <small>{result.detail}</small>}</dd>
           </div>
         ))}
       </dl>
@@ -252,9 +251,14 @@ const splitClosing = closingBesideBody && !evidence && Boolean(outcome || result
     line-height: 1.5;
   }
 
-  .sheet__figures p {
+  .sheet__figures dd small {
+    display: block;
+    margin-block-start: var(--space-1);
     color: var(--color-neutral-300);
+    font-family: var(--font-body);
     font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: normal;
     line-height: 1.5;
   }
 

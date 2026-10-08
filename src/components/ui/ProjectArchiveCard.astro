@@ -21,7 +21,7 @@ const { title, description, coverImage, coverAlt, year, projectType } = project.
 ---
 
 <article class:list={['archive-card', { 'archive-card--featured': featured }] }>
-  <a href={`/portfolio/${project.id}/`} aria-label={`Вижте проекта: ${title}`}>
+  <a href={`/portfolio/${project.id}/`}>
     <div class="archive-card__media">
       {
         coverImage ? (

@@ -28,7 +28,7 @@ const {
 
 <article class:list={['project-showcase', `project-showcase--${variant}`, { 'project-showcase--preview': isPreview }]}>
   {id && !isPreview ? (
-    <a href={`/portfolio/${id}/`} aria-label={`Вижте проекта: ${title}`}>
+    <a href={`/portfolio/${id}/`}>
       <div class="project-showcase__media">
         {coverImage ? (
           <Image

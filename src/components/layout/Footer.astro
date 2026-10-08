@@ -248,7 +248,7 @@ const currentYear = new Date().getFullYear();
   .site-footer__media { margin-block-start: var(--space-8); }
   .site-footer__media h2 { margin-block-end: var(--space-3); }
   .site-footer__media ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
-  .site-footer__media a { min-height: 2.25rem; color: var(--color-red-100); font-size: .875rem; line-height: 1.35; text-decoration: none; transition: color var(--dur-1) ease; }
+  .site-footer__media a { display: inline-flex; min-height: 2.75rem; align-items: center; color: var(--color-red-100); font-size: .875rem; line-height: 1.35; text-decoration: none; transition: color var(--dur-1) ease; }
   .site-footer__media a:hover { color: var(--color-white); }
 
   .site-footer__legal {
@@ -268,7 +268,7 @@ const currentYear = new Date().getFullYear();
 
   .site-footer__legal p { margin: 0; }
   .site-footer__legal ul { display: flex; flex-wrap: wrap; gap: var(--space-1); }
-  .site-footer__legal a { color: inherit; text-underline-offset: 0.2em; }
+  .site-footer__legal a { display: inline-flex; min-height: 2.75rem; align-items: center; color: inherit; text-underline-offset: 0.2em; }
   .site-footer__legal a:hover { color: var(--color-white); }
   .site-footer__legal-separator {
     margin-inline: var(--space-1);
@@ -295,7 +295,7 @@ const currentYear = new Date().getFullYear();
     }
 
     .site-footer__nav a,
-    .site-footer__contacts a { min-height: 2.25rem; }
+    .site-footer__contacts a { min-height: 2.75rem; }
   }
 
   @media (min-width: 75rem) {

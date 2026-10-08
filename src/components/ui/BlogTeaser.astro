@@ -34,7 +34,7 @@ const formattedDate = pubDate
 
 <article class:list={['blog-teaser', `blog-teaser--${variant}`, { 'blog-teaser--preview': isPreview }]}>
   {id && !isPreview ? (
-    <a href={`/blog/${id}/`} aria-label={`Прочетете статията: ${title}`}>
+    <a href={`/blog/${id}/`}>
       <div class:list={['blog-teaser__media', { 'blog-teaser__media--placeholder': !cover }]}>
         {cover ? (
           <Image

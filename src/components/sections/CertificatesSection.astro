@@ -43,7 +43,7 @@ const sorted = [...items].sort((a, b) => (a.data.order ?? 99) - (b.data.order ??
   .certificates-section { padding-block: var(--layout-section-padding-mobile); background: var(--color-neutral-100); }
   .certificates-section__inner { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
   .certificates-section__heading { max-width: 48rem; }
-  .certificates-section__eyebrow { margin: 0 0 var(--space-3); color: var(--color-vamo-red); font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .certificates-section__eyebrow { margin: 0 0 var(--space-3); color: var(--color-primary-hover); font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
   .certificates-section h2 { margin: 0; font-size: var(--type-section-title); line-height: 1.15; letter-spacing: -.03em; }
   .certificates-section__heading > p:last-child { max-width: 60ch; margin-block-start: var(--space-4); color: var(--color-text-muted); line-height: 1.65; }
   .certificates-grid { display: grid; gap: var(--space-4); margin-block-start: var(--space-10); }
@@ -52,7 +52,7 @@ const sorted = [...items].sort((a, b) => (a.data.order ?? 99) - (b.data.order ??
   .certificate-card h3 { margin: 0; font-size: var(--type-card-title); line-height: 1.25; }
   .certificate-card > div:first-child > p:last-child { margin-block-start: var(--space-3); color: var(--color-text-muted); line-height: 1.55; }
   .certificate-card__meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-block-start: auto; color: var(--color-text-muted); font-size: .875rem; }
-  .certificate-card__meta a, .certificates-section__link { color: var(--color-vamo-red); font-weight: 700; text-decoration: none; }
+  .certificate-card__meta a, .certificates-section__link { color: var(--color-primary-hover); font-weight: 700; text-decoration: underline; text-underline-offset: .2em; }
   .certificate-card__meta a:hover, .certificates-section__link:hover { text-decoration: underline; }
   .certificates-section__link { display: inline-block; margin-block-start: var(--space-8); }
   @media (min-width: 48rem) { .certificates-section { padding-block: var(--layout-section-padding-desktop); } .certificates-section__inner { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .certificates-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
