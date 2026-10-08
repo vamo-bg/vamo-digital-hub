@@ -39,6 +39,7 @@ const legalLinks = [
   { label: 'Бисквитки', href: '/biskvitki/' },
   { label: 'Редакционна политика', href: '/redakcionna-politika/' },
   { label: 'Декларация за достъпност', href: '/deklaratsiya-za-dostapnost/' },
+  { label: 'Използване на ИИ', href: '/izpolzvane-na-ii/' },
   // Отваря отново лентата за съгласие; ConsentBanner слуша за този атрибут.
   { label: 'Настройки за бисквитки', href: '/biskvitki/', reopensConsent: true },
 ];
@@ -298,8 +299,7 @@ const currentYear = new Date().getFullYear();
   }
 
   @media (min-width: 75rem) {
-    .site-footer__legal { flex-wrap: nowrap; font-size: 0.8125rem; white-space: nowrap; }
-    .site-footer__legal ul { flex-wrap: nowrap; }
+    .site-footer__legal { font-size: 0.8125rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {

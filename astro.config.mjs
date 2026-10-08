@@ -21,6 +21,7 @@ export default defineConfig({
           '/politika-za-poveritelnost/',
           '/biskvitki/',
           '/deklaratsiya-za-dostapnost/',
+          '/izpolzvane-na-ii/',
           // Стига се до нея само след изпратена форма; самостоятелно не казва нищо.
           '/thanks/',
         ].some((path) => page.endsWith(path)),
