@@ -83,10 +83,21 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 3, name: title, item: Astro.url.href },
   ],
 };
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': `${Astro.url.href}#service`,
+  name: title,
+  description: seoDescription ?? description,
+  url: Astro.url.href,
+  provider: { '@id': `${new URL('/', Astro.site ?? Astro.url).href}#organization` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': Astro.url.href },
+};
 ---
 
 <BaseLayout title={seoTitle ?? title} description={seoDescription ?? description}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(serviceSchema)}></script>
   <article>
     <div class="service-breadcrumbs-bar">
       <nav class="service-shell service-breadcrumbs" aria-label="Навигация">

@@ -100,6 +100,15 @@ const organizationSchema = {
     availableLanguage: 'Bulgarian',
   },
 };
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteOrigin}#website`,
+  url: siteOrigin,
+  name: site.name,
+  inLanguage: 'bg',
+  publisher: { '@id': `${siteOrigin}#organization` },
+};
 ---
 
 <!doctype html>
@@ -254,6 +263,7 @@ const organizationSchema = {
 
     <title>{pageTitle}</title>
     <script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(websiteSchema)} />
     <slot name="head" />
   </head>
   <body>
