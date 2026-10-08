@@ -51,6 +51,14 @@ ErrorDocument 404 /404.html
   # трябва да вижда текущата версия.
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # HTTPS вече е каноничният адрес. Не включваме поддомейните, защото други
+  # проекти на VAMO се обслужват отделно и не са одитирани за HSTS.
+  Header always set Strict-Transport-Security "max-age=15552000"
+
+  # Базова прилагана CSP. Ограниченията за скриптове и стилове изискват отделен
+  # одит на GTM и вградените Astro скриптове, преди да бъдат наложени.
+  Header always set Content-Security-Policy "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
 </IfModule>
 
 # ---------------------------------------------------------------------------
