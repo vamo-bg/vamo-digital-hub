@@ -107,6 +107,7 @@ const currentYear = new Date().getFullYear();
               </li>
             ))}
           </ul>
+          <p class="site-footer__owner">{site.legalName} · ЕИК {site.eik}</p>
         </section>
       </div>
 
@@ -230,6 +231,13 @@ const currentYear = new Date().getFullYear();
     flex: 0 0 auto;
     color: var(--color-white);
     font-size: 1.125rem;
+  }
+
+  .site-footer__owner {
+    margin-block-start: var(--space-4);
+    color: var(--color-red-100);
+    font-size: 0.875rem;
+    line-height: 1.5;
   }
 
   .site-footer__socials { display: flex; flex-wrap: wrap; gap: var(--space-3); }

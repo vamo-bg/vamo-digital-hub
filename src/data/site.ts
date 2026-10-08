@@ -82,6 +82,7 @@ export interface SiteAnalytics {
 export interface SiteConfig {
   name: string;
   legalName: string;
+  eik: string;
   tagline: string;
   description: string;
   contact: {
@@ -116,6 +117,7 @@ export const site: SiteConfig = {
     country: 'BG',
   },
   legalName: 'ВАМО ЕООД',
+  eik: '101670093',
   tagline: 'VAMO е система за растеж',
   description:
     'която обединява стратегия, експертност, медии и реализация. Работим с бизнеси и организации, които искат да превърнат потенциала си в реален, измерим резултат.',
