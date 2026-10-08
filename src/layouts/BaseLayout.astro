@@ -143,6 +143,9 @@ const organizationSchema = {
     </script>
 
     {/*
+      GTM се зарежда само след изрично съгласие. За вече приелите посетители
+      запазваме отложения старт, описан по-долу.
+
       `gtm.js` и `gtag/js` тежат общо ~1MB неминифициран JS — измерено на живо,
       те са реалната причина зад бавния LCP на mobile, не CSS или снимките.
       `j.async = true` пуска свалянето неблокиращо, но изпълнението им (парсене
@@ -174,11 +177,21 @@ const organizationSchema = {
       }
 
       var vamoGtmStarted = false;
+      function vamoHasAnalyticsConsent() {
+        try {
+          var saved = JSON.parse(localStorage.getItem('vamo-consent') || 'null');
+          return saved && saved.choice === 'accepted' && saved.state && saved.state.analytics_storage === 'granted';
+        } catch (error) {
+          return false;
+        }
+      }
       function vamoStartGtm() {
-        if (vamoGtmStarted) return;
+        if (vamoGtmStarted || !vamoHasAnalyticsConsent()) return;
         vamoGtmStarted = true;
         vamoLoadGtm();
       }
+
+      window.addEventListener('vamo:consent-accepted', vamoStartGtm);
 
       ['mousemove', 'scroll', 'touchstart', 'keydown', 'click'].forEach(function (evt) {
         window.addEventListener(evt, vamoStartGtm, { passive: true, once: true });

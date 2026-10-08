@@ -110,6 +110,7 @@
       remember(state, choice);
       if (choice === 'declined') clearMeasurementCookies();
       banner.hidden = true;
+      if (choice === 'accepted') window.dispatchEvent(new Event('vamo:consent-accepted'));
     };
 
     banner
