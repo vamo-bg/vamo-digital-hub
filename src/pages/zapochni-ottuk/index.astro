@@ -1,0 +1,166 @@
+---
+import { getCollection } from 'astro:content';
+
+import Button from '../../components/ui/Button.astro';
+import ContactForm from '../../components/ui/ContactForm.astro';
+import NetworkPattern from '../../components/ui/NetworkPattern.astro';
+import SolutionCard from '../../components/ui/SolutionCard.astro';
+import { site } from '../../data/site';
+import { solutionNeedTitles } from '../../data/solutionNeeds';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'Започнете оттук';
+const pageUrl = new URL('/zapochni-ottuk/', Astro.site ?? Astro.url).href;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: pageTitle, item: pageUrl },
+  ],
+};
+
+const solutions = (await getCollection('resheniya', ({ data }) => !data.draft && data.featuredInSection))
+  .sort(
+    (a, b) =>
+      (a.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) -
+        (b.data.sectionOrder ?? Number.MAX_SAFE_INTEGER) ||
+      a.data.title.localeCompare(b.data.title, 'bg'),
+  )
+  .slice(0, site.solutionsSection.limit);
+---
+
+<BaseLayout
+  title="Започнете оттук — намерете подходящото решение"
+  description="Изберете задачата, която е най-близка до вашата, разгледайте работата на VAMO и ни разкажете накратко от какво имате нужда."
+>
+  <Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} /></Fragment>
+
+  <article class="start-page">
+    <div class="start-crumbs">
+      <nav class="start-shell breadcrumbs" aria-label="Навигация по местоположението">
+        <a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">{pageTitle}</span>
+      </nav>
+    </div>
+
+    <header class="start-hero">
+      <NetworkPattern />
+      <div class="start-shell start-hero__inner">
+        <div>
+          <p class="start-eyebrow">Вашата следваща стъпка</p>
+          <h1>От какво имате нужда?</h1>
+          <p class="start-hero__summary">Започнете от задачата си. Разгледайте подходящите решения и примери за работата ни. Ако още търсите посоката, разкажете ни накратко — ще я уточним заедно.</p>
+          <Button href="#izberete-zadacha" size="md">Изберете своята задача</Button>
+        </div>
+      </div>
+    </header>
+
+    <section class="start-needs" id="izberete-zadacha" aria-labelledby="start-needs-title">
+      <div class="start-shell">
+        <div class="start-section-heading">
+          <p class="start-eyebrow">Първа стъпка</p>
+          <h2 id="start-needs-title">Коя задача е най-близка до вашата?</h2>
+          <p>Всяка карта води до услугата, с която можем да помогнем. Можете да разгледате и <a href="/resheniya/">всички решения</a>.</p>
+        </div>
+        <div class="start-needs__grid">
+          {solutions.map((solution) => (
+            <SolutionCard solution={solution} needTitle={solutionNeedTitles[solution.id] ?? solution.data.title} />
+          ))}
+        </div>
+        <p class="start-needs__unsure">Не откривате точната задача? <a href="#zapitvane">Опишете я със свои думи.</a></p>
+      </div>
+    </section>
+
+    <section class="start-proof" aria-labelledby="start-proof-title">
+      <div class="start-shell start-proof__inner">
+        <div class="start-section-heading">
+          <p class="start-eyebrow">Преди разговора</p>
+          <h2 id="start-proof-title">Вижте хората и проектите зад решенията</h2>
+          <p>Подходящото решение зависи от контекста. Разгледайте реализирани проекти и експертите, с които работим.</p>
+        </div>
+        <div class="start-proof__links">
+          <a href="/portfolio/">Разгледайте проектите <span aria-hidden="true">→</span></a>
+          <a href="/ekspertna-mrezha/">Запознайте се с експертите <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="start-process" aria-labelledby="start-process-title">
+      <div class="start-shell">
+        <div class="start-section-heading">
+          <p class="start-eyebrow">Как продължаваме</p>
+          <h2 id="start-process-title">Започваме с разговор, не с готова оферта</h2>
+        </div>
+        <ol class="start-process__steps">
+          <li><span aria-hidden="true">01</span><h3>Разказвате ни за задачата</h3><p>Споделяте целта, контекста и това, което вече сте опитали. Не е нужно да знаете точната услуга.</p></li>
+          <li><span aria-hidden="true">02</span><h3>Уточняваме посоката</h3><p>Обсъждаме какъв резултат търсите и кои хора и дейности са подходящи за него.</p></li>
+          <li><span aria-hidden="true">03</span><h3>Планираме следващия ход</h3><p>Ако можем да помогнем, определяме обхвата и следващата конкретна стъпка.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="start-inquiry" aria-labelledby="start-inquiry-title">
+      <div class="start-shell start-inquiry__inner">
+        <div class="start-section-heading">
+          <p class="start-eyebrow">Пишете ни</p>
+          <h2 id="start-inquiry-title">Разкажете ни за вашата задача</h2>
+          <p>Няколко изречения са достатъчни за начало. Ще използваме посочените данни, за да се свържем с вас относно запитването.</p>
+          <p>Предпочитате разговор? <a href={site.contact.phone.href}>{site.contact.phone.label}</a></p>
+        </div>
+        <ContactForm />
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .start-page { background: var(--color-cream); }
+  .start-shell { width: min(calc(100% - (2 * var(--layout-gutter-mobile))), var(--layout-content-max)); margin-inline: auto; }
+  .start-crumbs { border-block: 1px solid var(--color-border); background: var(--color-surface); }
+  .breadcrumbs { display: flex; min-height: 2.75rem; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: .875rem; }
+  .breadcrumbs a { color: inherit; text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--color-vamo-red); }
+  .breadcrumbs a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .breadcrumbs span[aria-current='page'] { color: var(--color-text); font-weight: 600; }
+  .start-hero { position: relative; isolation: isolate; overflow: hidden; background: var(--color-vamo-black); color: var(--color-text-inverse); }
+  .start-hero > :global(.network-pattern) { opacity: .68; }
+  .start-hero__inner { position: relative; z-index: 1; padding-block: var(--layout-anchor-padding-mobile); }
+  .start-eyebrow { color: var(--color-vamo-red); font-family: var(--font-heading); font-size: .75rem; font-weight: 600; letter-spacing: .12em; line-height: 1.4; text-transform: uppercase; }
+  .start-hero .start-eyebrow { color: var(--color-accent-on-dark); }
+  .start-hero h1 { max-width: 15ch; margin-block-start: var(--space-4); font-size: var(--type-page-title); font-weight: 700; line-height: 1.1; letter-spacing: -.03em; text-wrap: balance; }
+  .start-hero__summary { max-width: 62ch; margin-block-start: var(--space-6); color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
+  .start-hero :global(.button) { margin-block-start: var(--space-8); }
+  .start-needs, .start-proof, .start-process, .start-inquiry { padding-block: var(--layout-anchor-padding-mobile); }
+  .start-needs, .start-inquiry { scroll-margin-block-start: var(--space-20); }
+  .start-section-heading { max-width: 62ch; }
+  .start-section-heading h2 { margin-block-start: var(--space-3); font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+  .start-section-heading p:not(.start-eyebrow) { margin-block-start: var(--space-5); color: var(--color-text-muted); font-size: 1rem; line-height: 1.65; }
+  .start-section-heading a, .start-needs__unsure a { color: var(--color-text); text-decoration-color: var(--color-border-strong); text-underline-offset: var(--space-1); }
+  .start-section-heading a:hover, .start-needs__unsure a:hover { color: var(--color-vamo-red); text-decoration-color: currentColor; }
+  .start-section-heading a:focus-visible, .start-needs__unsure a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .start-needs { background: var(--color-neutral-100); }
+  .start-needs__grid { display: grid; gap: var(--space-5); margin-block-start: var(--space-8); }
+  .start-needs__unsure { margin-block-start: var(--space-8); color: var(--color-text-muted); line-height: 1.6; }
+  .start-proof__inner { display: grid; gap: var(--space-10); }
+  .start-proof__links { display: grid; align-content: start; border-block-start: 1px solid var(--color-border-strong); }
+  .start-proof__links a { display: flex; min-height: 3.5rem; align-items: center; justify-content: space-between; gap: var(--space-4); border-block-end: 1px solid var(--color-border); color: var(--color-text); font-family: var(--font-heading); font-weight: 600; text-decoration: none; }
+  .start-proof__links a:hover { color: var(--color-vamo-red); }
+  .start-proof__links a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+  .start-process { background: var(--color-cream); }
+  .start-process__steps { display: grid; gap: var(--space-8); margin: var(--space-10) 0 0; padding: 0; list-style: none; }
+  .start-process__steps li { border-block-start: 1px solid var(--color-border-strong); padding-block-start: var(--space-5); }
+  .start-process__steps li > span { color: var(--color-vamo-red); font-family: var(--font-heading); font-size: .875rem; font-weight: 600; }
+  .start-process__steps h3 { margin-block-start: var(--space-5); font-size: var(--type-card-title); font-weight: 600; line-height: 1.3; }
+  .start-process__steps p { margin-block-start: var(--space-3); color: var(--color-text-muted); line-height: 1.65; }
+  .start-inquiry { background: var(--color-neutral-100); }
+  .start-inquiry__inner { display: grid; gap: var(--space-10); align-items: start; }
+  .start-inquiry :global(#zapitvane) { scroll-margin-block-start: var(--space-20); }
+  @media (min-width: 48rem) {
+    .start-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
+    .start-hero__inner, .start-needs, .start-proof, .start-process, .start-inquiry { padding-block: var(--layout-anchor-padding-desktop); }
+    .start-needs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block-start: var(--space-10); }
+    .start-proof__inner, .start-inquiry__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-16); }
+    .start-process__steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); }
+  }
+  @media (min-width: 64rem) { .start-needs__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
