@@ -49,11 +49,11 @@ const contactMethods = [site.contact.email, site.contact.phone, site.contact.vib
 
     <section class="contact-inquiry" aria-labelledby="contact-inquiry-title">
       <div class="contact-shell contact-inquiry__inner">
+        <div class="contact-inquiry__form"><ContactForm /></div>
         <div class="contact-inquiry__contacts">
           <div class="contact-methods__intro"><h2 id="contact-inquiry-title">Изберете удобния начин</h2><p>Всички канали водят към един и същ разговор — за вашата конкретна задача.</p></div>
           <ul class="contact-methods__list">{contactMethods.map((method) => <li><a href={method.href}><i class:list={['ph', `ph-${method.icon}`]} aria-hidden="true" /><span>{method.label}</span><i class="ph ph-arrow-up-right" aria-hidden="true" /></a></li>)}</ul>
         </div>
-        <div class="contact-inquiry__form"><ContactForm /></div>
       </div>
     </section>
 
@@ -112,8 +112,9 @@ const contactMethods = [site.contact.email, site.contact.phone, site.contact.vib
   .contact-methods__list a:hover i:last-child { color: var(--color-vamo-red); transform: translate(2px, -2px); }
   .contact-methods__list a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
 
-  .contact-inquiry { padding-block: var(--layout-anchor-padding-mobile); background: var(--color-neutral-100); }
+  .contact-inquiry { padding-block: 0 var(--layout-anchor-padding-mobile); background: var(--color-neutral-100); }
   .contact-inquiry__inner { display: grid; gap: var(--space-10); }
+  .contact-inquiry__form { position: relative; z-index: 2; margin-block-start: calc(var(--space-8) * -1); }
   .contact-inquiry__intro { display: grid; gap: var(--space-4); max-width: 38rem; }
   .contact-inquiry h2 { font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
   .contact-inquiry__intro p { color: var(--color-text-muted); line-height: 1.65; text-wrap: pretty; }
@@ -126,10 +127,11 @@ const contactMethods = [site.contact.email, site.contact.phone, site.contact.vib
   @media (min-width: 48rem) {
     .contact-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
     .contact-hero__inner { grid-template-columns: minmax(0, 1fr) minmax(22rem, .72fr); align-items: start; padding-block: var(--layout-anchor-padding-desktop); }
-  .contact-inquiry__form { position: relative; z-index: 2; width: min(100%, 36rem); margin-block-start: 0; }
-  .contact-inquiry__contacts .contact-methods__intro { max-width: none; }
-  .contact-inquiry__contacts .contact-methods__list { grid-template-columns: 1fr; }
-  .contact-inquiry__contacts .contact-methods__list a { padding-inline: 0; }
+    .contact-inquiry__form { grid-column: 2; grid-row: 1; width: min(100%, 36rem); margin-block-start: 0; }
+    .contact-inquiry__contacts { grid-column: 1; grid-row: 1; }
+    .contact-inquiry__contacts .contact-methods__intro { max-width: none; }
+    .contact-inquiry__contacts .contact-methods__list { grid-template-columns: 1fr; }
+    .contact-inquiry__contacts .contact-methods__list a { padding-inline: 0; }
     .contact-methods { padding-block: calc(var(--layout-anchor-padding-desktop) + var(--space-16)) var(--layout-anchor-padding-desktop); }
     .contact-methods__inner { grid-template-columns: minmax(14rem, .75fr) minmax(0, 1.25fr); gap: var(--space-16); align-items: start; }
     .contact-methods__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
