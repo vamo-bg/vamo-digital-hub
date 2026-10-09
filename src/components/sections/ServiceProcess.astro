@@ -1,12 +1,12 @@
 ---
 interface Step { title: string; description: string; }
-interface Props { title: string; intro: string; steps: Step[]; }
-const { title, intro, steps } = Astro.props;
+interface Props { title: string; intro: string; steps: Step[]; id?: string; label?: string; }
+const { title, intro, steps, id = 'kak-rabotim', label = 'Как работим' } = Astro.props;
 ---
 
-<section class="service-process" id="kak-rabotim" aria-labelledby="service-process-title">
+<section class:list={['service-process', steps.length === 3 && 'service-process--three']} id={id} aria-labelledby={`${id}-title`}>
   <div class="service-process__shell">
-    <header><p class="service-label">Как работим</p><h2 id="service-process-title">{title}</h2><p>{intro}</p></header>
+    <header><p class="service-label">{label}</p><h2 id={`${id}-title`}>{title}</h2><p>{intro}</p></header>
     <ol>{steps.map((step,index)=><li><span aria-hidden="true">{String(index+1).padStart(2,'0')}</span><div><h3>{step.title}</h3><p>{step.description}</p></div></li>)}</ol>
   </div>
 </section>
@@ -29,6 +29,7 @@ const { title, intro, steps } = Astro.props;
     .service-process{padding-block:var(--layout-section-padding-desktop)}
     .service-process__shell{width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max))}
     ol{grid-template-columns:repeat(4,minmax(0,1fr));border-block-start:1px dotted var(--color-border-strong)}
+    .service-process--three ol{grid-template-columns:repeat(3,minmax(0,1fr))}
     ol::before{display:none}
     li{grid-template-columns:1fr;align-content:start;gap:var(--space-5);min-height:12rem;padding:0 var(--space-6) var(--space-6);border-block-end:1px dotted var(--color-border-strong)}
     li:first-child{border-block-start:0}

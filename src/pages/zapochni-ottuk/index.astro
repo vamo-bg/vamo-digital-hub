@@ -6,6 +6,7 @@ import Button from '../../components/ui/Button.astro';
 import ContactForm from '../../components/ui/ContactForm.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import SolutionCard from '../../components/ui/SolutionCard.astro';
+import ServiceProcess from '../../components/sections/ServiceProcess.astro';
 import pathImage from '../../assets/start-here-path.png';
 import { site } from '../../data/site';
 import { solutionNeedTitles } from '../../data/solutionNeeds';
@@ -98,19 +99,17 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
       </div>
     </section>
 
-    <section class="start-process" aria-labelledby="start-process-title">
-      <div class="start-shell">
-        <div class="start-section-heading">
-          <p class="start-eyebrow">Как продължаваме</p>
-          <h2 id="start-process-title">Започваме с разговор, не с готова оферта</h2>
-        </div>
-        <ol class="start-process__steps">
-          <li><span aria-hidden="true">01</span><h3>Разказвате ни за задачата</h3><p>Споделяте целта, контекста и това, което вече сте опитали. Не е нужно да знаете точната услуга.</p></li>
-          <li><span aria-hidden="true">02</span><h3>Уточняваме посоката</h3><p>Обсъждаме какъв резултат търсите и кои хора и дейности са подходящи за него.</p></li>
-          <li><span aria-hidden="true">03</span><h3>Планираме следващия ход</h3><p>Ако можем да помогнем, определяме обхвата и следващата конкретна стъпка.</p></li>
-        </ol>
-      </div>
-    </section>
+    <ServiceProcess
+      id="start-process"
+      label="Как продължаваме"
+      title="Започваме с разговор, не с готова оферта"
+      intro="Три ясни стъпки от първото запитване до конкретен следващ ход."
+      steps={[
+        { title: 'Разказвате ни за задачата', description: 'Споделяте целта, контекста и това, което вече сте опитали. Не е нужно да знаете точната услуга.' },
+        { title: 'Уточняваме посоката', description: 'Обсъждаме какъв резултат търсите и кои хора и дейности са подходящи за него.' },
+        { title: 'Планираме следващия ход', description: 'Ако можем да помогнем, определяме обхвата и следващата конкретна стъпка.' },
+      ]}
+    />
 
     <section class="start-inquiry" aria-labelledby="start-inquiry-title">
       <div class="start-shell start-inquiry__inner">
@@ -144,7 +143,7 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
   .start-hero h1 { max-width: 15ch; margin-block-start: var(--space-4); font-size: var(--type-page-title); font-weight: 700; line-height: 1.1; letter-spacing: -.03em; text-wrap: balance; }
   .start-hero__summary { max-width: 62ch; margin-block-start: var(--space-6); color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
   .start-hero :global(.button) { margin-block-start: var(--space-8); }
-  .start-needs, .start-proof, .start-process, .start-inquiry { padding-block: var(--layout-anchor-padding-mobile); }
+  .start-needs, .start-proof, .start-inquiry { padding-block: var(--layout-anchor-padding-mobile); }
   .start-needs, .start-inquiry { scroll-margin-block-start: var(--space-20); }
   .start-section-heading { max-width: 62ch; }
   .start-section-heading h2 { margin-block-start: var(--space-3); font-size: var(--type-section-title); font-weight: 600; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
@@ -160,22 +159,15 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
   .start-proof__links a { display: flex; min-height: 3.5rem; align-items: center; justify-content: space-between; gap: var(--space-4); border-block-end: 1px solid var(--color-border); color: var(--color-text); font-family: var(--font-heading); font-weight: 600; text-decoration: none; }
   .start-proof__links a:hover { color: var(--color-vamo-red); }
   .start-proof__links a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
-  .start-process { background: var(--color-cream); }
-  .start-process__steps { display: grid; gap: var(--space-8); margin: var(--space-10) 0 0; padding: 0; list-style: none; }
-  .start-process__steps li { border-block-start: 1px solid var(--color-border-strong); padding-block-start: var(--space-5); }
-  .start-process__steps li > span { color: var(--color-vamo-red); font-family: var(--font-heading); font-size: .875rem; font-weight: 600; }
-  .start-process__steps h3 { margin-block-start: var(--space-5); font-size: var(--type-card-title); font-weight: 600; line-height: 1.3; }
-  .start-process__steps p { margin-block-start: var(--space-3); color: var(--color-text-muted); line-height: 1.65; }
   .start-inquiry { background: var(--color-neutral-100); }
   .start-inquiry__inner { display: grid; gap: var(--space-10); align-items: start; }
   .start-inquiry :global(#zapitvane) { scroll-margin-block-start: var(--space-20); }
   @media (min-width: 48rem) {
     .start-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
-    .start-hero__inner, .start-needs, .start-proof, .start-process, .start-inquiry { padding-block: var(--layout-anchor-padding-desktop); }
+    .start-hero__inner, .start-needs, .start-proof, .start-inquiry { padding-block: var(--layout-anchor-padding-desktop); }
     .start-hero__inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: var(--space-16); }
     .start-needs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block-start: var(--space-10); }
     .start-proof__inner, .start-inquiry__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-16); }
-    .start-process__steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); }
   }
   @media (min-width: 64rem) { .start-needs__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 </style>
