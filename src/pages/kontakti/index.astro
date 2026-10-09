@@ -42,7 +42,8 @@ const contactMethods = [site.contact.email, site.contact.phone, site.contact.vib
         <div>
           <h1>Нека започнем с разговор</h1>
           <p>Разкажете накратко каква е задачата, къде сте сега и какъв резултат искате да постигнете. Ще преценим най-смисления следващ ход.</p>
-          <Button href={site.contact.email.href} size="md">Пишете ни по имейл</Button>
+          <Button href="#contact-methods" size="md" class="contact-hero__mobile-action">Изберете начин за връзка</Button>
+          <Button href="#zapitvane" size="md" class="contact-hero__desktop-action">Разкажете ни за задачата</Button>
         </div>
       </div>
     </header>
@@ -50,7 +51,7 @@ const contactMethods = [site.contact.email, site.contact.phone, site.contact.vib
     <section class="contact-inquiry" aria-labelledby="contact-inquiry-title">
       <div class="contact-shell contact-inquiry__inner">
         <div class="contact-inquiry__form"><ContactForm /></div>
-        <div class="contact-inquiry__contacts">
+        <div class="contact-inquiry__contacts" id="contact-methods">
           <div class="contact-methods__intro"><h2 id="contact-inquiry-title">Изберете удобния начин</h2><p>Всички канали водят към един и същ разговор — за вашата конкретна задача.</p></div>
           <ul class="contact-methods__list">{contactMethods.map((method) => <li><a href={method.href}><i class:list={['ph', `ph-${method.icon}`]} aria-hidden="true" /><span>{method.label}</span><i class="ph ph-arrow-up-right" aria-hidden="true" /></a></li>)}</ul>
         </div>
@@ -90,6 +91,8 @@ const contactMethods = [site.contact.email, site.contact.phone, site.contact.vib
   .contact-hero h1 { max-width: 13ch; font-size: var(--type-page-title); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
   .contact-hero p { max-width: 56ch; margin-block-start: var(--space-5); color: var(--color-neutral-300); font-size: 1.125rem; line-height: 1.6; text-wrap: pretty; }
   .contact-hero :global(.button) { margin-block-start: var(--space-6); }
+  .contact-hero :global(.contact-hero__desktop-action) { display: none; }
+  .contact-inquiry__contacts, .contact-inquiry__form :global(#zapitvane) { scroll-margin-block-start: var(--space-20); }
   .contact-hero__direct { display: grid; border-block: 1px solid var(--color-neutral-800); }
   .contact-hero__direct a { display: grid; grid-template-columns: var(--space-6) 1fr; column-gap: var(--space-3); padding-block: var(--space-5); color: var(--color-text-inverse); text-decoration: none; }
   .contact-hero__direct a + a { border-block-start: 1px solid var(--color-neutral-800); }
@@ -125,6 +128,8 @@ const contactMethods = [site.contact.email, site.contact.phone, site.contact.vib
   .contact-visit :global(.button) { justify-self: start; }
 
   @media (min-width: 48rem) {
+    .contact-hero :global(.contact-hero__mobile-action) { display: none; }
+    .contact-hero :global(.contact-hero__desktop-action) { display: inline-flex; }
     .contact-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
     .contact-hero__inner { grid-template-columns: minmax(0, 1fr) minmax(22rem, .72fr); align-items: start; padding-block: var(--layout-anchor-padding-desktop); }
     .contact-inquiry__form { grid-column: 2; grid-row: 1; width: min(100%, 36rem); margin-block-start: 0; }
