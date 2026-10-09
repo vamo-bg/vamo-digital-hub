@@ -3,9 +3,10 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   solution: CollectionEntry<'resheniya'>;
+  needTitle?: string;
 }
 
-const { solution } = Astro.props;
+const { solution, needTitle } = Astro.props;
 const { title, description, icon } = solution.data;
 ---
 
@@ -22,7 +23,8 @@ const { title, description, icon } = solution.data;
     </div>
 
     <div class="solution-card__content">
-      <h3>{title}</h3>
+      <h3>{needTitle ?? title}</h3>
+      {needTitle && <span class="solution-card__service">{title}</span>}
       <p>{description}</p>
       <span class="solution-card__action" aria-hidden="true">Вижте решението</span>
     </div>
@@ -87,6 +89,13 @@ const { title, description, icon } = solution.data;
     line-height: 1.35;
     letter-spacing: -0.02em;
     text-wrap: balance;
+  }
+
+  .solution-card__service {
+    margin-block-start: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.4;
   }
 
   .solution-card p {

@@ -5,6 +5,15 @@ import { site } from '../../data/site';
 import Button from '../ui/Button.astro';
 import SolutionCard from '../ui/SolutionCard.astro';
 
+const needTitles: Record<string, string> = {
+  'digitalna-strategiya': 'Искам ясна посока за развитието на бизнеса',
+  'ueb-razrabotka': 'Нуждая се от уебсайт',
+  'dizayn-i-reklamni-materiali': 'Търся дизайн и рекламни материали',
+  'video-i-filmovo-proizvodstvo': 'Искам да разкажа историята си с видео',
+  'sabitiya-i-logistika': 'Организирам събитие',
+  'komunikatsii-i-pr': 'Трябва да достигна до повече хора',
+};
+
 const allSolutions = await getCollection('resheniya');
 const solutions = allSolutions
   .filter(
@@ -25,9 +34,7 @@ const solutions = allSolutions
     <div class="solutions-section__heading">
       <div>
         <h2 id="solutions-section-title">Решения според реалната ви нужда</h2>
-        <p>
-          Свързваме стратегия, съдържание, дизайн и реализация в ясни решения с конкретна бизнес цел.
-        </p>
+        <p>Изберете задачата, която е най-близка до вашата. Ще видите как можем да помогнем.</p>
       </div>
 
       <Button href={site.solutionsSection.archiveHref} variant="ghost" size="md">
@@ -37,7 +44,9 @@ const solutions = allSolutions
 
     {solutions.length > 0 && (
       <div class="solutions-section__grid">
-        {solutions.map((solution) => <SolutionCard solution={solution} />)}
+        {solutions.map((solution) => (
+          <SolutionCard solution={solution} needTitle={needTitles[solution.id] ?? solution.data.title} />
+        ))}
       </div>
     )}
   </div>
