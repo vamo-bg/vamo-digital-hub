@@ -31,6 +31,7 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
       a.data.title.localeCompare(b.data.title, 'bg'),
   )
   .slice(0, site.solutionsSection.limit);
+const contactMethods = [site.contact.phone, site.contact.viber, site.contact.messenger, site.contact.email];
 ---
 
 <BaseLayout
@@ -115,11 +116,18 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
 
     <section class="start-inquiry" aria-labelledby="start-inquiry-title">
       <div class="start-shell start-inquiry__inner">
-        <div class="start-section-heading">
-          <p class="start-eyebrow">Пишете ни</p>
-          <h2 id="start-inquiry-title">Разкажете ни за вашата задача</h2>
-          <p>Няколко изречения са достатъчни за начало. Ще използваме посочените данни, за да се свържем с вас относно запитването.</p>
-          <p>Предпочитате разговор? <a href={site.contact.phone.href}>{site.contact.phone.label}</a></p>
+        <div class="start-inquiry__contacts">
+          <div class="start-section-heading">
+            <p class="start-eyebrow">Свържете се с нас</p>
+            <h2 id="start-inquiry-title">Разкажете ни за вашата задача</h2>
+            <p>Няколко изречения са достатъчни за начало. Ще използваме посочените данни, за да се свържем с вас относно запитването.</p>
+            <p>Предпочитате разговор? Изберете удобния за вас начин да се свържете с нас.</p>
+          </div>
+          <ul class="start-inquiry__methods">
+            {contactMethods.map((method) => (
+              <li><a href={method.href}><i class:list={['ph', `ph-${method.icon}`]} aria-hidden="true" /><span>{method.label}</span><i class="ph ph-arrow-up-right" aria-hidden="true" /></a></li>
+            ))}
+          </ul>
         </div>
         <ContactForm />
       </div>
@@ -163,6 +171,14 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
   .start-proof__links a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
   .start-inquiry { background: var(--color-neutral-100); }
   .start-inquiry__inner { display: grid; gap: var(--space-10); align-items: start; }
+  .start-inquiry__contacts { display: grid; gap: var(--space-8); }
+  .start-inquiry__methods { display: grid; margin: 0; padding: 0; border-block-start: 1px solid var(--color-border-strong); list-style: none; }
+  .start-inquiry__methods li { border-block-end: 1px solid var(--color-border); }
+  .start-inquiry__methods a { display: grid; min-height: 4.5rem; grid-template-columns: var(--space-8) 1fr var(--space-6); gap: var(--space-4); align-items: center; color: var(--color-text); font-family: var(--font-heading); font-size: var(--type-card-title); font-weight: 600; letter-spacing: -.02em; text-decoration: none; }
+  .start-inquiry__methods i:first-child { color: var(--color-vamo-red); font-size: 1.5rem; }
+  .start-inquiry__methods i:last-child { justify-self: end; color: var(--color-neutral-400); font-size: 1.25rem; transition: color var(--dur-2) ease, transform var(--dur-2) var(--ease-out-quad); }
+  .start-inquiry__methods a:hover i:last-child { color: var(--color-vamo-red); transform: translate(2px, -2px); }
+  .start-inquiry__methods a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
   .start-inquiry :global(#zapitvane) { scroll-margin-block-start: var(--space-20); }
   @media (min-width: 48rem) {
     .start-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
