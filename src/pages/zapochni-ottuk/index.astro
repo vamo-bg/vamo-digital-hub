@@ -1,10 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
 import Button from '../../components/ui/Button.astro';
 import ContactForm from '../../components/ui/ContactForm.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import SolutionCard from '../../components/ui/SolutionCard.astro';
+import pathImage from '../../assets/start-here-path.png';
 import { site } from '../../data/site';
 import { solutionNeedTitles } from '../../data/solutionNeeds';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -46,12 +48,23 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
     <header class="start-hero">
       <NetworkPattern />
       <div class="start-shell start-hero__inner">
-        <div>
+        <div class="start-hero__copy">
           <p class="start-eyebrow">Вашата следваща стъпка</p>
           <h1>От какво имате нужда?</h1>
           <p class="start-hero__summary">Започнете от задачата си. Разгледайте подходящите решения и примери за работата ни. Ако още търсите посоката, разкажете ни накратко — ще я уточним заедно.</p>
           <Button href="#izberete-zadacha" size="md">Изберете своята задача</Button>
         </div>
+        <Image
+          class="start-hero__image"
+          src={pathImage}
+          alt="Пътят се разклонява към три осветени посоки."
+          width={640}
+          height={640}
+          widths={[320, 480, 640, 800]}
+          sizes="(min-width: 48rem) 40vw, 100vw"
+          format="webp"
+          loading="eager"
+        />
       </div>
     </header>
 
@@ -124,7 +137,8 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
   .breadcrumbs span[aria-current='page'] { color: var(--color-text); font-weight: 600; }
   .start-hero { position: relative; isolation: isolate; overflow: hidden; background: var(--color-vamo-black); color: var(--color-text-inverse); }
   .start-hero > :global(.network-pattern) { opacity: .68; }
-  .start-hero__inner { position: relative; z-index: 1; padding-block: var(--layout-anchor-padding-mobile); }
+  .start-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--space-10); align-items: center; padding-block: var(--layout-anchor-padding-mobile); }
+  .start-hero__image { display: block; width: 100%; height: auto; border-radius: var(--radius-surface); }
   .start-eyebrow { color: var(--color-vamo-red); font-family: var(--font-heading); font-size: .75rem; font-weight: 600; letter-spacing: .12em; line-height: 1.4; text-transform: uppercase; }
   .start-hero .start-eyebrow { color: var(--color-accent-on-dark); }
   .start-hero h1 { max-width: 15ch; margin-block-start: var(--space-4); font-size: var(--type-page-title); font-weight: 700; line-height: 1.1; letter-spacing: -.03em; text-wrap: balance; }
@@ -158,6 +172,7 @@ const solutions = (await getCollection('resheniya', ({ data }) => !data.draft &&
   @media (min-width: 48rem) {
     .start-shell { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); }
     .start-hero__inner, .start-needs, .start-proof, .start-process, .start-inquiry { padding-block: var(--layout-anchor-padding-desktop); }
+    .start-hero__inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: var(--space-16); }
     .start-needs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block-start: var(--space-10); }
     .start-proof__inner, .start-inquiry__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-16); }
     .start-process__steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); }
