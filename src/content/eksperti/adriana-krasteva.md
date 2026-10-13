@@ -15,6 +15,7 @@ expertise:
 services: []
 featuredOnHome: false
 homeOrder: 12
+order: 3
 active: true
 draft: false
 seoTitle: Адриана Кръстева | Експертна мрежа на VAMO

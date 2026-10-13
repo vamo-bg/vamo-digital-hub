@@ -17,6 +17,7 @@ expertise:
 services:
   - sabitiya-i-logistika
 featuredOnHome: false
+order: 5
 active: true
 draft: false
 seoTitle: Благой Гошев | Експертна мрежа на VAMO

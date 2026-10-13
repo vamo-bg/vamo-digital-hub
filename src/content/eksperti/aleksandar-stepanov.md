@@ -18,6 +18,7 @@ services:
   - ueb-razrabotka
   - digitalna-strategiya
 featuredOnHome: false
+order: 4
 active: true
 draft: false
 seoTitle: Александър Степанов | Експертна мрежа на VAMO
