@@ -24,7 +24,7 @@ const posterId = !coverImage ? projectVideoId(project.data) : undefined;
 
 <article class:list={['archive-card', { 'archive-card--featured': featured }] }>
   <a href={`/portfolio/${project.id}/`}>
-    <div class="archive-card__media">
+    <div class:list={['archive-card__media', { 'archive-card__media--contain': project.data.coverPresentation === 'contain' }]}>
       {
         coverImage ? (
           <Image
@@ -95,6 +95,14 @@ const posterId = !coverImage ? projectVideoId(project.data) : undefined;
     aspect-ratio: 4 / 3;
     object-fit: cover;
     transition: transform var(--dur-4) var(--ease-out-cubic);
+  }
+
+  .archive-card__media--contain {
+    background-color: var(--color-neutral-800);
+  }
+
+  .archive-card__media--contain :global(img) {
+    object-fit: contain;
   }
 
   .archive-card__placeholder {

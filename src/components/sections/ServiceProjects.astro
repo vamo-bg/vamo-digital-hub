@@ -33,6 +33,7 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
           year={featuredProject.data.year}
           coverImage={featuredProject.data.coverImage}
           coverAlt={featuredProject.data.coverAlt}
+          coverPresentation={featuredProject.data.coverPresentation}
           videoId={projectVideoId(featuredProject.data)}
           variant={supportingProjects.length > 1 ? 'featured' : 'standard'}
         />
@@ -49,6 +50,7 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
               year={project.data.year}
               coverImage={project.data.coverImage}
               coverAlt={project.data.coverAlt}
+              coverPresentation={project.data.coverPresentation}
               videoId={projectVideoId(project.data)}
             />
           ))}

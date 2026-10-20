@@ -68,6 +68,7 @@ const shouldRender = visibleProjects.length > 0;
             year={project.data.year}
             coverImage={project.data.coverImage}
             coverAlt={project.data.coverAlt}
+            coverPresentation={project.data.coverPresentation}
             videoId={projectVideoId(project.data)}
             variant={uniformCards || index === 0 ? 'featured' : 'standard'}
             isPreview={false}

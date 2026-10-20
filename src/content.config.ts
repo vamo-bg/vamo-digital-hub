@@ -220,6 +220,7 @@ const portfolio = defineCollection({
         .default([]),
       expertIds: z.array(z.string().min(1)).default([]),
       coverImage: image().optional(),
+      coverPresentation: z.enum(['cover', 'contain']).default('cover'),
       coverAlt: z.string().min(1).optional(),
       gallery: z
         .array(
@@ -257,6 +258,7 @@ const portfolio = defineCollection({
             previewImage: image(),
             previewAlt: z.string().min(1),
             transcript: z.string().min(1),
+            transcriptIsSummary: z.boolean().default(false),
             excerpt: z.string().min(1).max(300).optional(),
             author: z.string().min(1).optional(),
             authorPosition: z.string().min(1).optional(),

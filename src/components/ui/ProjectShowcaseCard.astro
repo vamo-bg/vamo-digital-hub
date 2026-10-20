@@ -10,6 +10,7 @@ interface Props {
   year?: number | string;
   coverImage?: ImageMetadata;
   coverAlt?: string;
+  coverPresentation?: 'cover' | 'contain';
   videoId?: string;
   variant?: 'featured' | 'standard';
   isPreview?: boolean;
@@ -23,6 +24,7 @@ const {
   year,
   coverImage,
   coverAlt,
+  coverPresentation = 'cover',
   videoId,
   variant = 'standard',
   isPreview = false,
@@ -32,7 +34,7 @@ const {
 <article class:list={['project-showcase', `project-showcase--${variant}`, { 'project-showcase--preview': isPreview }]}>
   {id && !isPreview ? (
     <a href={`/portfolio/${id}/`}>
-      <div class="project-showcase__media">
+      <div class:list={['project-showcase__media', { 'project-showcase__media--contain': coverPresentation === 'contain' }]}>
         {coverImage ? (
           <Image
             src={coverImage}
@@ -62,7 +64,7 @@ const {
     </a>
   ) : (
     <div class="project-showcase__preview-content">
-      <div class="project-showcase__media">
+      <div class:list={['project-showcase__media', { 'project-showcase__media--contain': coverPresentation === 'contain' }]}>
         {coverImage ? (
           <Image
             src={coverImage}
@@ -124,6 +126,10 @@ const {
     height: 100%;
     object-fit: cover;
     transition: transform var(--dur-4) var(--ease-out-cubic);
+  }
+
+  .project-showcase__media--contain :global(img) {
+    object-fit: contain;
   }
 
   .project-showcase__placeholder {

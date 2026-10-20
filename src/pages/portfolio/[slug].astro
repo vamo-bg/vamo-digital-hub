@@ -35,6 +35,7 @@ const {
   clientId,
   description,
   coverImage,
+  coverPresentation,
   coverAlt,
   year,
   location,
@@ -288,7 +289,7 @@ const breadcrumbSchema = {
         </dl>
 
         {(coverImage || posterUrl) && (
-          <div class="project-cover">
+          <div class:list={['project-cover', { 'project-cover--contain': coverPresentation === 'contain' }]}>
             {coverImage ? <Image
               src={coverImage}
               alt={coverAlt ?? ''}
@@ -554,6 +555,10 @@ const breadcrumbSchema = {
     min-height: 20rem;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+  }
+
+  .project-cover--contain :global(img) {
+    object-fit: contain;
   }
 
   .project-cover__label {
