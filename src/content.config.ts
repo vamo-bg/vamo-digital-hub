@@ -257,6 +257,7 @@ const portfolio = defineCollection({
             previewImage: image(),
             previewAlt: z.string().min(1),
             transcript: z.string().min(1),
+            transcriptIsSummary: z.boolean().default(false),
             excerpt: z.string().min(1).max(300).optional(),
             author: z.string().min(1).optional(),
             authorPosition: z.string().min(1).optional(),
