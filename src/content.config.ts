@@ -172,6 +172,7 @@ const portfolio = defineCollection({
       description: shortDescription,
       serviceIds: z.array(z.string().min(1)).min(1),
       projectType: z.string().min(1).optional(),
+      status: z.enum(['current', 'completed']).default('completed'),
       year,
       publishedAt: z.coerce.date().optional(),
       location: z.string().min(1).optional(),

@@ -18,7 +18,7 @@ const {
   featured = false,
   preview = false,
 } = Astro.props;
-const { title, description, coverImage, coverAlt, year, projectType } = project.data;
+const { title, description, coverImage, coverAlt, year, projectType, status } = project.data;
 const posterId = !coverImage ? projectVideoId(project.data) : undefined;
 ---
 
@@ -42,6 +42,7 @@ const posterId = !coverImage ? projectVideoId(project.data) : undefined;
           </span>
         )
       }
+      {status === 'current' && <span class="archive-card__status">В изпълнение</span>}
       {posterId && <span class="archive-card__video-label">Видео</span>}
       {preview && <span class="archive-card__preview">Примерен проект</span>}
     </div>
@@ -129,6 +130,18 @@ const posterId = !coverImage ? projectVideoId(project.data) : undefined;
     inset-block-end: var(--space-4);
     inset-inline-start: var(--space-4);
     padding: var(--space-2) var(--space-3);
+    background: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .archive-card__status {
+    position: absolute;
+    inset-block-start: var(--space-4);
+    inset-inline-start: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    border-inline-start: 3px solid var(--color-vamo-red);
     background: var(--color-vamo-black);
     color: var(--color-text-inverse);
     font-size: 0.75rem;

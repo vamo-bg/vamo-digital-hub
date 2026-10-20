@@ -40,6 +40,7 @@ const {
   year,
   location,
   projectType,
+  status,
   serviceIds,
   lead,
   leadImage,
@@ -247,6 +248,7 @@ const breadcrumbSchema = {
       <div class="project-shell project-hero__inner">
         <div class="project-hero__copy">
           {projectType && <p class="eyebrow">{projectType}</p>}
+          {status === 'current' && <p class="project-status" role="status">В изпълнение</p>}
           <h1>{title}</h1>
           <p class="project-hero__summary">{description}</p>
           {externalLinks[0] && (
@@ -464,6 +466,18 @@ const breadcrumbSchema = {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+  }
+
+  .project-status {
+    width: fit-content;
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border-inline-start: 3px solid var(--color-vamo-red);
+    background: var(--color-neutral-800);
+    color: var(--color-text-inverse);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.4;
   }
 
   .project-hero h1 {

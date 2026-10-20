@@ -8,6 +8,7 @@ interface Props {
   clientName?: string;
   projectType?: string;
   year?: number | string;
+  status?: 'current' | 'completed';
   coverImage?: ImageMetadata;
   coverAlt?: string;
   coverPresentation?: 'cover' | 'contain';
@@ -22,6 +23,7 @@ const {
   clientName,
   projectType,
   year,
+  status = 'completed',
   coverImage,
   coverAlt,
   coverPresentation = 'cover',
@@ -50,6 +52,7 @@ const {
             <span>{projectType ?? 'Проект на ВАМО'}</span>
           </span>
         )}
+        {status === 'current' && <span class="project-showcase__status">В изпълнение</span>}
         {!coverImage && videoId && <span class="project-showcase__video-label">Видео</span>}
       </div>
       <div class="project-showcase__content">
@@ -80,6 +83,7 @@ const {
             <span>{projectType ?? 'Проект на ВАМО'}</span>
           </span>
         )}
+        {status === 'current' && <span class="project-showcase__status">В изпълнение</span>}
         {!coverImage && videoId && <span class="project-showcase__video-label">Видео</span>}
       </div>
       <div class="project-showcase__content">
@@ -119,6 +123,19 @@ const {
     min-height: 0;
     overflow: hidden;
     background-color: var(--color-neutral-800);
+  }
+
+  .project-showcase__status {
+    position: absolute;
+    inset-block-start: var(--space-4);
+    inset-inline-start: var(--space-4);
+    z-index: 1;
+    padding: var(--space-2) var(--space-3);
+    border-inline-start: 3px solid var(--color-vamo-red);
+    background: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+    font-size: 0.75rem;
+    font-weight: 700;
   }
 
   .project-showcase__media :global(img) {
