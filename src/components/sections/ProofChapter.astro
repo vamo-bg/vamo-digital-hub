@@ -7,12 +7,10 @@ export interface ProofDocument {
   previewImage: ImageMetadata;
   previewAlt: string;
   transcript: string;
-  transcriptIsSummary?: boolean;
   excerpt?: string;
   author?: string;
   authorPosition?: string;
   organization?: string;
-  pdfHref?: string;
 }
 
 export interface ProofReview {
@@ -64,11 +62,11 @@ const attribution = primary
 
             {primary && (
               <section class="proof__transcript" aria-labelledby="proof-transcript-title">
-                <h3 id="proof-transcript-title">{primary.transcriptIsSummary ? 'Резюме на документа' : 'Пълен текст на документа'}</h3>
+                <h3 id="proof-transcript-title">Пълен текст на документа</h3>
                 <div
                   class="proof__transcript-body"
                   tabindex="0"
-                  aria-label={primary.transcriptIsSummary ? 'Резюме на референцията — област с превъртане' : 'Пълен текст на референцията — област с превъртане'}
+                  aria-label="Пълен текст на референцията — област с превъртане"
                 >
                   {primary.transcript
                     .split(/\n{2,}/)
@@ -96,11 +94,6 @@ const attribution = primary
                 <span aria-hidden="true">Увеличете</span>
               </button>
               <p class="proof__document-title">{primary.title}</p>
-              {primary.pdfHref && (
-                <a class="proof__pdf" href={primary.pdfHref} target="_blank" rel="noopener noreferrer">
-                  Отворете PDF <span aria-hidden="true">↗</span>
-                </a>
-              )}
             </div>
           )}
         </div>
