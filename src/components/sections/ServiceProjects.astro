@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 
 import ProjectShowcaseCard from '../ui/ProjectShowcaseCard.astro';
+import { projectVideoId } from '../../lib/project-poster';
 
 interface Props {
   projects: CollectionEntry<'portfolio'>[];
@@ -32,6 +33,7 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
           year={featuredProject.data.year}
           coverImage={featuredProject.data.coverImage}
           coverAlt={featuredProject.data.coverAlt}
+          videoId={projectVideoId(featuredProject.data)}
           variant={supportingProjects.length > 1 ? 'featured' : 'standard'}
         />
       )}
@@ -47,6 +49,7 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
               year={project.data.year}
               coverImage={project.data.coverImage}
               coverAlt={project.data.coverAlt}
+              videoId={projectVideoId(project.data)}
             />
           ))}
         </div>

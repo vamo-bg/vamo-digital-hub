@@ -12,6 +12,7 @@ import Button from '../../components/ui/Button.astro';
 import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { ivanFirst } from '../../lib/expert-order';
+import { projectPosterUrl, projectVideoId } from '../../lib/project-poster';
 
 export async function getStaticPaths() {
   const projects = await getCollection(
@@ -27,6 +28,8 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+const posterId = projectVideoId(project.data);
+const posterUrl = !project.data.coverImage && posterId ? projectPosterUrl(posterId) : undefined;
 const {
   title,
   clientId,
@@ -91,7 +94,7 @@ type LeadVariant = 'film' | 'exhibition' | 'platform' | 'editorial';
 
 const leadVariant: LeadVariant | null = overview
   ? (lead ??
-    (videoLink
+    (videoLink || videos.length > 0
       ? 'film'
       : gallery.length >= 6
         ? 'exhibition'
@@ -238,7 +241,7 @@ const breadcrumbSchema = {
       </nav>
     </div>
 
-    <header class="project-hero">
+    <header class:list={['project-hero', { 'project-hero--text-only': !coverImage && !posterUrl }]}>
       <NetworkPattern />
       <div class="project-shell project-hero__inner">
         <div class="project-hero__copy">
@@ -284,16 +287,17 @@ const breadcrumbSchema = {
           )}
         </dl>
 
-        {coverImage && (
+        {(coverImage || posterUrl) && (
           <div class="project-cover">
-            <Image
+            {coverImage ? <Image
               src={coverImage}
               alt={coverAlt ?? ''}
               widths={[640, 960, 1280]}
               sizes="(min-width: 48rem) 44vw, 100vw"
               loading="eager"
-            fetchpriority="high"
-            />
+              fetchpriority="high"
+            /> : <img src={posterUrl} alt={`Кадър от видеото за проекта „${title}“`} width="480" height="360" loading="eager" fetchpriority="high" />}
+            {posterUrl && <span class="project-cover__label">Видео от проекта</span>}
           </div>
         )}
       </div>
@@ -535,6 +539,7 @@ const breadcrumbSchema = {
   }
 
   .project-cover {
+    position: relative;
     overflow: hidden;
     width: 100%;
     min-height: 20rem;
@@ -549,6 +554,17 @@ const breadcrumbSchema = {
     min-height: 20rem;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+  }
+
+  .project-cover__label {
+    position: absolute;
+    inset-block-end: var(--space-4);
+    inset-inline-start: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-vamo-black);
+    color: var(--color-text-inverse);
+    font-size: 0.875rem;
+    font-weight: 700;
   }
 
   @media (min-width: 48rem) {
@@ -570,6 +586,13 @@ const breadcrumbSchema = {
         'facts cover';
       column-gap: var(--space-12);
       row-gap: var(--space-4);
+    }
+
+    .project-hero--text-only .project-hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'copy' 'facts';
+      max-width: 54rem;
+      margin-inline-start: max(var(--layout-gutter-desktop), calc((100vw - var(--layout-content-max)) / 2));
     }
 
     .project-hero__copy {

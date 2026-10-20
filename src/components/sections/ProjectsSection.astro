@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import { site } from '../../data/site';
 import Button from '../ui/Button.astro';
 import ProjectShowcaseCard from '../ui/ProjectShowcaseCard.astro';
+import { projectVideoId } from '../../lib/project-poster';
 
 interface Props {
   title?: string;
@@ -67,6 +68,7 @@ const shouldRender = visibleProjects.length > 0;
             year={project.data.year}
             coverImage={project.data.coverImage}
             coverAlt={project.data.coverAlt}
+            videoId={projectVideoId(project.data)}
             variant={uniformCards || index === 0 ? 'featured' : 'standard'}
             isPreview={false}
           />
