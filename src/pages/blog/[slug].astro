@@ -22,7 +22,9 @@ if (!post) {
   throw new Error(`Не е намерена блог статия: ${slug}`);
 }
 const { Content, headings } = await render(post);
-const { title, description, pubDate, updatedDate, authorName, articleKind, cover, coverAlt, readingTime, highlight } = post.data;
+const { title, description, subtitle, pubDate, updatedDate, authorName, articleKind, category, seoTitle, seoDescription, ogTitle, socialImage, cover, coverAlt, readingTime, highlight } = post.data;
+const metadataTitle = seoTitle ?? title;
+const metadataDescription = seoDescription ?? description;
 const displayDate = updatedDate ?? pubDate;
 const formatDate = (date: Date) => new Intl.DateTimeFormat('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
 const tableOfContents = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
@@ -47,7 +49,7 @@ const breadcrumbSchema = {
   ],
 };
 const articleSchema = {
-  '@context': 'https://schema.org', '@type': 'Article', headline: title, description,
+  '@context': 'https://schema.org', '@type': 'Article', headline: title, description: metadataDescription,
   ...(cover ? { image: new URL(cover.src, Astro.url).href } : {}),
   datePublished: pubDate.toISOString(), dateModified: displayDate.toISOString(),
   author: articleAuthor
@@ -58,12 +60,12 @@ const articleSchema = {
 };
 ---
 
-<BaseLayout title={title} description={description} image={cover}>
+<BaseLayout title={metadataTitle} titleSuffix={!seoTitle} socialTitle={ogTitle} description={metadataDescription} image={socialImage ? socialImage.src : cover}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(articleSchema)}></script>
   <article aria-labelledby="article-title">
     <div class="article-breadcrumbs-bar"><nav class="article-shell article-breadcrumbs" aria-label="Навигация"><a href="/">Начало</a><span aria-hidden="true">/</span><a href="/blog/">Блог</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav></div>
-    <header class="article-hero"><div class="article-shell article-hero__grid"><div class="article-hero__intro"><p class="article-hero__eyebrow">{articleKind === 'personal' ? 'Лична история' : 'Практична статия'}</p><h1 id="article-title">{title}</h1><p class="article-hero__summary">{description}</p></div><aside class="article-hero__meta" aria-label="Информация за статията"><dl><div><dt>Публикувано</dt><dd><time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time></dd></div><div><dt>Автор</dt><dd>{authorName}</dd></div>{updatedDate && <div><dt>Обновено</dt><dd><time datetime={updatedDate.toISOString()}>{formatDate(displayDate)}</time></dd></div>}{readingTime && <div><dt>Време за четене</dt><dd>{readingTime}</dd></div>}</dl></aside></div></header>
+    <header class="article-hero"><div class="article-shell article-hero__grid"><div class="article-hero__intro"><p class="article-hero__eyebrow">{category ?? (articleKind === 'personal' ? 'Лична история' : 'Практична статия')}</p><h1 id="article-title">{title}</h1><p class="article-hero__summary">{subtitle ?? description}</p></div><aside class="article-hero__meta" aria-label="Информация за статията"><dl><div><dt>Публикувано</dt><dd><time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time></dd></div><div><dt>Автор</dt><dd>{authorName}</dd></div>{category && <div><dt>Категория</dt><dd>{category}</dd></div>}{updatedDate && <div><dt>Обновено</dt><dd><time datetime={displayDate.toISOString()}>{formatDate(displayDate)}</time></dd></div>}{readingTime && <div><dt>Време за четене</dt><dd>{readingTime}</dd></div>}</dl></aside></div></header>
     {cover && <figure class="article-shell article-cover"><Image src={cover} alt={coverAlt ?? title} widths={[768, 1200, 1600]} sizes="(min-width: 75rem) 75rem, calc(100vw - 2rem)" loading="eager"
             fetchpriority="high" /></figure>}
     {highlight && <section class="article-shell article-highlight" aria-label={highlight.label}><span class="article-highlight__value">{highlight.value}</span><div><p class="article-highlight__label">{highlight.label}</p>{highlight.description && <p class="article-highlight__description">{highlight.description}</p>}</div></section>}

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
+import Button from '../../components/ui/Button.astro';
 import missionHero from '../../assets/mission-family-memories.webp';
 
 const pageUrl = new URL('/misiya/', Astro.site ?? Astro.url).href;
@@ -89,6 +90,19 @@ const ways = [
       </div>
     </section>
 
+    <section class="mission-story" aria-labelledby="mission-story-title">
+      <div class="mission-shell mission-story__inner">
+        <div>
+          <p class="mission-eyebrow">Историята зад мисията</p>
+          <h2 id="mission-story-title">Километрите на една мечта</h2>
+        </div>
+        <div class="mission-story__content">
+          <p>Преди да създадем филмите, извървяхме хиляди крачки, срещнахме стотици хора и преодоляхме немалко трудности. Гергана Иванова разказва за пътя от първите автобусни билети до филмовото наследство, което ВАМО съхранява днес.</p>
+          <Button href="/blog/kilometrite-na-edna-mechta/" variant="primary">Прочетете личната история</Button>
+        </div>
+      </div>
+    </section>
+
     <section class="mission-films" aria-labelledby="mission-films-title">
       <div class="mission-shell mission-films__inner">
         <div>
@@ -119,7 +133,7 @@ const ways = [
   .mission-page__crumbs a { color: inherit; text-decoration: none; }
   .mission-page__crumbs a:hover { color: var(--color-primary-hover); }
   .mission-page__crumbs a:focus-visible, .mission-films__link:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
-  .mission-hero, .mission-statement, .mission-work, .mission-films, .mission-closing { padding-block: var(--layout-anchor-padding-mobile); }
+  .mission-hero, .mission-statement, .mission-work, .mission-story, .mission-films, .mission-closing { padding-block: var(--layout-anchor-padding-mobile); }
   .mission-hero { border-block-end: 1px solid var(--color-border); }
   .mission-hero__inner { display: grid; gap: var(--space-8); align-items: start; }
   .mission-hero__copy { display: grid; align-content: start; gap: var(--space-4); }
@@ -141,6 +155,12 @@ const ways = [
   .mission-work__grid { display: grid; gap: var(--space-8); margin-block-start: var(--space-12); }
   .mission-work__item { display: grid; align-content: start; gap: var(--space-4); border-block-start: 1px solid var(--color-border-strong); padding-block-start: var(--space-5); }
   .mission-work__item > span { color: var(--color-primary); font-family: var(--font-heading); font-weight: 700; }
+  .mission-story { border-block: 1px solid var(--color-border); background: var(--color-background); }
+  .mission-story__inner { display: grid; gap: var(--space-8); }
+  .mission-story__inner > div:first-child, .mission-story__content { display: grid; align-content: start; gap: var(--space-4); }
+  .mission-story h2 { max-width: 18ch; }
+  .mission-story__content { gap: var(--space-6); }
+  .mission-story__content > p { max-width: 57ch; color: var(--color-text-muted); font-size: 1.125rem; }
   .mission-films { background: var(--color-surface); }
   .mission-films__inner > div:first-child { display: grid; align-content: start; gap: var(--space-4); }
   .mission-films__link { justify-self: start; color: var(--color-primary-hover); font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: .25em; }
@@ -148,9 +168,9 @@ const ways = [
   .mission-closing p { max-width: 30ch; color: var(--color-text-inverse); font-family: var(--font-heading); font-size: var(--type-section-title-anchor); font-weight: 600; line-height: 1.25 !important; text-wrap: balance; }
   @media (min-width: 48rem) {
     .mission-shell { width: min(calc(100% - 2 * var(--layout-gutter-desktop)), var(--layout-content-max)); }
-    .mission-hero, .mission-statement, .mission-work, .mission-films, .mission-closing { padding-block: var(--layout-anchor-padding-desktop); }
+    .mission-hero, .mission-statement, .mission-work, .mission-story, .mission-films, .mission-closing { padding-block: var(--layout-anchor-padding-desktop); }
     .mission-hero__inner { grid-template-columns: minmax(0, 1fr) minmax(17rem, .55fr); gap: var(--space-16); }
-    .mission-statement__inner, .mission-films__inner { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--space-16); }
+    .mission-statement__inner, .mission-story__inner, .mission-films__inner { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--space-16); }
     .mission-work__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>
