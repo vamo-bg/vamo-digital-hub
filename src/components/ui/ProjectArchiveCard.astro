@@ -24,7 +24,7 @@ const posterId = !coverImage ? projectVideoId(project.data) : undefined;
 
 <article class:list={['archive-card', { 'archive-card--featured': featured }] }>
   <a href={`/portfolio/${project.id}/`}>
-    <div class:list={['archive-card__media', { 'archive-card__media--contain': project.data.coverPresentation === 'contain' }]}>
+    <div class:list={['archive-card__media', { 'archive-card__media--contain': project.data.coverPresentation === 'contain', 'archive-card__media--video': Boolean(posterId) }]}>
       {
         coverImage ? (
           <Image
@@ -35,7 +35,7 @@ const posterId = !coverImage ? projectVideoId(project.data) : undefined;
             loading={featured ? 'eager' : 'lazy'}
           />
         ) : posterId ? (
-          <img src={projectPosterUrl(posterId)} alt={`Кадър от видеото за проекта „${title}“`} width="480" height="360" loading="lazy" />
+          <img src={projectPosterUrl(posterId)} alt={`Кадър от видеото за проекта „${title}“`} width="640" height="360" loading="lazy" />
         ) : (
           <span class="archive-card__placeholder" aria-hidden="true">
             <span>{projectType ?? 'Проект на ВАМО'}</span>
@@ -104,6 +104,11 @@ const posterId = !coverImage ? projectVideoId(project.data) : undefined;
 
   .archive-card__media--contain :global(img) {
     object-fit: contain;
+  }
+
+  .archive-card__media--video,
+  .archive-card__media--video :global(img) {
+    aspect-ratio: 16 / 9;
   }
 
   .archive-card__placeholder {

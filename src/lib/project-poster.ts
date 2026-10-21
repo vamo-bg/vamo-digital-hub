@@ -24,5 +24,11 @@ export function projectVideoId(data: ProjectData): string | undefined {
 }
 
 export function projectPosterUrl(id: string): string {
-  return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  // YouTube does not offer the same poster sizes for every archived film.
+  const quality = id === '3PWGK8dL328' || id === 'uBSlfF75-ME'
+    ? 'maxresdefault'
+    : id === 'jzS3BVnWMGE'
+      ? 'sddefault'
+      : 'hqdefault';
+  return `https://i.ytimg.com/vi/${id}/${quality}.jpg`;
 }

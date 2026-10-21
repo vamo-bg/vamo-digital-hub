@@ -33,7 +33,7 @@ const {
 } = Astro.props;
 ---
 
-<article class:list={['project-showcase', `project-showcase--${variant}`, { 'project-showcase--preview': isPreview }]}>
+<article class:list={['project-showcase', `project-showcase--${variant}`, { 'project-showcase--preview': isPreview, 'project-showcase--video': !coverImage && Boolean(videoId) }]}>
   {id && !isPreview ? (
     <a href={`/portfolio/${id}/`}>
       <div class:list={['project-showcase__media', { 'project-showcase__media--contain': coverPresentation === 'contain' }]}>
@@ -46,7 +46,7 @@ const {
             loading="lazy"
           />
         ) : videoId ? (
-          <img src={projectPosterUrl(videoId)} alt={`Кадър от видеото за проекта „${title}“`} width="480" height="360" loading="lazy" />
+          <img src={projectPosterUrl(videoId)} alt={`Кадър от видеото за проекта „${title}“`} width="640" height="360" loading="lazy" />
         ) : (
           <span class="project-showcase__placeholder" aria-hidden="true">
             <span>{projectType ?? 'Проект на ВАМО'}</span>
@@ -77,7 +77,7 @@ const {
             loading="lazy"
           />
         ) : videoId ? (
-          <img src={projectPosterUrl(videoId)} alt={`Кадър от видеото за проекта „${title}“`} width="480" height="360" loading="lazy" />
+          <img src={projectPosterUrl(videoId)} alt={`Кадър от видеото за проекта „${title}“`} width="640" height="360" loading="lazy" />
         ) : (
           <span class="project-showcase__placeholder" aria-hidden="true">
             <span>{projectType ?? 'Проект на ВАМО'}</span>
@@ -123,6 +123,20 @@ const {
     min-height: 0;
     overflow: hidden;
     background-color: var(--color-neutral-800);
+  }
+
+  .project-showcase--video > a,
+  .project-showcase--video .project-showcase__preview-content {
+    grid-template-rows: auto 1fr;
+  }
+
+  .project-showcase--video .project-showcase__media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-showcase--video .project-showcase__content {
+    display: grid;
+    align-content: center;
   }
 
   .project-showcase__status {
@@ -246,6 +260,10 @@ const {
     transform: scale(1.025);
   }
 
+  .project-showcase--video > a:hover .project-showcase__media :global(img) {
+    transform: none;
+  }
+
   .project-showcase > a:hover .project-showcase__action span {
     transform: translateX(var(--space-1));
   }
@@ -269,6 +287,12 @@ const {
     .project-showcase--standard .project-showcase__preview-content {
       grid-template-columns: minmax(12rem, 0.9fr) minmax(0, 1.1fr);
       grid-template-rows: 1fr;
+    }
+
+    .project-showcase--video > a,
+    .project-showcase--video .project-showcase__preview-content {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
     }
   }
 

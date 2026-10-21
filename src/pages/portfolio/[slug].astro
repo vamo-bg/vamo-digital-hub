@@ -291,7 +291,7 @@ const breadcrumbSchema = {
         </dl>
 
         {(coverImage || posterUrl) && (
-          <div class:list={['project-cover', { 'project-cover--contain': coverPresentation === 'contain' }]}>
+          <div class:list={['project-cover', { 'project-cover--contain': coverPresentation === 'contain', 'project-cover--video': Boolean(posterUrl) }]}>
             {coverImage ? <Image
               src={coverImage}
               alt={coverAlt ?? ''}
@@ -299,7 +299,7 @@ const breadcrumbSchema = {
               sizes="(min-width: 48rem) 44vw, 100vw"
               loading="eager"
               fetchpriority="high"
-            /> : <img src={posterUrl} alt={`Кадър от видеото за проекта „${title}“`} width="480" height="360" loading="eager" fetchpriority="high" />}
+            /> : <img src={posterUrl} alt={`Кадър от видеото за проекта „${title}“`} width="640" height="360" loading="eager" fetchpriority="high" />}
             {posterUrl && <span class="project-cover__label">Видео от проекта</span>}
           </div>
         )}
@@ -643,5 +643,17 @@ const breadcrumbSchema = {
       min-height: 30rem;
       aspect-ratio: auto;
     }
+  }
+
+  .project-cover.project-cover--video {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+    align-self: start;
+  }
+
+  .project-cover--video :global(img) {
+    display: block;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
   }
 </style>
