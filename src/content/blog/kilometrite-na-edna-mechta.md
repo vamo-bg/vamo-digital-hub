@@ -14,6 +14,7 @@ category: "Мисия / Истории"
 readingTime: "8 минути"
 cover: "../../assets/experts/gergana-ivanova.jpg"
 coverAlt: "Гергана Иванова, основател на ВАМО"
+coverPresentation: "contain"
 relatedSolutions: []
 draft: false
 ---

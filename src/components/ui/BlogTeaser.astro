@@ -8,6 +8,7 @@ interface Props {
   pubDate?: Date;
   cover?: ImageMetadata;
   coverAlt?: string;
+  coverPresentation?: 'cover' | 'contain';
   variant?: 'lead' | 'feature' | 'standard';
   isPreview?: boolean;
 }
@@ -19,6 +20,7 @@ const {
   pubDate,
   cover,
   coverAlt,
+  coverPresentation = 'cover',
   variant = 'standard',
   isPreview = false,
 } = Astro.props;
@@ -35,7 +37,7 @@ const formattedDate = pubDate
 <article class:list={['blog-teaser', `blog-teaser--${variant}`, { 'blog-teaser--preview': isPreview }]}>
   {id && !isPreview ? (
     <a href={`/blog/${id}/`}>
-      <div class:list={['blog-teaser__media', { 'blog-teaser__media--placeholder': !cover }]}>
+      <div class:list={['blog-teaser__media', { 'blog-teaser__media--placeholder': !cover, 'blog-teaser__media--contain': coverPresentation === 'contain' }]}>
         {cover ? (
           <Image
             src={cover}
@@ -57,7 +59,7 @@ const formattedDate = pubDate
     </a>
   ) : (
     <div class="blog-teaser__preview-content">
-      <div class:list={['blog-teaser__media', { 'blog-teaser__media--placeholder': !cover }]}>
+      <div class:list={['blog-teaser__media', { 'blog-teaser__media--placeholder': !cover, 'blog-teaser__media--contain': coverPresentation === 'contain' }]}>
         {cover ? (
           <Image
             src={cover}
@@ -140,6 +142,10 @@ const formattedDate = pubDate
     height: 100%;
     object-fit: cover;
     transition: transform var(--dur-4) var(--ease-out-cubic);
+  }
+
+  .blog-teaser__media--contain :global(img) {
+    object-fit: contain;
   }
 
   .blog-teaser__content {

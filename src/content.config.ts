@@ -323,6 +323,7 @@ const blog = defineCollection({
       socialImage: image().optional(),
       cover: image().optional(),
       coverAlt: z.string().min(1).optional(),
+      coverPresentation: z.enum(['cover', 'contain']).default('cover'),
       readingTime: z.string().min(1).optional(),
       highlight: z
         .object({
