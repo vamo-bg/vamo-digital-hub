@@ -19,6 +19,7 @@ import podcastInterviewImage from '../../assets/service-podcast-interview.png';
 import eventsLogisticsImage from '../../assets/service-sabitiya-logistika.png';
 import videoFilmImage from '../../assets/service-video-filmovo-proizvodstvo.png';
 import webDevelopmentImage from '../../assets/service-ueb-razrabotka.png';
+import organicDistributionImage from '../../assets/service-organichno-razprostranenie.png';
 
 const solutionImages = {
   'business-ready-score': businessReadyScoreImage,
@@ -30,6 +31,7 @@ const solutionImages = {
   'sabitiya-i-logistika': eventsLogisticsImage,
   'video-i-filmovo-proizvodstvo': videoFilmImage,
   'ueb-razrabotka': webDevelopmentImage,
+  'organichno-razprostranenie': organicDistributionImage,
 } as const;
 
 // Огледално на resheniya/index.astro — снимката е декоративна (hero визуалът
@@ -44,6 +46,7 @@ const solutionImageAlt = {
   'sabitiya-i-logistika': 'Абстрактна 3D визуализация на сграда, камион, календар и локация, свързани в мрежа — символ на логистика за събития.',
   'video-i-filmovo-proizvodstvo': 'Абстрактна 3D визуализация на камера, осветление, микрофон, филмова ролка и монтажен екран, свързани в мрежа.',
   'ueb-razrabotka': 'Абстрактна 3D визуализация на централен възел, свързан с устройства и екрани — символ на уеб разработка.',
+  'organichno-razprostranenie': 'Абстрактна 3D визуализация на история, която достига до различни местни, културни и туристически общности чрез внимателно подбрани връзки.',
 } as const;
 
 export async function getStaticPaths() {
@@ -53,8 +56,9 @@ export async function getStaticPaths() {
 
 const { solution } = Astro.props;
 const { Content } = await render(solution);
-const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions } = solution.data;
+const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions, editorialSections, ctaTitle, ctaLabel } = solution.data;
 const hasStructuredContent = Boolean(problems || difference || process || inclusions);
+const solutionImage = solutionImages[solution.id as keyof typeof solutionImages];
 
 const relatedProjects = (
   await getCollection('portfolio', ({ data }) =>
@@ -98,7 +102,7 @@ const serviceSchema = {
 };
 ---
 
-<BaseLayout title={seoTitle ?? title} description={seoDescription ?? description}>
+<BaseLayout title={seoTitle ?? title} titleSuffix={false} description={seoDescription ?? description} image={solutionImage}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(serviceSchema)}></script>
   <article>
@@ -114,13 +118,26 @@ const serviceSchema = {
       title={title}
       statement={heroStatement ?? description}
       details={heroDetails ?? description}
-      image={solutionImages[solution.id as keyof typeof solutionImages]}
+      image={solutionImage}
       imageAlt={solutionImageAlt[solution.id as keyof typeof solutionImageAlt]}
     />
     {problems && <ServiceProblem {...problems} />}
     {difference && <ServiceDifference {...difference} />}
     {process && <ServiceProcess {...process} />}
     {inclusions && <ServiceScope {...inclusions} />}
+
+    {editorialSections?.length && (
+      <section class="service-editorial" aria-label={`Още за ${title}`}>
+        <div class="service-shell service-editorial__inner">
+          {editorialSections.map((section, index) => (
+            <section class="service-editorial__item" aria-labelledby={`editorial-${index}`}>
+              <h2 id={`editorial-${index}`}>{section.title}</h2>
+              <div>{section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
+            </section>
+          ))}
+        </div>
+      </section>
+    )}
 
     {!hasStructuredContent && (
       <section class="service-fallback" aria-label={`Повече за ${title}`}>
@@ -133,8 +150,8 @@ const serviceSchema = {
 
     <section class="service-cta" aria-labelledby="service-cta-title">
       <div class="service-shell service-cta__inner">
-        <div><p>Следващата стъпка</p><h2 id="service-cta-title">Нека подредим комуникацията ви</h2></div>
-        <Button href="/kontakti/" size="lg">Започнете разговор</Button>
+        <div><p>Следващата стъпка</p><h2 id="service-cta-title">{ctaTitle ?? 'Нека подредим комуникацията ви'}</h2></div>
+        <Button href="/kontakti/" size="lg">{ctaLabel ?? 'Започнете разговор'}</Button>
       </div>
     </section>
   </article>
@@ -153,6 +170,12 @@ const serviceSchema = {
   .service-fallback__body{max-width:48rem}
   .service-fallback__body :global(h2){margin-block:var(--space-10) var(--space-4);font-size:var(--type-section-title)}
   .service-fallback__body :global(p),.service-fallback__body :global(li){color:var(--color-text-muted);font-size:1.0625rem;line-height:1.7}
+  .service-editorial{padding-block:var(--layout-section-padding-mobile);background:var(--color-neutral-100)}
+  .service-editorial__inner{display:grid;gap:var(--space-12)}
+  .service-editorial__item{display:grid;gap:var(--space-5);max-width:70rem}
+  .service-editorial__item h2{max-width:18ch;font-size:var(--type-section-title);font-weight:700;line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+  .service-editorial__item div{display:grid;gap:var(--space-5);max-width:62ch}
+  .service-editorial__item p{color:var(--color-text-muted);font-size:1.0625rem;line-height:1.7}
   .service-cta__inner>div>p{font-family:var(--font-heading);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
   .service-cta__inner>div>p{color:var(--color-accent-on-dark)}
   .service-cta h2{margin-block-start:var(--space-3);font-size:var(--type-cta-title);font-weight:700;line-height:1.15;letter-spacing:-.02em}
@@ -162,9 +185,10 @@ const serviceSchema = {
   @media(min-width:48rem){
     .service-shell{width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max))}
     .service-fallback{padding-block:var(--layout-section-padding-desktop)}
+    .service-editorial{padding-block:var(--layout-section-padding-desktop)}
+    .service-editorial__item{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:var(--space-12)}
     .service-cta{padding-block:var(--layout-anchor-padding-desktop)}
     .service-cta__inner{grid-template-columns:minmax(0,1fr) auto;align-items:end}
-    .service-cta h2{white-space:nowrap}
     .service-cta__inner :global(.button){justify-self:end}
   }
 </style>

@@ -15,6 +15,7 @@ import podcastInterviewImage from '../../assets/service-podcast-interview.png';
 import eventsLogisticsImage from '../../assets/service-sabitiya-logistika.png';
 import videoFilmImage from '../../assets/service-video-filmovo-proizvodstvo.png';
 import webDevelopmentImage from '../../assets/service-ueb-razrabotka.png';
+import organicDistributionImage from '../../assets/service-organichno-razprostranenie.png';
 
 const solutionImages = {
   'business-ready-score': businessReadyScoreImage,
@@ -26,6 +27,7 @@ const solutionImages = {
   'sabitiya-i-logistika': eventsLogisticsImage,
   'video-i-filmovo-proizvodstvo': videoFilmImage,
   'ueb-razrabotka': webDevelopmentImage,
+  'organichno-razprostranenie': organicDistributionImage,
 } as const;
 
 // Заглавието на картата вече е достъпното име на връзката (aria-labelledby).
@@ -41,6 +43,7 @@ const solutionImageAlt = {
   'sabitiya-i-logistika': 'Абстрактна 3D визуализация на сграда, камион, календар и локация, свързани в мрежа — символ на логистика за събития.',
   'video-i-filmovo-proizvodstvo': 'Абстрактна 3D визуализация на камера, осветление, микрофон, филмова ролка и монтажен екран, свързани в мрежа.',
   'ueb-razrabotka': 'Абстрактна 3D визуализация на централен възел, свързан с устройства и екрани — символ на уеб разработка.',
+  'organichno-razprostranenie': 'Абстрактна 3D визуализация на история, която достига до различни местни, културни и туристически общности чрез внимателно подбрани връзки.',
 } as const;
 
 const solutions = (await getCollection('resheniya', ({ data }) => !data.draft)).sort(

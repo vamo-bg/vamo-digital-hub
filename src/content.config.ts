@@ -153,8 +153,19 @@ const resheniya = defineCollection({
           ).min(1),
         })
         .optional(),
+      editorialSections: z
+        .array(
+          z.object({
+            title: z.string().min(1),
+            paragraphs: z.array(z.string().min(1)).min(1),
+          }),
+        )
+        .max(3)
+        .optional(),
       featuredInSection: z.boolean().default(false),
       sectionOrder: z.number().int().nonnegative().optional(),
+      ctaTitle: z.string().min(1).optional(),
+      ctaLabel: z.string().min(1).optional(),
       // За <title>/<meta description> — `title`/`description` остават късия
       // етикет за картите в мрежата. Виж `eksperti` за същия модел.
       seoTitle: z.string().min(1).optional(),
