@@ -181,6 +181,7 @@ const {
   }
 
   .project-showcase__content {
+    min-width: 0;
     padding: var(--space-6);
   }
 
@@ -208,12 +209,14 @@ const {
   }
 
   .project-showcase h3 {
+    min-width: 0;
     max-width: 23ch;
     margin-block-start: var(--space-3);
     font-size: var(--type-card-title);
     font-weight: 500;
     line-height: 1.35;
     letter-spacing: -0.02em;
+    overflow-wrap: break-word;
     text-wrap: balance;
   }
 
