@@ -13,7 +13,7 @@ interface Props {
   coverAlt?: string;
   coverPresentation?: 'cover' | 'contain';
   videoId?: string;
-  variant?: 'featured' | 'standard';
+  variant?: 'featured' | 'standard' | 'uniform';
   isPreview?: boolean;
 }
 
@@ -137,6 +137,19 @@ const {
   .project-showcase--video .project-showcase__content {
     display: grid;
     align-content: center;
+  }
+
+  .project-showcase--uniform > a,
+  .project-showcase--uniform .project-showcase__preview-content {
+    grid-template-rows: auto 1fr;
+  }
+
+  .project-showcase--uniform .project-showcase__media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-showcase--uniform .project-showcase__content {
+    display: block;
   }
 
   .project-showcase__status {

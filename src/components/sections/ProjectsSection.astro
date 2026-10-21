@@ -71,7 +71,7 @@ const shouldRender = visibleProjects.length > 0;
             coverAlt={project.data.coverAlt}
             coverPresentation={project.data.coverPresentation}
             videoId={projectVideoId(project.data)}
-            variant={uniformCards || index === 0 ? 'featured' : 'standard'}
+            variant={uniformCards ? 'uniform' : index === 0 ? 'featured' : 'standard'}
             isPreview={false}
           />
         ))}
