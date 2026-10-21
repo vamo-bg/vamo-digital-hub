@@ -15,7 +15,7 @@ expertise:
 - Обработка на изображения с Photoshop
 services: []
 featuredOnHome: false
-order: 6
+order: 7
 active: true
 draft: false
 seoTitle: Радостин Димитров | Фотография и визуални материали | VAMO
