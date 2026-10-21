@@ -16,7 +16,7 @@ expertise:
 services:
   - video-i-filmovo-proizvodstvo
 featuredOnHome: false
-order: 6
+order: 7
 active: true
 draft: false
 seoTitle: Доц. д-р Валентина Фиданова-Коларова | Експертна мрежа на VAMO
