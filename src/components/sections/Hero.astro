@@ -160,10 +160,14 @@ const {
     margin-block-start: var(--space-4);
   }
 
-  .hero__right { display: grid; align-self: stretch; }
+  .hero__right {
+    display: grid;
+    align-self: start;
+  }
 
   .hero__founder {
     display: grid;
+    align-content: start;
     overflow: hidden;
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-surface);
