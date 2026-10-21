@@ -13,7 +13,8 @@ expertise:
   - Маркетингова и уеб аналитика
   - Автоматизация на данни и AI инструменти
   - Управление на уеб и дигитални проекти
-services: []
+services:
+  - business-ready-score
 featuredOnHome: false
 homeOrder: 17
 active: true

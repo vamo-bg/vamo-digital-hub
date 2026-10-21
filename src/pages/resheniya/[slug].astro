@@ -11,6 +11,7 @@ import ServiceExperts from '../../components/sections/ServiceExperts.astro';
 import Button from '../../components/ui/Button.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import communicationPrImage from '../../assets/service-komunikatsii-pr.png';
+import businessReadyScoreImage from '../../assets/service-business-ready-score.png';
 import digitalStrategyImage from '../../assets/service-digitalna-strategiya.png';
 import designMaterialsImage from '../../assets/service-dizayn-reklamni-materiali.png';
 import euVisibilityImage from '../../assets/service-eu-visibility-compliance.png';
@@ -20,6 +21,7 @@ import videoFilmImage from '../../assets/service-video-filmovo-proizvodstvo.png'
 import webDevelopmentImage from '../../assets/service-ueb-razrabotka.png';
 
 const solutionImages = {
+  'business-ready-score': businessReadyScoreImage,
   'komunikatsii-i-pr': communicationPrImage,
   'digitalna-strategiya': digitalStrategyImage,
   'dizayn-i-reklamni-materiali': designMaterialsImage,
@@ -33,6 +35,7 @@ const solutionImages = {
 // Огледално на resheniya/index.astro — снимката е декоративна (hero визуалът
 // е aria-hidden), но описанието остава полезно за image search/AI индексиране.
 const solutionImageAlt = {
+  'business-ready-score': 'Лупа над мрежа от свързани точки с осветен път — символ на анализ и ясни приоритети за развитие.',
   'komunikatsii-i-pr': 'Абстрактна 3D визуализация на светещ възел, излъчващ сигнал към свързани точки — символ на комуникация и обхват.',
   'digitalna-strategiya': 'Абстрактна 3D визуализация на пътека от свързани точки, водеща до осветен връх — символ на стратегическа посока.',
   'dizayn-i-reklamni-materiali': 'Композиция от печатни рекламни материали — плакати, визитки, руло с банер и цветова палитра.',
