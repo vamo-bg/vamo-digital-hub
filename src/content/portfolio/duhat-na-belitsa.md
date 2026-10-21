@@ -49,7 +49,7 @@ externalLinks:
   - label: "Гледайте филма в YouTube"
     url: "https://www.youtube.com/watch?v=_NK5k5b7OVQ"
 referenceDocuments:
-  - title: "Референция от НЧ „Георги Тодоров 1885“ – Белица"
+  - title: "Референция от НЧ „Георги Тодоров 1885“ - Белица"
     previewImage: "../../assets/portfolio/duhat-na-belitsa/referentsia.png"
     previewAlt: "Публично копие на референцията за филма „Духът на Белица“ със заличени подпис и печат"
     transcriptIsSummary: true
