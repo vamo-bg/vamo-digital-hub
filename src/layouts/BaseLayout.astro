@@ -22,6 +22,10 @@ interface Props {
    */
   image?: ImageMetadata | URL | string;
   noindex?: boolean;
+  /** Кампанийни страници могат да използват собствена навигация или никаква. */
+  hideHeader?: boolean;
+  /** Кампанийни страници могат да завършват със собствен финален екран. */
+  hideFooter?: boolean;
 }
 
 const {
@@ -32,6 +36,8 @@ const {
   socialTitle,
   image,
   noindex = false,
+  hideHeader = false,
+  hideFooter = false,
 } = Astro.props;
 
 const siteName = import.meta.env.PUBLIC_SITE_NAME ?? site.name;
@@ -285,15 +291,19 @@ const websiteSchema = {
     </noscript>
 
     <a class="skip-link" href="#main-content">Към основното съдържание</a>
-    <header class="page-header">
-      {hasHeader ? <slot name="header" /> : <Header />}
-    </header>
+    {!hideHeader && (
+      <header class="page-header">
+        {hasHeader ? <slot name="header" /> : <Header />}
+      </header>
+    )}
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
-    <footer>
-      {hasFooter ? <slot name="footer" /> : <Footer />}
-    </footer>
+    {!hideFooter && (
+      <footer>
+        {hasFooter ? <slot name="footer" /> : <Footer />}
+      </footer>
+    )}
 
     <ConsentBanner />
   </body>
