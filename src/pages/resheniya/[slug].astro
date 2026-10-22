@@ -56,7 +56,7 @@ export async function getStaticPaths() {
 
 const { solution } = Astro.props;
 const { Content } = await render(solution);
-const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions, editorialSections, ctaTitle, ctaLabel } = solution.data;
+const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions, editorialSections, relatedLanding, ctaTitle, ctaLabel } = solution.data;
 const hasStructuredContent = Boolean(problems || difference || process || inclusions);
 const solutionImage = solutionImages[solution.id as keyof typeof solutionImages];
 
@@ -126,6 +126,21 @@ const serviceSchema = {
     {process && <ServiceProcess {...process} />}
     {inclusions && <ServiceScope {...inclusions} />}
 
+    {relatedLanding && (
+      <section class="service-related" aria-labelledby="service-related-title">
+        <div class="service-shell service-related__inner">
+          <div>
+            <p>Още от ВАМО</p>
+            <h2 id="service-related-title">{relatedLanding.title}</h2>
+          </div>
+          <div>
+            <p>{relatedLanding.description}</p>
+            <a href={relatedLanding.href}>{relatedLanding.label}<span aria-hidden="true"> →</span></a>
+          </div>
+        </div>
+      </section>
+    )}
+
     {editorialSections?.length && (
       <section class="service-editorial" aria-label={`Още за ${title}`}>
         <div class="service-shell service-editorial__inner">
@@ -176,6 +191,15 @@ const serviceSchema = {
   .service-editorial__item h2{max-width:18ch;font-size:var(--type-section-title);font-weight:700;line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
   .service-editorial__item div{display:grid;gap:var(--space-5);max-width:62ch}
   .service-editorial__item p{color:var(--color-text-muted);font-size:1.0625rem;line-height:1.7}
+  .service-related{padding-block:var(--layout-section-padding-mobile);border-block:1px solid var(--color-border);background:var(--color-cream)}
+  .service-related__inner{display:grid;gap:var(--space-6)}
+  .service-related__inner>div{display:grid;align-content:start;gap:var(--space-4)}
+  .service-related__inner>div:first-child>p{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .service-related h2{max-width:18ch;font-size:var(--type-section-title);font-weight:700;line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+  .service-related__inner>div:last-child{max-width:46rem;color:var(--color-text-muted);font-size:1.0625rem;line-height:1.65}
+  .service-related a{width:fit-content;color:var(--color-text);font-family:var(--font-heading);font-size:1rem;font-weight:700;text-decoration:underline;text-decoration-color:var(--color-vamo-red);text-decoration-thickness:2px;text-underline-offset:var(--space-2)}
+  .service-related a:hover{color:var(--color-vamo-red)}
+  .service-related a:focus-visible{border-radius:var(--radius-control);outline:2px solid var(--color-focus);outline-offset:4px}
   .service-cta__inner>div>p{font-family:var(--font-heading);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
   .service-cta__inner>div>p{color:var(--color-accent-on-dark)}
   .service-cta h2{margin-block-start:var(--space-3);font-size:var(--type-cta-title);font-weight:700;line-height:1.15;letter-spacing:-.02em}
@@ -187,6 +211,8 @@ const serviceSchema = {
     .service-fallback{padding-block:var(--layout-section-padding-desktop)}
     .service-editorial{padding-block:var(--layout-section-padding-desktop)}
     .service-editorial__item{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:var(--space-12)}
+    .service-related{padding-block:var(--layout-section-padding-desktop)}
+    .service-related__inner{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--space-12)}
     .service-cta{padding-block:var(--layout-anchor-padding-desktop)}
     .service-cta__inner{grid-template-columns:minmax(0,1fr) auto;align-items:end}
     .service-cta__inner :global(.button){justify-self:end}

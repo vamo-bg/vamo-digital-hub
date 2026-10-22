@@ -1,0 +1,177 @@
+---
+import { Image } from 'astro:assets';
+
+import ContactForm from '../components/ui/ContactForm.astro';
+import Button from '../components/ui/Button.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import businessGiftImage from '../assets/reklamni-materiali/biznes-podarak-komplekt.webp';
+import brandedItemsImage from '../assets/reklamni-materiali/brendirani-predmeti.webp';
+import notebookImage from '../assets/reklamni-materiali/tefter-i-pisalka.webp';
+import materialsImage from '../assets/reklamni-materiali/reklamni-materiali-02.webp';
+import studioImage from '../assets/reklamni-materiali/vamo-prostranstvo.webp';
+
+const title = 'Рекламни материали и бизнес подаръци';
+const description = 'Брандирани рекламни материали, бизнес подаръци и персонализирани комплекти за клиенти, партньори, екипи и събития.';
+const pageUrl = new URL('/reklamni-materiali-i-biznes-podaratsi/', Astro.site ?? Astro.url).href;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: new URL('/', Astro.site ?? Astro.url).href },
+    { '@type': 'ListItem', position: 2, name: title, item: pageUrl },
+  ],
+};
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': `${pageUrl}#service`,
+  name: title,
+  description,
+  url: pageUrl,
+  provider: { '@id': `${new URL('/', Astro.site ?? Astro.url).href}#organization` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+};
+
+const categories = [
+  ['Бизнес комплекти', 'Съчетаваме предмети и опаковка в подарък, който изглежда завършен и уместен за повода.'],
+  ['Подаръци с лого', 'Подбираме практични продукти и подходящ начин за брандиране според вашата идентичност.'],
+  ['Тефтери, календари и картички', 'Подготвяме полезни печатни формати за ежедневна употреба, поздрав или дългосрочно присъствие.'],
+  ['Материали за събития', 'Създаваме видими и последователни детайли за срещи, конференции и представяния.'],
+];
+
+const process = [
+  ['01', 'Уточняваме повода', 'Говорим за хората, бюджета, броя комплекти и момента, в който подаръкът ще бъде получен.'],
+  ['02', 'Подбираме решение', 'Предлагаме комбинация от продукти, материали и брандиране, съобразена с вашата задача.'],
+  ['03', 'Подготвяме визията', 'Адаптираме логото и посланието така, че да стоят естествено върху избрания формат.'],
+  ['04', 'Координираме реализацията', 'Проследяваме подготовката на материалите до готовия за използване комплект.'],
+];
+---
+
+<BaseLayout
+  title="Рекламни материали и бизнес подаръци | VAMO"
+  titleSuffix={false}
+  description={description}
+  socialTitle="Рекламни материали и бизнес подаръци от VAMO"
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  </Fragment>
+
+  <article class="gifts-page">
+    <div class="gifts-breadcrumbs-bar">
+      <nav class="gifts-shell gifts-breadcrumbs" aria-label="Навигация по местоположението">
+        <a href="/">Начало</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span>
+      </nav>
+    </div>
+
+    <header class="gifts-hero">
+      <div class="gifts-shell gifts-hero__inner">
+        <div class="gifts-hero__copy">
+          <p>За поводи, които остават</p>
+          <h1>Рекламни материали и сувенири, които работят за вашия бранд</h1>
+          <p class="gifts-hero__lead">Създайте впечатление, което остава дълго след срещата.</p>
+          <p class="gifts-hero__body">От идеи до реализация — подбираме бизнес подаръци, календари, тефтери и персонализирани комплекти за вашите клиенти, партньори и екип.</p>
+          <div class="gifts-hero__actions">
+            <Button href="#zapitvane" size="lg">Поискайте индивидуална оферта</Button>
+            <a href="#vazmozhnosti">Вижте възможностите <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <figure class="gifts-hero__visual">
+          <Image src={businessGiftImage} alt="Бизнес подаръчен комплект с тефтер, химикалки и брандирани детайли" widths={[480, 768, 1024]} sizes="(min-width: 64rem) 42vw, 100vw" loading="eager" fetchpriority="high" />
+          <figcaption>Подбрани предмети, обединени в един жест.</figcaption>
+        </figure>
+      </div>
+    </header>
+
+    <section class="gifts-intro" aria-labelledby="intro-title">
+      <div class="gifts-shell gifts-intro__inner">
+        <p class="section-label">От първата идея до готовия комплект</p>
+        <div>
+          <h2 id="intro-title">Добрият рекламен материал не е случаен предмет</h2>
+          <p>Той е част от разговора с хората, които искате да запомнят вашия бранд. Затова започваме от повода и аудиторията, а не от готов каталог.</p>
+          <a href="/resheniya/dizayn-i-reklamni-materiali/">Вижте услугата „Дизайн и рекламни материали“ <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="gifts-categories" id="vazmozhnosti" aria-labelledby="categories-title">
+      <div class="gifts-shell">
+        <div class="gifts-section-heading">
+          <p class="section-label">Възможности</p>
+          <h2 id="categories-title">Избираме формата според повода</h2>
+        </div>
+        <ol class="gifts-categories__list">
+          {categories.map(([name, copy], index) => (
+            <li>
+              <span>0{index + 1}</span>
+              <h3>{name}</h3>
+              <p>{copy}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="gifts-gallery" aria-labelledby="gallery-title">
+      <div class="gifts-shell">
+        <div class="gifts-section-heading gifts-section-heading--light">
+          <p class="section-label">Примери от нашата среда</p>
+          <h2 id="gallery-title">Материали, които могат да бъдат полезни и красиви</h2>
+        </div>
+        <div class="gifts-gallery__grid">
+          <figure class="gifts-gallery__item gifts-gallery__item--wide"><Image src={brandedItemsImage} alt="Брандирани бутилки, термоси и чаша" widths={[480, 768, 1024]} sizes="(min-width: 64rem) 58vw, 100vw" loading="lazy" /><figcaption>Практични предмети за ежедневна употреба</figcaption></figure>
+          <figure class="gifts-gallery__item"><Image src={notebookImage} alt="Червен тефтер, химикалка и подаръчна кутия" widths={[320, 480, 768]} sizes="(min-width: 64rem) 30vw, 100vw" loading="lazy" /><figcaption>Тефтери и детайли с характер</figcaption></figure>
+          <figure class="gifts-gallery__item"><Image src={materialsImage} alt="Брандирани рекламни материали в червено и бяло" widths={[320, 480, 768]} sizes="(min-width: 64rem) 30vw, 100vw" loading="lazy" /><figcaption>Персонализирани рекламни формати</figcaption></figure>
+          <figure class="gifts-gallery__item gifts-gallery__item--room"><Image src={studioImage} alt="Работно пространство на VAMO с рекламни материали" widths={[320, 480, 768]} sizes="(min-width: 64rem) 30vw, 100vw" loading="lazy" /><figcaption>Детайлите изграждат разпознаваемост</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="gifts-process" aria-labelledby="process-title">
+      <div class="gifts-shell gifts-process__inner">
+        <div class="gifts-process__heading">
+          <p class="section-label">Как работим</p>
+          <h2 id="process-title">Подаръкът започва с правилния въпрос</h2>
+        </div>
+        <ol class="gifts-process__list">
+          {process.map(([number, title, copy]) => <li><span>{number}</span><h3>{title}</h3><p>{copy}</p></li>)}
+        </ol>
+      </div>
+    </section>
+
+    <section class="gifts-inquiry" aria-labelledby="inquiry-title">
+      <div class="gifts-shell gifts-inquiry__inner">
+        <div class="gifts-inquiry__copy">
+          <p class="section-label">Нека обсъдим вашия повод</p>
+          <h2 id="inquiry-title">Подготвяте събитие, кампания или жест към важни хора?</h2>
+          <p>Разкажете ни накратко за задачата. Ще потърсим подходящо решение спрямо вашата цел, аудитория и срок.</p>
+        </div>
+        <div class="gifts-inquiry__form"><ContactForm /></div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .gifts-page{background:var(--color-cream)}
+  .gifts-shell{width:min(calc(100% - 2 * var(--layout-gutter-mobile)),var(--layout-content-max));margin-inline:auto}
+  .gifts-breadcrumbs-bar{border-block:1px solid var(--color-border);background:var(--color-surface)}
+  .gifts-breadcrumbs{display:flex;min-height:2.75rem;align-items:center;gap:var(--space-2);overflow:hidden;color:var(--color-text-muted);font-size:.875rem;white-space:nowrap}
+  .gifts-breadcrumbs a{color:inherit;text-decoration:none}.gifts-breadcrumbs a:hover{color:var(--color-vamo-red)}.gifts-breadcrumbs a:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}.gifts-breadcrumbs span[aria-hidden='true']{color:var(--color-neutral-400)}.gifts-breadcrumbs span[aria-current='page']{overflow:hidden;color:var(--color-text);font-weight:600;text-overflow:ellipsis}
+  .gifts-hero{overflow:hidden;background:var(--color-vamo-black);color:var(--color-text-inverse)}
+  .gifts-hero__inner{display:grid;gap:var(--space-8);padding-block:var(--layout-anchor-padding-mobile)}
+  .gifts-hero__copy{align-self:center}.gifts-hero__copy>p:first-child,.section-label{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.75rem;font-weight:700;letter-spacing:.1em;line-height:1.4;text-transform:uppercase}
+  .gifts-hero h1{max-width:14ch;margin-block-start:var(--space-4);font-size:var(--type-page-title);font-weight:700;line-height:1.04;letter-spacing:-.035em;text-wrap:balance}
+  .gifts-hero__lead{max-width:38rem;margin-block-start:var(--space-6);font-family:var(--font-heading);font-size:clamp(1.125rem,2vw,1.375rem);font-weight:600;line-height:1.35;letter-spacing:-.015em}
+  .gifts-hero__body{max-width:52ch;margin-block-start:var(--space-4);color:var(--color-neutral-300);font-size:1.0625rem;line-height:1.65}
+  .gifts-hero__actions{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center;margin-block-start:var(--space-8)}.gifts-hero__actions>a{min-height:3rem;display:inline-flex;align-items:center;color:var(--color-text-inverse);font-family:var(--font-heading);font-weight:600;text-decoration:underline;text-decoration-color:var(--color-red-300);text-decoration-thickness:2px;text-underline-offset:var(--space-2)}.gifts-hero__actions>a:hover{color:var(--color-accent-on-dark)}.gifts-hero__actions>a:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px}
+  .gifts-hero__visual{display:grid;overflow:hidden;border:1px solid var(--color-neutral-800);border-radius:var(--radius-surface);background:var(--color-neutral-800)}.gifts-hero__visual :global(img){display:block;width:100%;height:100%;aspect-ratio:1.25;object-fit:cover}.gifts-hero__visual figcaption{padding:var(--space-4);color:var(--color-neutral-300);font-size:.875rem;line-height:1.45}
+  .gifts-intro{padding-block:var(--layout-section-padding-mobile);border-block-end:1px solid var(--color-border)}.gifts-intro__inner{display:grid;gap:var(--space-5)}.gifts-intro__inner>div{display:grid;gap:var(--space-5);max-width:48rem}.gifts-intro h2,.gifts-section-heading h2,.gifts-process h2,.gifts-inquiry h2{font-size:var(--type-section-title);font-weight:700;line-height:1.12;letter-spacing:-.025em;text-wrap:balance}.gifts-intro p:not(.section-label),.gifts-inquiry__copy>p:last-child{color:var(--color-text-muted);font-size:1.0625rem;line-height:1.65}.gifts-intro a{width:fit-content;color:var(--color-text);font-family:var(--font-heading);font-weight:700;text-decoration:underline;text-decoration-color:var(--color-vamo-red);text-decoration-thickness:2px;text-underline-offset:var(--space-2)}.gifts-intro a:hover{color:var(--color-vamo-red)}.gifts-intro a:focus-visible{outline:2px solid var(--color-focus);outline-offset:4px}
+  .gifts-categories{padding-block:var(--layout-anchor-padding-mobile)}.gifts-section-heading{display:grid;gap:var(--space-4);max-width:44rem}.gifts-categories__list{display:grid;margin:var(--space-10) 0 0;padding:0;border-block-start:1px solid var(--color-border-strong);list-style:none}.gifts-categories__list li{display:grid;grid-template-columns:3rem 1fr;gap:var(--space-2) var(--space-4);padding-block:var(--space-6);border-block-end:1px solid var(--color-border)}.gifts-categories__list span,.gifts-process__list span{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.75rem;font-weight:700;letter-spacing:.08em}.gifts-categories__list h3,.gifts-process__list h3{font-family:var(--font-heading);font-size:var(--type-feature-title);font-weight:700;line-height:1.25;letter-spacing:-.02em}.gifts-categories__list p{grid-column:2;color:var(--color-text-muted);line-height:1.6}
+  .gifts-gallery{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-vamo-black);color:var(--color-text-inverse)}.gifts-section-heading--light h2{color:var(--color-text-inverse)}.gifts-gallery__grid{display:grid;gap:var(--space-4);margin-block-start:var(--space-10)}.gifts-gallery__item{display:grid;overflow:hidden;background:var(--color-neutral-800)}.gifts-gallery__item :global(img){width:100%;height:100%;min-height:18rem;object-fit:cover}.gifts-gallery__item figcaption{padding:var(--space-4);color:var(--color-neutral-300);font-size:.875rem;line-height:1.45}
+  .gifts-process{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-neutral-100)}.gifts-process__inner{display:grid;gap:var(--space-10)}.gifts-process__heading{display:grid;gap:var(--space-4);max-width:28rem}.gifts-process__list{display:grid;margin:0;padding:0;border-block-start:1px solid var(--color-border-strong);list-style:none}.gifts-process__list li{display:grid;grid-template-columns:3rem 1fr;gap:var(--space-2) var(--space-4);padding-block:var(--space-6);border-block-end:1px solid var(--color-border)}.gifts-process__list p{grid-column:2;color:var(--color-text-muted);line-height:1.6}
+  .gifts-inquiry{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-cream)}.gifts-inquiry__inner{display:grid;gap:var(--space-10)}.gifts-inquiry__copy{display:grid;align-content:start;gap:var(--space-5);max-width:36rem}.gifts-inquiry__form :global(#zapitvane){scroll-margin-block-start:var(--space-20)}
+  @media(min-width:48rem){.gifts-shell{width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max))}.gifts-hero__inner{grid-template-columns:minmax(0,1.05fr) minmax(22rem,.95fr);gap:var(--space-12);align-items:center;padding-block:var(--layout-anchor-padding-desktop)}.gifts-hero__visual :global(img){aspect-ratio:auto;min-height:29rem}.gifts-intro,.gifts-categories,.gifts-gallery,.gifts-process,.gifts-inquiry{padding-block:var(--layout-anchor-padding-desktop)}.gifts-intro__inner{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--space-12)}.gifts-categories__list li{grid-template-columns:4rem minmax(16rem,.75fr) minmax(0,1fr);gap:var(--space-6);align-items:start}.gifts-categories__list p{grid-column:3}.gifts-gallery__grid{grid-template-columns:1.25fr .75fr .75fr;grid-template-rows:16rem 16rem}.gifts-gallery__item--wide{grid-row:span 2}.gifts-gallery__item--room{grid-column:span 2}.gifts-gallery__item :global(img){min-height:0}.gifts-process__inner{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--space-12)}.gifts-process__list li{grid-template-columns:3rem minmax(12rem,.65fr) minmax(0,1fr);gap:var(--space-5)}.gifts-process__list p{grid-column:3}.gifts-inquiry__inner{grid-template-columns:minmax(0,.8fr) minmax(28rem,1.2fr);gap:var(--space-12)}}
+</style>

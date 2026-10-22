@@ -162,6 +162,14 @@ const resheniya = defineCollection({
         )
         .max(3)
         .optional(),
+      relatedLanding: z
+        .object({
+          title: z.string().min(1),
+          description: z.string().min(1),
+          label: z.string().min(1),
+          href: z.string().startsWith('/'),
+        })
+        .optional(),
       featuredInSection: z.boolean().default(false),
       sectionOrder: z.number().int().nonnegative().optional(),
       ctaTitle: z.string().min(1).optional(),
