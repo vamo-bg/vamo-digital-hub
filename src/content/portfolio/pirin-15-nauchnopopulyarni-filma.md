@@ -10,6 +10,13 @@ serviceIds:
   - "video-i-filmovo-proizvodstvo"
 expertIds:
   - "gergana-ivanova"
+  - "ivan-uzunov"
+  - "lyuben-domozetski"
+  - "valentina-fidanova-kolarova"
+  - "diana-pavlova"
+  - "toni-guleva"
+  - "lyubomir-lyubenov"
+  - "teodora-spasova"
 featuredInSection: true
 sectionOrder: 2
 lead: "film"
