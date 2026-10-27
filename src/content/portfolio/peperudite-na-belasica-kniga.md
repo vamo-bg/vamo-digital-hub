@@ -9,8 +9,10 @@ location: "Природен парк „Беласица“"
 serviceIds:
   - "dizayn-i-reklamni-materiali"
 expertIds:
-  - "gergana-ivanova"
   - "lyuben-domozetski"
+  - "sofia-ilkova"
+  - "ivan-uzunov"
+  - "gergana-ivanova"
 featuredInSection: true
 sectionOrder: 8
 lead: "editorial"
