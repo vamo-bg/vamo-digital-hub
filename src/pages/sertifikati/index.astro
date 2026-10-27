@@ -15,6 +15,9 @@ const certificates = (await getCollection('sertifikati', ({ data }) => !data.dra
         <p class="certificates-page__eyebrow">Професионално развитие</p>
         <h1>Обучения и квалификации</h1>
         <p>Подбрани документи, които показват професионалната подготовка зад работата на VAMO.</p>
+        <a class="certificates-page__pdf" href="/certificates/gergana-ivanova-certificates.pdf" target="_blank" rel="noreferrer">
+          Отворете пълния архив със сертификати (PDF) <span aria-hidden="true">↗</span>
+        </a>
       </div>
     </header>
     <CertificatesSection items={certificates} title="Документи от практиката" intro="Всеки документ е представен като отделен запис с посочен издател, година и публично достъпно копие." />
@@ -31,5 +34,7 @@ const certificates = (await getCollection('sertifikati', ({ data }) => !data.dra
   .certificates-page__eyebrow { margin: 0 0 var(--space-4); color: var(--color-accent-on-dark); font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
   .certificates-page h1 { max-width: 18ch; margin: 0; font-size: var(--type-page-title); line-height: 1.08; letter-spacing: -.03em; }
   .certificates-page__hero p:last-child { max-width: 52ch; margin-block-start: var(--space-5); color: var(--color-neutral-300); line-height: 1.65; }
+  .certificates-page__pdf { display: inline-block; margin-block-start: var(--space-6); color: var(--color-accent-on-dark); font-weight: 700; text-decoration: underline; text-underline-offset: .2em; }
+  .certificates-page__pdf:hover { color: var(--color-white); }
   @media (min-width: 48rem) { .certificates-page__crumbs nav, .certificates-page__inner { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .certificates-page__hero { padding-block: var(--layout-anchor-padding-desktop); } }
 </style>
