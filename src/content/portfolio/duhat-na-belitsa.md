@@ -9,7 +9,10 @@ location: "Белица"
 serviceIds:
   - "video-i-filmovo-proizvodstvo"
   - "komunikatsii-i-pr"
-expertIds: []
+expertIds:
+  - "ivan-uzunov"
+  - "gergana-ivanova"
+  - "nikolay-kostov"
 featuredInSection: true
 sectionOrder: 10
 lead: "film"
