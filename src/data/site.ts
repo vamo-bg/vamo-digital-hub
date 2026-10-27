@@ -150,7 +150,7 @@ export const site: SiteConfig = {
   },
   socials: [
     { label: 'LinkedIn', icon: 'linkedin-logo', url: 'https://www.linkedin.com/company/vamo-bg/' },
-    { label: 'YouTube', icon: 'youtube-logo', url: 'https://www.youtube.com/@VamoBG' },
+    { label: 'YouTube', icon: 'youtube-logo', url: 'https://www.youtube.com/@ГерганаИванова-Вамо' },
     { label: 'Facebook', icon: 'facebook-logo', url: 'https://www.facebook.com/vamo.eu/' },
     { label: 'Instagram', icon: 'instagram-logo', url: 'https://www.instagram.com/vamo.eu/' },
   ],
