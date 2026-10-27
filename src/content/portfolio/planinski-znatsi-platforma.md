@@ -9,6 +9,9 @@ serviceIds:
   - "ueb-razrabotka"
 expertIds:
   - "ivan-uzunov"
+  - "simana-markovska"
+  - "toni-guleva"
+  - "gergana-ivanova"
 featuredInSection: true
 sectionOrder: 6
 lead: "platform"
