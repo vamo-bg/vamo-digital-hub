@@ -14,6 +14,9 @@ expertIds:
   - "gergana-ivanova"
   - "ivan-uzunov"
   - "lyuben-domozetski"
+  - "radostin-dimitrov"
+  - "lyubomir-lyubenov"
+  - "toni-guleva"
 featuredInSection: true
 sectionOrder: 13
 lead: "platform"
