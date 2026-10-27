@@ -10,7 +10,9 @@ serviceIds:
   - "video-i-filmovo-proizvodstvo"
   - "komunikatsii-i-pr"
 expertIds:
+  - "ivan-uzunov"
   - "gergana-ivanova"
+  - "nikolay-kostov"
 featuredInSection: true
 sectionOrder: 9
 lead: "film"
