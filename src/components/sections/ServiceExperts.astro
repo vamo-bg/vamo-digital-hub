@@ -20,7 +20,7 @@ const orderedExperts = [...experts].sort(ivanFirst());
         <p>Хората се включват според конкретната нужда и работят в координация с целия проект.</p>
       </header>
       <div class="service-experts__grid">
-        {orderedExperts.slice(0, 3).map((expert) => <ExpertCard expert={expert} />)}
+        {orderedExperts.map((expert) => <ExpertCard expert={expert} />)}
       </div>
     </div>
   </section>
