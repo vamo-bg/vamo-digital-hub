@@ -63,6 +63,8 @@ referenceDocuments:
     featuredInSection: true
     sectionOrder: 1
 draft: false
+seoTitle: "Читалището в Белица — документален филм за 140 години история | VAMO"
+seoDescription: "Документален филм на ВАМО за историята, живите традиции и хората на читалището в Белица."
 ---
 
 ## Документален разказ за паметта и хората

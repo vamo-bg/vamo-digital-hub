@@ -14,7 +14,7 @@ services: []
 featuredOnHome: false
 active: true
 draft: false
-seoTitle: Иван Руйков | Младши експерт в мрежата на VAMO
+seoTitle: "Иван Руйков — младши експерт по туризъм | VAMO"
 seoDescription: Иван Руйков е студент по туризъм и младши експерт в мрежата на VAMO с умения за работа в екип и работа с офис и графични програми.
 ---
 

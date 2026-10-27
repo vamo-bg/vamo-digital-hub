@@ -11,7 +11,7 @@ services: []
 featuredOnHome: false
 active: true
 draft: false
-seoTitle: Мария Благоева | Експертна мрежа на VAMO
+seoTitle: "Мария Благоева — журналистика | VAMO"
 seoDescription: Мария Благоева е журналист с опит във вестник „24 часа“ и образование по българска филология и журналистика.
 ---
 

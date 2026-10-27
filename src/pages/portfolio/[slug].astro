@@ -32,6 +32,8 @@ const posterId = projectVideoId(project.data);
 const posterUrl = !project.data.coverImage && posterId ? projectPosterUrl(posterId) : undefined;
 const {
   title,
+  seoTitle,
+  seoDescription,
   clientId,
   description,
   coverImage,
@@ -214,8 +216,8 @@ const breadcrumbSchema = {
 ---
 
 <BaseLayout
-  title={title}
-  description={description}
+  title={seoTitle ?? title}
+  description={seoDescription ?? description}
   image={coverImage}
   noindex={draft}
 >

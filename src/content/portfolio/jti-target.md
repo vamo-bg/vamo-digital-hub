@@ -84,6 +84,8 @@ referenceDocuments:
     featuredInSection: true
     sectionOrder: 1
 draft: false
+seoTitle: "JTI-TARGET — виртуални турове и туристическа платформа | VAMO"
+seoDescription: "Теренно заснемане, виртуални турове и цифрова туристическа платформа за обекти в България и Гърция."
 ---
 
 ## От терена до виртуалната платформа

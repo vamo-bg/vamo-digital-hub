@@ -19,7 +19,7 @@ featuredOnHome: true
 homeOrder: 3
 active: true
 draft: false
-seoTitle: Ивайло Миленков | Експертна мрежа на VAMO
+seoTitle: "Ивайло Миленков — уеб разработка и SEO | VAMO"
 seoDescription: Ивайло Миленков изгражда уеб решения, CRM системи и SEO стратегии за подредено и измеримо дигитално присъствие.
 ---
 

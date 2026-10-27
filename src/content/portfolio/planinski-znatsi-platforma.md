@@ -68,6 +68,8 @@ externalLinks:
   - label: "Вижте представянето"
     url: "https://mountainbrands.eu/index.php/bg/conferens/forum12-2"
 draft: false
+seoTitle: "Планински знаци — уебсайт и дигитална платформа | VAMO"
+seoDescription: "Уебсайт и платформа за местни работни места и занаятчийски продукти по проекта „Планински знаци“ в Белица."
 ---
 
 ## От местния занаят към онлайн присъствие

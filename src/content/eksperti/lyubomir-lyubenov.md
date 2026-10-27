@@ -17,7 +17,7 @@ services: []
 featuredOnHome: false
 active: true
 draft: false
-seoTitle: Любомир Любенов | Оператор и видеомонтаж | VAMO
+seoTitle: "Любомир Любенов — операторство и видеомонтаж | VAMO"
 seoDescription: Любомир Любенов – експерт по филмово и телевизионно операторство,
   видеозаснемане и монтаж в Експертната мрежа на VAMO.
 ---

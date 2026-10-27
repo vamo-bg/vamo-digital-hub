@@ -22,7 +22,7 @@ featuredOnHome: true
 homeOrder: 2
 active: true
 draft: false
-seoTitle: Иван Узунов | Експертна мрежа на VAMO
+seoTitle: "Иван Узунов — режисура и филмово производство | VAMO"
 seoDescription: Иван Узунов е инженер, режисьор и оператор с експертиза във филмовото производство, уеб дизайна и дигиталните карти.
 ---
 

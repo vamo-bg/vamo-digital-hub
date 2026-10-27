@@ -119,6 +119,8 @@ referenceDocuments:
     featuredInSection: true
     sectionOrder: 1
 draft: false
+seoTitle: "Пирин — 15 научнопопулярни филма за биоразнообразието | VAMO"
+seoDescription: "Образователна филмова поредица на VAMO за видовете и местообитанията в Национален парк „Пирин“."
 ---
 
 ## Природата на Пирин като филмов разказ

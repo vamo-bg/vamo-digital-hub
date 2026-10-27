@@ -16,7 +16,7 @@ services:
 featuredOnHome: false
 active: true
 draft: false
-seoTitle: Йордан Стоянов | Експертна мрежа на VAMO
+seoTitle: "Йордан Стоянов — полиграфия и рекламни материали | VAMO"
 seoDescription: Йордан Стоянов е външен експерт на VAMO по полиграфия, офсетов печат, ситопечат, рекламни материали и книговезка работа.
 ---
 

@@ -20,7 +20,7 @@ featuredOnHome: false
 order: 5
 active: true
 draft: false
-seoTitle: Благой Гошев | Експертна мрежа на VAMO
+seoTitle: "Благой Гошев — озвучаване и техника за събития | VAMO"
 seoDescription: Благой Гошев е външен експерт на VAMO по озвучаване, техническо обезпечаване на събития и радиофикационни системи.
 ---
 

@@ -41,7 +41,8 @@ const {
 } = Astro.props;
 
 const siteName = import.meta.env.PUBLIC_SITE_NAME ?? site.name;
-const pageTitle = titleSuffix && title !== siteName ? `${title} | ${siteName}` : title;
+const hasSiteSuffix = title === siteName || title.endsWith(` | ${siteName}`);
+const pageTitle = titleSuffix && !hasSiteSuffix ? `${title} | ${siteName}` : title;
 const socialPageTitle = socialTitle ?? pageTitle;
 const canonicalUrl = new URL(canonical, Astro.site ?? Astro.url);
 /**

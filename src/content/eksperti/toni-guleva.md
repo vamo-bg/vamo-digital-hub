@@ -19,7 +19,7 @@ featuredOnHome: false
 homeOrder: 6
 active: true
 draft: false
-seoTitle: Тони Гулева | Експертна мрежа на VAMO
+seoTitle: "Тони Гулева — журналистика и репортажи | VAMO"
 seoDescription: Тони Гулева е журналист, редактор и репортер с над 25 години опит в интервюта, регионални новини и съдържание за онлайн медии.
 ---
 

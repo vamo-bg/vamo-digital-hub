@@ -38,6 +38,8 @@ externalLinks:
   - label: "Гледайте филма"
     url: "https://www.youtube.com/watch?v=jzS3BVnWMGE"
 draft: false
+seoTitle: "Белица — туристически филм за дестинацията ЕДЕН 2009 | VAMO"
+seoDescription: "Представителен филм на ВАМО за природата, наследството и туристическите възможности на Белица."
 ---
 
 ## Филмов разказ за Белица

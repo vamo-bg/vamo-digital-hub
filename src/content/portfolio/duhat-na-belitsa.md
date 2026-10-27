@@ -63,6 +63,8 @@ referenceDocuments:
     featuredInSection: true
     sectionOrder: 1
 draft: false
+seoTitle: "Духът на Белица — туристически и културен филм | VAMO"
+seoDescription: "Филм на ВАМО за историята, културата, природата и туристическия потенциал на Белица."
 ---
 
 ## Филмов разказ за Белица

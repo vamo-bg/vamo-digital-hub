@@ -72,6 +72,8 @@ referenceDocuments:
     featuredInSection: true
     sectionOrder: 1
 draft: false
+seoTitle: "Game of Business — организация и публичност на събития | VAMO"
+seoDescription: "Организация на мастъркласове, бизнес конференция, B2B срещи и информационни събития по трансграничния проект Game of Business."
 ---
 
 ## Обучение, бизнес контакти и публичност

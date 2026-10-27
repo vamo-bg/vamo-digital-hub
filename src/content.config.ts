@@ -190,6 +190,8 @@ const portfolio = defineCollection({
       title: z.string().min(1),
       clientId: z.string().min(1),
       description: shortDescription,
+      seoTitle: z.string().min(1).optional(),
+      seoDescription: shortDescription.optional(),
       serviceIds: z.array(z.string().min(1)).min(1),
       projectType: z.string().min(1).optional(),
       status: z.enum(['current', 'completed']).default('completed'),

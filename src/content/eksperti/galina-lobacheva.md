@@ -19,7 +19,7 @@ featuredOnHome: false
 homeOrder: 17
 active: true
 draft: false
-seoTitle: Галина Лобачева | Експертна мрежа на VAMO
+seoTitle: "Галина Лобачева — B2B маркетинг и дигитална стратегия | VAMO"
 seoDescription: Галина Лобачева е експерт по B2B маркетинг, дигитална стратегия и аналитика с опит в IT и телекомуникационните услуги.
 ---
 

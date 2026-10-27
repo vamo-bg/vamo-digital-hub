@@ -57,6 +57,8 @@ referenceDocuments:
     organization: "Дирекция на Природен парк „Беласица“"
     pdfHref: "/documents/udostoverenie-peperudite-belasica.pdf"
 draft: false
+seoTitle: "Пеперудите на Беласица — образователна книга | VAMO"
+seoDescription: "Образователна книга за дневните пеперуди на Беласица — от концепцията и съдържанието до оформлението и печата."
 ---
 
 ## Книга, която помага да опознаем планината
