@@ -7,9 +7,19 @@ interface Props {
   intro?: string;
   linkHref?: string;
   linkLabel?: string;
+  archiveHref?: string;
+  archiveLabel?: string;
 }
 
-const { items, title = 'Обучения и квалификации', intro, linkHref, linkLabel = 'Виж всички документи' } = Astro.props;
+const {
+  items,
+  title = 'Обучения и квалификации',
+  intro,
+  linkHref,
+  linkLabel = 'Виж всички документи',
+  archiveHref,
+  archiveLabel = 'Отворете пълния архив със сертификати (PDF)',
+} = Astro.props;
 const sorted = [...items].sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
 ---
 
@@ -36,6 +46,11 @@ const sorted = [...items].sort((a, b) => (a.data.order ?? 99) - (b.data.order ??
       ))}
     </div>
     {linkHref && <a class="certificates-section__link" href={linkHref}>{linkLabel} <span aria-hidden="true">→</span></a>}
+    {archiveHref && (
+      <a class="certificates-section__link certificates-section__link--archive" href={archiveHref} target="_blank" rel="noreferrer">
+        {archiveLabel} <span aria-hidden="true">↗</span>
+      </a>
+    )}
   </div>
 </section>
 
@@ -55,5 +70,6 @@ const sorted = [...items].sort((a, b) => (a.data.order ?? 99) - (b.data.order ??
   .certificate-card__meta a, .certificates-section__link { color: var(--color-primary-hover); font-weight: 700; text-decoration: underline; text-underline-offset: .2em; }
   .certificate-card__meta a:hover, .certificates-section__link:hover { text-decoration: underline; }
   .certificates-section__link { display: inline-block; margin-block-start: var(--space-8); }
+  .certificates-section__link--archive { margin-inline-start: var(--space-6); }
   @media (min-width: 48rem) { .certificates-section { padding-block: var(--layout-section-padding-desktop); } .certificates-section__inner { width: min(calc(100% - (2 * var(--layout-gutter-desktop))), var(--layout-content-max)); } .certificates-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
