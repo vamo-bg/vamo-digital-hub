@@ -11,7 +11,12 @@ serviceIds:
   - "video-i-filmovo-proizvodstvo"
   - "digitalna-strategiya"
 expertIds:
-  - "gergana-ivanova"
+  - "nikolay-kostov"
+  - "toni-guleva"
+  - "diana-pavlova"
+  - "sofia-ilkova"
+  - "tsonya-krasteva"
+  - "stefka-anastasova-chavdarova"
 featuredInSection: true
 sectionOrder: 3
 lead: "platform"
