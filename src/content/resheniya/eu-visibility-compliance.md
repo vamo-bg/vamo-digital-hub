@@ -59,6 +59,16 @@ inclusions:
       description: "Проверяваме пълнотата и съответствието преди предаване."
 order: 8
 icon: "seal-check"
+expertIds:
+  - "adriana-krasteva"
+  - "iliyana-cvetanova"
+  - "irena-georgieva"
+  - "ivanka-chobanova"
+  - "maria-charakchieva"
+  - "rumyana-popova"
+  - "sofia-ilkova"
+  - "tsonya-krasteva"
+  - "yulia-koyundzhiyska"
 draft: false
 ---
 

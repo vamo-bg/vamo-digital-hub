@@ -56,7 +56,7 @@ export async function getStaticPaths() {
 
 const { solution } = Astro.props;
 const { Content } = await render(solution);
-const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions, editorialSections, relatedLanding, ctaTitle, ctaLabel } = solution.data;
+const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions, editorialSections, relatedLanding, ctaTitle, ctaLabel, expertIds } = solution.data;
 const hasStructuredContent = Boolean(problems || difference || process || inclusions);
 const solutionImage = solutionImages[solution.id as keyof typeof solutionImages];
 
@@ -69,17 +69,21 @@ const relatedProjects = (
 const clients = await getCollection('clients', ({ data }) => !data.draft);
 const clientNames = Object.fromEntries(clients.map((client) => [client.id, client.data.name]));
 const allExperts = await getCollection('eksperti', ({ data }) => data.active && !data.draft);
-const relatedExperts = (
-  await Promise.all(
-    allExperts.map(async (expert) => ({
-      expert,
-      services: await getEntries(expert.data.services),
-    })),
+const relatedExperts = expertIds.length > 0
+  ? expertIds
+    .map((id) => allExperts.find((expert) => expert.id === id))
+    .filter((expert): expert is (typeof allExperts)[number] => expert !== undefined)
+  : (
+    await Promise.all(
+      allExperts.map(async (expert) => ({
+        expert,
+        services: await getEntries(expert.data.services),
+      })),
+    )
   )
-)
-  .filter(({ services }) => services.some((service) => service.id === solution.id))
-  .map(({ expert }) => expert)
-  .slice(0, 3);
+    .filter(({ services }) => services.some((service) => service.id === solution.id))
+    .map(({ expert }) => expert)
+    .slice(0, 3);
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',

@@ -172,6 +172,7 @@ const resheniya = defineCollection({
         .optional(),
       featuredInSection: z.boolean().default(false),
       sectionOrder: z.number().int().nonnegative().optional(),
+      expertIds: z.array(z.string().min(1)).default([]),
       ctaTitle: z.string().min(1).optional(),
       ctaLabel: z.string().min(1).optional(),
       // За <title>/<meta description> — `title`/`description` остават късия
