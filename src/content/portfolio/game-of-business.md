@@ -10,10 +10,10 @@ serviceIds:
   - "sabitiya-i-logistika"
   - "komunikatsii-i-pr"
 expertIds:
-  - "gergana-ivanova"
-  - "tsonya-krasteva"
   - "simana-markovska"
-  - "dinka-zlateva"
+  - "gergana-ivanova"
+  - "iliyana-cvetanova"
+  - "ivan-ruykov"
 featuredInSection: true
 sectionOrder: 14
 lead: "editorial"
