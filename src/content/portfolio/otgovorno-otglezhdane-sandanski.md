@@ -11,6 +11,9 @@ serviceIds:
   - "komunikatsii-i-pr"
   - "dizayn-i-reklamni-materiali"
   - "video-i-filmovo-proizvodstvo"
+expertIds:
+  - "gergana-ivanova"
+  - "ivan-uzunov"
 featuredInSection: true
 sectionOrder: 12
 lead: "exhibition"
