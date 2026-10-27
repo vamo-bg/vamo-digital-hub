@@ -11,6 +11,7 @@ serviceIds:
   - "video-i-filmovo-proizvodstvo"
 expertIds:
   - "gergana-ivanova"
+  - "tanya-kukoleva"
 featuredInSection: true
 sectionOrder: 11
 lead: "exhibition"
