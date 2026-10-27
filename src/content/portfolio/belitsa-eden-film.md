@@ -7,6 +7,11 @@ publishedAt: "2026-10-20"
 location: "Белица"
 serviceIds:
   - "video-i-filmovo-proizvodstvo"
+expertIds:
+  - "ivan-uzunov"
+  - "gergana-ivanova"
+  - "simana-markovska"
+  - "nikolay-kostov"
 featuredInSection: true
 sectionOrder: 5
 lead: "film"
