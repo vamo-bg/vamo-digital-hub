@@ -1,0 +1,589 @@
+---
+import { Image } from 'astro:assets';
+
+import ContactForm from '../components/ui/ContactForm.astro';
+import Button from '../components/ui/Button.astro';
+import CataloguesSection from '../components/sections/CataloguesSection.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CheckMark from '../components/ui/CheckMark.astro';
+import PromoBadge from '../components/ui/PromoBadge.astro';
+import galleryStenenKalendar from '../assets/reklamni-materiali/stenen-kalendar-2027-vamo.webp';
+import galleryNastolenKalendar from '../assets/reklamni-materiali/nastolen-kalendar-2027-vamo.webp';
+import galleryNarodniTradicii from '../assets/reklamni-materiali/kalendar-narodni-tradicii-vamo.webp';
+import galleryDvumesechenKalendar from '../assets/reklamni-materiali/dvumesechen-kalendar-vamo.webp';
+import galleryTefterKork from '../assets/reklamni-materiali/tefter-kork-vamo.webp';
+import galleryKnigorazdeliteli from '../assets/reklamni-materiali/knigorazdeliteli-vamo.webp';
+import galleryTefterChernoCherven from '../assets/reklamni-materiali/tefter-cherno-cherven-vamo.webp';
+import galleryButilki from '../assets/reklamni-materiali/butilki-za-voda-vamo.webp';
+import galleryTermochashi from '../assets/reklamni-materiali/termochashi-vamo.webp';
+import galleryRanici from '../assets/reklamni-materiali/ranici-s-logo-vamo.webp';
+import galleryChervenoPolo from '../assets/reklamni-materiali/cherveno-polo-vamo.webp';
+import gallerySuitshart from '../assets/reklamni-materiali/suitshart-s-logo-vamo.webp';
+import galleryChervenElek from '../assets/reklamni-materiali/cherven-ekip-vamo.webp';
+import galleryShapkaSnapback from '../assets/reklamni-materiali/shapka-snapback-vamo.webp';
+import galleryKomplektButilka from '../assets/reklamni-materiali/komplekt-tefter-i-butilka-vamo.webp';
+import galleryKomplektHimikalka from '../assets/reklamni-materiali/komplekt-tefter-i-himikalka-vamo.webp';
+import vamoWhiteLogo from '../assets/reklamni-materiali/vamo-white.png';
+import heroBackground from '../assets/reklamni-materiali/hero-ekip.webp';
+import socialImage from '../assets/reklamni-materiali/og-reklamni-materiali.jpg';
+import produktZapalka from '../assets/reklamni-materiali/produkt-zapalka.webp';
+import produktTeniski from '../assets/reklamni-materiali/produkt-teniski.webp';
+import produktYake from '../assets/reklamni-materiali/produkt-yake.webp';
+import produktShapka from '../assets/reklamni-materiali/produkt-shapka.webp';
+import produktRakavitsa from '../assets/reklamni-materiali/produkt-rakavitsa.webp';
+import produktHimikalka from '../assets/reklamni-materiali/produkt-himikalka.webp';
+import produktKalendar from '../assets/reklamni-materiali/produkt-kalendar.webp';
+import produktFenerche from '../assets/reklamni-materiali/produkt-fenerche.webp';
+import catalogMalfiniCover from '../assets/reklamni-materiali/korica-katalog-malfini-2026.webp';
+import catalogKalendariCover from '../assets/reklamni-materiali/korica-katalog-kalendari-2027.webp';
+import partnerStricker from '../assets/reklamni-materiali/partner-stricker.webp';
+import partnerOfficeMarket from '../assets/reklamni-materiali/partner-officemarket.gif';
+import partnerMalfini from '../assets/reklamni-materiali/partner-malfini.png';
+import partnerPrisma from '../assets/reklamni-materiali/partner-prisma.svg';
+import partnerEkstrapak from '../assets/reklamni-materiali/partner-ekstrapak.webp';
+import { site } from '../data/site';
+
+const catalogues = [
+  {
+    label: 'Malfini · 2026',
+    title: 'Каталог 2026: промоционално облекло',
+    description: 'Тениски, поло, суичъри и аксесоари за брандиране – модели, цветове и размери в 210 страници. Каталогът е на английски език.',
+    details: 'PDF · 210 страници · 12,5 MB',
+    href: '/documents/catalogues/vamo-katalog-malfini-2026.pdf',
+    cover: catalogMalfiniCover,
+    coverAlt: 'Корица на каталог 2026 на Malfini с промоционално облекло',
+  },
+  {
+    label: 'ВАМО · 2027',
+    title: 'Календарна кампания 2027',
+    description: 'Стенни и настолни календари за 2027 г. – природа, пътешествия, традиции и градове. Формати, хартия и място за рекламен надпис.',
+    details: 'PDF · 14 страници · 3,2 MB',
+    href: '/documents/catalogues/vamo-kalendari-2027.pdf',
+    cover: catalogKalendariCover,
+    coverAlt: 'Корица на каталог „Календарна кампания 2027“ на ВАМО',
+  },
+];
+
+const title = 'Рекламни материали и бизнес подаръци';
+const description = 'Брандирани рекламни материали, бизнес подаръци и персонализирани комплекти за клиенти, партньори, екипи и събития.';
+const pageUrl = new URL('/biznes-podaratsi/', Astro.site ?? Astro.url).href;
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': `${pageUrl}#service`,
+  name: title,
+  description,
+  url: pageUrl,
+  provider: { '@id': `${new URL('/', Astro.site ?? Astro.url).href}#organization` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+};
+
+const categories = [
+  ['Бизнес комплекти', 'Съчетаваме предмети и опаковка в подарък, който изглежда завършен и уместен за повода.'],
+  ['Подаръци с лого', 'Подбираме практични продукти и подходящ начин за брандиране според вашата идентичност.'],
+  ['Тефтери, календари и картички', 'Подготвяме полезни печатни формати за ежедневна употреба, поздрав или дългосрочно присъствие.'],
+  ['Материали за събития', 'Създаваме видими и последователни детайли за срещи, конференции и представяния.'],
+];
+
+const process = [
+  ['01', 'Уточняваме повода', 'Говорим за хората, бюджета, броя комплекти и момента, в който подаръкът ще бъде получен.'],
+  ['02', 'Подбираме решение', 'Предлагаме комбинация от продукти, материали и брандиране, съобразена с вашата задача.'],
+  ['03', 'Подготвяме визията', 'Адаптираме логото и посланието така, че да стоят естествено върху избрания формат.'],
+  ['04', 'Координираме реализацията', 'Проследяваме подготовката на материалите до готовия за използване комплект.'],
+];
+
+const heroFeatures = [
+  'Бизнес комплекти',
+  'Подаръчни комплекти с лого',
+  'Картички с фирмено брандиране',
+  'Стенни календари',
+  'Планери и тефтери',
+];
+
+const whyReasons = [
+  { title: 'Директен внос от европейски складове', detail: '– доставка до 5 дни' },
+  { title: 'Възможност за покупка на изплащане с TBI', detail: '(минимална стойност 150 лв.)' },
+  { title: 'Гъвкави решения', detail: 'за различни бюджети' },
+  { title: 'Екологични и персонализирани продукти', detail: 'с нов дизайн 2026' },
+  { title: 'Пълен бранд мениджмънт', detail: '– от концепция до финален продукт' },
+];
+
+const whyImages = [
+  { src: produktZapalka, alt: 'Брандирана метална запалка с лого' },
+  { src: produktTeniski, alt: 'Две червени тениски с брандиране' },
+  { src: produktYake, alt: 'Червено поларено яке с брандиране' },
+  { src: produktShapka, alt: 'Червена шапка с брандиране' },
+  { src: produktRakavitsa, alt: 'Ръкавица за фурна с брандиране' },
+  { src: produktHimikalka, alt: 'Химикалка с гравирано лого' },
+  { src: produktKalendar, alt: 'Настолен календар с брандиране' },
+  { src: produktFenerche, alt: 'Метално фенерче за ключодържател с лого' },
+];
+
+const galleryImages = [
+  { src: galleryStenenKalendar, alt: 'Стенен календар ВАМО за 2027 г. с български пейзажи и рекламно поле' },
+  { src: galleryNarodniTradicii, alt: 'Стенен календар с народни традиции и български носии' },
+  { src: galleryTefterKork, alt: 'Тефтер с корична корица и брандиране на ВАМО' },
+  { src: galleryChervenoPolo, alt: 'Червена поло тениска с брандиране на ВАМО' },
+  { src: galleryNastolenKalendar, alt: 'Настолен календар пирамида ВАМО за 2027 г. с рекламно поле' },
+  { src: galleryDvumesechenKalendar, alt: 'Двумесечен календар ВАМО с луксозна корица' },
+  { src: galleryButilki, alt: 'Бутилки за вода с лого на ВАМО в четири цвята' },
+  { src: gallerySuitshart, alt: 'Черен суитшърт с брандиране на ВАМО' },
+  { src: galleryKomplektHimikalka, alt: 'Подаръчен комплект тефтер и химикалка в кутия с лого на ВАМО' },
+  { src: galleryRanici, alt: 'Раници и чанти с брандиране на ВАМО' },
+  { src: galleryShapkaSnapback, alt: 'Бейзболна шапка snapback с лого на ВАМО' },
+  { src: galleryTermochashi, alt: 'Термочаши и бутилки за кафе с брандиране на ВАМО' },
+  { src: galleryKnigorazdeliteli, alt: 'Книгоразделител с лепящи листчета и лого на ВАМО' },
+  { src: galleryChervenElek, alt: 'Червен елек с цип и брандиране на ВАМО' },
+  { src: galleryTefterChernoCherven, alt: 'Тефтер в черно и червено с брандиране на ВАМО' },
+  { src: galleryKomplektButilka, alt: 'Подаръчен комплект тефтер и бутилка за вода с брандиране на ВАМО' },
+];
+
+const partners = [
+  { name: 'Stricker', logo: partnerStricker, alt: 'Лого на Stricker', copy: 'Международен производител с присъствие в 100 държави' },
+  { name: 'Офис Маркет', logo: partnerOfficeMarket, alt: 'Лого на Офис Маркет', copy: 'Производител на календари за корпоративни клиенти' },
+  { name: 'MALFINI', logo: partnerMalfini, alt: 'Лого на MALFINI', copy: 'Висококачествен текстил и промоционални облекла' },
+  { name: 'Prisma', logo: partnerPrisma, alt: 'Лого на Prisma', copy: 'Рекламни аксесоари и бизнес подаръци' },
+  { name: 'Екстрапак АД', logo: partnerEkstrapak, alt: 'Лого на СЕП Екстрапак', copy: 'Чанти и опаковки от устойчиви материали' },
+];
+---
+
+<BaseLayout
+  title="Рекламни материали и бизнес подаръци | VAMO"
+  titleSuffix={false}
+  description={description}
+  socialTitle="Рекламни материали и бизнес подаръци от VAMO"
+  image={socialImage}
+  hideHeader
+  hideFooter
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  </Fragment>
+
+  <article class="gifts-page">
+    <header class="gifts-hero">
+      <Image
+        class="gifts-hero__bg"
+        src={heroBackground}
+        alt=""
+        width={1920}
+        height={980}
+        widths={[768, 1280, 1920]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="gifts-shell gifts-hero__inner">
+        <p class="gifts-hero__eyebrow">ВАМО</p>
+        <h1>Рекламни материали и сувенири, които работят за вашия бранд</h1>
+        <p class="gifts-hero__lead">Създайте впечатление, което остава дълго след срещата.</p>
+        <p class="gifts-hero__body">
+          От идеи до реализация – изберете най-подходящите <strong>бизнес подаръци</strong>,{' '}
+          <strong>календари</strong>, <strong>тефтери</strong> и <strong>персонализирани комплекти</strong>{' '}
+          за вашите клиенти и партньори.
+        </p>
+        <div class="gifts-hero__actions">
+          <Button href="#zapitvane" size="lg">
+            <PromoBadge>Промоция</PromoBadge>
+            Поръчайте своя рекламен комплект
+          </Button>
+          <Button href="#catalog" variant="ghost" size="lg" class="gifts-hero__secondary">Разгледайте каталога</Button>
+        </div>
+        <Image class="gifts-hero__logo" src={vamoWhiteLogo} alt="" width={1200} height={360} widths={[180, 360]} sizes="200px" loading="eager" />
+        <ul class="gifts-hero__features">
+          {heroFeatures.map((feature) => (
+            <li>
+              <CheckMark />
+              {feature}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </header>
+
+    <section class="gifts-why" aria-labelledby="why-title">
+      <div class="gifts-shell gifts-why__inner">
+        <div class="gifts-why__copy">
+          <h2 id="why-title">Защо да изберете <span>ВАМО</span></h2>
+          <p class="gifts-why__lead">25 години опит. Едно доверие. Хиляди реализирани кампании.</p>
+          <p class="gifts-why__body">Вече четвърт век ВАМО е партньор на институции, бизнеси и организации в Югозападна България и извън нея. Ние не просто доставяме рекламни материали – създаваме комуникация, която говори вместо вас.</p>
+          <ul class="gifts-why__list">
+            {whyReasons.map((reason) => (
+              <li>
+                <CheckMark />
+                <span><strong>{reason.title}</strong> {reason.detail}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="gifts-why__media" data-gifts-slider>
+          <div class="gifts-why__stage">
+            <ul class="gifts-why__track" data-gifts-track aria-label="Примери за брандирани продукти">
+              {whyImages.map((image) => (
+                <li class="gifts-why__slide">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    width={768}
+                    height={768}
+                    widths={[400, 512, 768]}
+                    sizes="(min-width: 64rem) min(32rem, calc(47.5vw - 4.75rem)), (min-width: 48rem) 32rem, calc(100vw - 2rem)"
+                    loading="lazy"
+                  />
+                </li>
+              ))}
+            </ul>
+            <button class="gifts-why__arrow gifts-why__arrow--prev" type="button" data-gifts-prev aria-label="Предишен пример">
+              <i class="ph ph-caret-left" aria-hidden="true"></i>
+            </button>
+            <button class="gifts-why__arrow gifts-why__arrow--next" type="button" data-gifts-next aria-label="Следващ пример">
+              <i class="ph ph-caret-right" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="gifts-why__dots">
+            {whyImages.map((image, index) => (
+              <button type="button" data-gifts-dot aria-label={`Пример ${index + 1}: ${image.alt}`} aria-current="false"></button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gifts-categories" id="vazmozhnosti" aria-labelledby="categories-title">
+      <div class="gifts-shell">
+        <div class="gifts-section-heading">
+          <p class="section-label">Възможности</p>
+          <h2 id="categories-title">Избираме формата според повода</h2>
+        </div>
+        <ol class="gifts-categories__list">
+          {categories.map(([name, copy], index) => (
+            <li>
+              <span>0{index + 1}</span>
+              <h3>{name}</h3>
+              <p>{copy}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <CataloguesSection
+      items={catalogues}
+      intro="Актуалните каталози на ВАМО – облекло за брандиране от Malfini и календарната кампания за 2027 г. Отварят се в нов раздел за преглед или сваляне."
+      note="Искате печатна версия или подборка за конкретна кампания?"
+      noteHref="#zapitvane"
+      noteLabel="Пишете ни"
+    />
+
+    <section class="gifts-promo" aria-labelledby="promo-title">
+      <div class="gifts-shell gifts-promo__inner">
+        <h2 id="promo-title">Готови ли сте за своята кампания 2026?</h2>
+        <p class="gifts-promo__lead">Подгответе се за празниците със стил, внимание и персонален подход.</p>
+        <p class="gifts-promo__body">Рекламата днес не е въпрос на бюджет, а на емоция. Клиентите купуват, когато се разпознаят във вашата история. Екипът на ВАМО превръща вашето послание в преживяване — с филми, видеа, Reels и бранд визия, която остава в съзнанието.</p>
+        <Button href="#zapitvane" size="lg" class="gifts-promo__cta">
+          <PromoBadge>Промоция</PromoBadge>
+          Поръчайте своя рекламен комплект
+        </Button>
+      </div>
+    </section>
+
+    <section class="gifts-trends" aria-labelledby="trends-title">
+      <div class="gifts-shell gifts-trends__inner">
+        <div class="gifts-trends__copy">
+          <h2 id="trends-title">Новите тенденции за <span>2026/2027</span></h2>
+          <p class="gifts-trends__lead">Еко, персонализирано, устойчиво.</p>
+          <p class="gifts-trends__body">През 2026 г. рекламните продукти не са просто подаръци – <strong>те са послание</strong>. Изберете <strong>модерни решения</strong>, които показват вашата социална отговорност и отношение към природата:</p>
+          <ul class="gifts-trends__list">
+            <li><i class="ph ph-leaf" aria-hidden="true"></i><span>Продукти от <strong>рециклирани и биоразградими</strong> материали</span></li>
+            <li><i class="ph ph-pen-nib" aria-hidden="true"></i><span><strong>Персонализирани комплекти</strong> с гравиране или ситопечат</span></li>
+            <li><i class="ph ph-calendar-blank" aria-hidden="true"></i><span>Бизнес календари с <strong>фирмено лого и корпоративен стил</strong></span></li>
+            <li><i class="ph ph-gift" aria-hidden="true"></i><span><strong>Стилни комплекти</strong> за офиси, събития и клиенти</span></li>
+          </ul>
+          <p class="gifts-trends__note">
+            <CheckMark />
+            <span><strong>Директен внос от европейски склад</strong> – <span>новите рекламни тенденции 2026 – 2027</span></span>
+          </p>
+        </div>
+
+        <div class="gifts-trends__video">
+          <iframe
+            src="https://www.canva.com/design/DAG1qhH26Fs/wouOVZEoTKQXcpiWODQmzg/watch?embed"
+            title="Видео с Мирослав Иванов, представител на Stricker"
+            loading="lazy"
+            allow="fullscreen; autoplay; encrypted-media"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="gifts-gallery" aria-labelledby="gallery-title">
+      <div class="gifts-shell">
+        <div class="gifts-section-heading gifts-section-heading--light">
+          <p class="section-label">Примери от нашата среда</p>
+          <h2 id="gallery-title">Материали, които могат да бъдат полезни и красиви</h2>
+        </div>
+        <ul class="gifts-gallery__grid">
+          {galleryImages.map((image) => (
+            <li>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                widths={[320, 640, 960, 1200]}
+                sizes="(min-width: 64rem) 33vw, (min-width: 48rem) 50vw, 100vw"
+                loading="lazy"
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="gifts-process" aria-labelledby="process-title">
+      <div class="gifts-shell">
+        <div class="gifts-process__heading">
+          <p class="section-label">Как работим</p>
+          <h2 id="process-title">Подаръкът започва с правилния въпрос</h2>
+          <p class="gifts-process__lead">Работим по ясен процес, който започва с вашата цел и завършва с готов за употреба комплект.</p>
+        </div>
+        <ol class="gifts-process__list">
+          {process.map(([number, title, copy]) => (
+            <li>
+              <span class="gifts-process__number">{number}</span>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="gifts-partners" aria-labelledby="partners-title">
+      <div class="gifts-shell">
+        <div class="gifts-partners__heading">
+          <p class="section-label">Нашите партньори</p>
+          <h2 id="partners-title">Работим с водещи европейски и български производители</h2>
+        </div>
+        <ul class="gifts-partners__list">
+          {partners.map((partner) => (
+            <li>
+              <span class="gifts-partners__logo">
+                <img src={partner.logo.src} alt={partner.alt} width={partner.logo.width} height={partner.logo.height} loading="lazy" />
+              </span>
+              <h3>{partner.name}</h3>
+              <p>{partner.copy}</p>
+            </li>
+          ))}
+        </ul>
+        <ul class="gifts-partners__other">
+          <li><strong>Voodoo Advertising</strong> – креативни рекламни решения</li>
+          <li><strong>MAX PEN</strong>, Noex, FormTex, Office1, ЕТ „Влади-Веселин Влаев“</li>
+        </ul>
+        <p class="gifts-partners__note">Работим директно с вносители, за да гарантираме бързи срокове и преференциални цени.</p>
+      </div>
+    </section>
+
+    <section class="gifts-inquiry" aria-labelledby="inquiry-title">
+      <div class="gifts-shell gifts-inquiry__inner">
+        <div class="gifts-inquiry__copy">
+          <p class="section-label">Нека обсъдим вашия повод</p>
+          <h2 id="inquiry-title">Подготвяте събитие, кампания или жест към важни хора?</h2>
+          <p class="gifts-inquiry__body">Разкажете ни накратко за задачата. Ще потърсим подходящо решение спрямо вашата цел, аудитория и срок.</p>
+          <a class="gifts-inquiry__phone" href={site.contact.phone.href}>
+            <i class="ph ph-phone" aria-hidden="true"></i>
+            <span class="gifts-inquiry__phone-number">{site.contact.phone.label}</span>
+            <span class="gifts-inquiry__phone-note">Обадете се – ще ви съдействаме веднага.</span>
+          </a>
+          <ul class="gifts-inquiry__channels">
+            <li>
+              <a href={site.contact.viber.href}>
+                <i class:list={['ph', `ph-${site.contact.viber.icon}`]} aria-hidden="true"></i>
+                <strong>Viber</strong>
+                <span>Пишете ни, ако предпочитате бърза комуникация.</span>
+              </a>
+            </li>
+            <li>
+              <a href={site.contact.messenger.href}>
+                <i class:list={['ph', `ph-${site.contact.messenger.icon}`]} aria-hidden="true"></i>
+                <strong>Messenger</strong>
+                <span>Свържете се с нас – ще отговорим лично.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="gifts-inquiry__form"><ContactForm /></div>
+      </div>
+    </section>
+  </article>
+
+  <script>
+    document.querySelectorAll('[data-gifts-slider]').forEach((slider) => {
+      const track = slider.querySelector('[data-gifts-track]');
+      const prev = slider.querySelector<HTMLButtonElement>('[data-gifts-prev]');
+      const next = slider.querySelector<HTMLButtonElement>('[data-gifts-next]');
+      const dots = [...slider.querySelectorAll<HTMLButtonElement>('[data-gifts-dot]')];
+      if (!track || !prev || !next || !dots.length) return;
+
+      const slides = [...track.children] as HTMLElement[];
+      if (slides.length < 2) return;
+
+      const offsetOf = (index: number) => slides[index].offsetLeft - slides[0].offsetLeft;
+      const currentIndex = () =>
+        slides.reduce(
+          (best, _slide, index) =>
+            Math.abs(offsetOf(index) - track.scrollLeft) < Math.abs(offsetOf(best) - track.scrollLeft)
+              ? index
+              : best,
+          0,
+        );
+      const goTo = (index: number) => {
+        const target = Math.min(Math.max(index, 0), slides.length - 1);
+        track.scrollTo({
+          left: offsetOf(target),
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        });
+      };
+      const sync = () => {
+        const index = currentIndex();
+        prev.disabled = index === 0;
+        next.disabled = index === slides.length - 1;
+        dots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === index)));
+      };
+
+      prev.addEventListener('click', () => goTo(currentIndex() - 1));
+      next.addEventListener('click', () => goTo(currentIndex() + 1));
+      dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
+      track.addEventListener('scroll', () => window.requestAnimationFrame(sync), { passive: true });
+
+      slider.setAttribute('data-enhanced', '');
+      sync();
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .gifts-page{background:var(--color-cream)}
+  .gifts-page :global(.button),.gifts-page :global(.contact-form button){font-family:var(--font-ui)}
+  .gifts-shell{width:min(calc(100% - 2 * var(--layout-gutter-mobile)),var(--layout-content-max));margin-inline:auto}
+  .gifts-hero{position:relative;overflow:hidden;background-color:var(--color-vamo-black);color:var(--color-text-inverse);text-align:center}
+  .gifts-hero :global(.gifts-hero__bg){position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+  .gifts-hero::after{content:'';position:absolute;inset:0;background-color:var(--color-vamo-black);opacity:.85}
+  .gifts-hero__inner{position:relative;z-index:1;display:grid;justify-items:center;padding-block:var(--space-12)}
+  .gifts-hero__eyebrow,.section-label{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.75rem;font-weight:700;letter-spacing:.1em;line-height:1.4;text-transform:uppercase}
+  .gifts-hero__eyebrow{color:var(--color-accent-on-dark)}
+  .gifts-hero h1{max-width:54rem;margin-block-start:var(--space-4);font-size:var(--type-page-title);font-weight:700;line-height:1.1;letter-spacing:-.02em;text-wrap:balance}
+  .gifts-hero__lead{max-width:48rem;margin-block-start:var(--space-8);font-family:var(--font-body);font-size:1rem;font-weight:400;line-height:1.5;letter-spacing:.03em;text-wrap:balance}
+  .gifts-hero__body{max-width:70ch;margin-block-start:var(--space-5);color:var(--color-text-inverse);font-size:1.125rem;line-height:1.65;text-wrap:pretty}
+  .gifts-hero__body strong{font-weight:700}
+  .gifts-hero__logo{width:12rem;height:auto;margin-block-start:var(--space-6)}
+  .gifts-hero__features{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3) var(--space-4);margin:var(--space-6) 0 0;padding:0;list-style:none;color:var(--color-text-inverse);font-size:.8125rem;line-height:1.4;letter-spacing:.03em}
+  .gifts-hero__features li{display:inline-flex;align-items:center;gap:var(--space-2)}
+  .gifts-hero__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3);width:100%;max-width:34rem;margin-block-start:var(--space-6)}
+  .gifts-hero__actions :global(.button){font-family:var(--font-ui)}
+  .gifts-hero__actions :global(.gifts-hero__secondary){border-color:transparent;background-color:var(--color-white);color:var(--color-vamo-red)}
+  .gifts-hero__actions :global(.gifts-hero__secondary:hover){border-color:transparent;background-color:var(--color-neutral-100);color:var(--color-vamo-red)}
+  .gifts-why{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-cream)}
+  .gifts-why__inner{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-12)}
+  .gifts-why h2{padding-inline-start:var(--space-4);border-inline-start:3px solid var(--color-vamo-red);font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
+  .gifts-why h2 span{color:var(--color-vamo-red)}
+  .gifts-why__lead{margin-block-start:var(--space-8);font-family:var(--font-ui);font-size:.875rem;font-weight:600;line-height:1.5}
+  .gifts-why__body{max-width:52ch;margin-block-start:var(--space-5);color:var(--color-text-muted);font-size:1.0625rem;line-height:1.65}
+  .gifts-why__list{display:grid;margin:var(--space-8) 0 0;padding:0;list-style:none;border-block-start:1px dotted var(--color-border-strong)}
+  .gifts-why__list li{display:grid;grid-template-columns:1.25rem minmax(0,1fr);gap:var(--space-3);align-items:start;padding-block:var(--space-4);border-block-end:1px dotted var(--color-border-strong);font-size:1rem;line-height:1.55}
+  .gifts-why__list :global(.check-mark){width:1.25rem;height:1.25rem;margin-block-start:.15em}
+  .gifts-why__media{display:grid;min-width:0;width:100%;max-width:32rem;justify-self:center;gap:var(--space-4)}
+  .gifts-why__stage{position:relative;overflow:hidden;border:1px solid var(--color-border);border-radius:var(--radius-surface);background:var(--color-white)}
+  .gifts-why__track{display:flex;margin:0;padding:0;overflow-x:auto;list-style:none;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
+  .gifts-why__track::-webkit-scrollbar{display:none}
+  .gifts-why__slide{flex:0 0 100%;scroll-snap-align:start}
+  .gifts-why__slide :global(img){display:block;width:100%;height:auto}
+  .gifts-why__arrow{position:absolute;inset-block-start:50%;display:none;place-items:center;width:2.75rem;height:2.75rem;padding:0;border:1px solid var(--color-border-strong);border-radius:var(--radius-full);background:var(--color-white);color:var(--color-text);translate:0 -50%;cursor:pointer;transition:background-color var(--dur-2) ease,color var(--dur-2) ease}
+  .gifts-why__arrow:not(:disabled):hover{background:var(--color-white);color:var(--color-vamo-red)}
+  .gifts-why__arrow:disabled{opacity:.35;cursor:default}
+  .gifts-why__arrow:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+  .gifts-why__arrow i{font-size:1.125rem}
+  .gifts-why__arrow--prev{inset-inline-start:var(--space-3)}
+  .gifts-why__arrow--next{inset-inline-end:var(--space-3)}
+  .gifts-why__media[data-enhanced] .gifts-why__arrow{display:grid}
+  .gifts-why__dots{display:none;flex-wrap:wrap;justify-content:center;gap:var(--space-1)}
+  .gifts-why__media[data-enhanced] .gifts-why__dots{display:flex}
+  .gifts-why__dots button{display:grid;place-items:center;width:2.75rem;height:2.75rem;padding:0;border:0;background:transparent;cursor:pointer}
+  .gifts-why__dots button::before{content:'';width:.625rem;height:.625rem;border-radius:var(--radius-full);background:var(--color-neutral-600);transition:background-color var(--dur-2) ease}
+  .gifts-why__dots button:hover::before{background:var(--color-neutral-800)}
+  .gifts-why__dots button[aria-current='true']::before{background:var(--color-vamo-black);transform:scale(1.4)}
+  .gifts-why__dots button:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+  .gifts-section-heading h2,.gifts-process h2,.gifts-inquiry h2{font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
+  .gifts-inquiry__body{color:var(--color-text-muted);font-size:1.0625rem;line-height:1.65}
+  .gifts-categories{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-neutral-100)}
+  .gifts-section-heading{display:grid;gap:var(--space-4);max-width:44rem}
+  .gifts-categories__list{display:grid;margin:var(--space-10) 0 0;padding:0;border-block-start:1px dotted var(--color-border-strong);list-style:none}
+  .gifts-categories__list li{display:grid;grid-template-columns:2.5rem minmax(0,1fr);gap:var(--space-2) var(--space-4);align-items:start;padding-block:var(--space-6);border-block-end:1px dotted var(--color-border-strong)}
+  .gifts-categories__list span,.gifts-process__list span{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.75rem;font-weight:700;letter-spacing:.08em}
+  .gifts-categories__list h3,.gifts-process__list h3{font-family:var(--font-heading);font-size:var(--type-feature-title);font-weight:700;line-height:1.25;letter-spacing:-.02em}
+  .gifts-categories__list p{grid-column:2;color:var(--color-text-muted);line-height:1.6}
+  .gifts-promo{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-red-800);color:var(--color-white);text-align:center}
+  .gifts-promo__inner{display:grid;justify-items:center}
+  .gifts-promo h2{max-width:32ch;font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
+  .gifts-promo__lead{max-width:44rem;margin-block-start:var(--space-3);font-family:var(--font-ui);font-size:clamp(1rem,2vw,1.25rem);font-weight:600;line-height:1.35;text-wrap:balance}
+  .gifts-promo__body{max-width:70ch;margin-block-start:var(--space-5);color:var(--color-red-50);font-size:1rem;line-height:1.65;text-wrap:pretty}
+  .gifts-promo :global(.gifts-promo__cta){margin-block-start:var(--space-8);background-color:var(--color-white);color:var(--color-vamo-red);font-family:var(--font-ui)}
+  .gifts-promo :global(.gifts-promo__cta:hover){background-color:var(--color-cream);color:var(--color-vamo-red)}
+  .gifts-trends{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-cream)}
+  .gifts-trends__inner{display:grid;gap:var(--space-10)}
+  .gifts-trends h2{padding-inline-start:var(--space-4);border-inline-start:3px solid var(--color-vamo-red);font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
+  .gifts-trends h2 span{color:var(--color-vamo-red)}
+  .gifts-trends__lead{margin-block-start:var(--space-4);color:var(--color-text-muted);font-family:var(--font-ui);font-size:.875rem;font-weight:600;line-height:1.5}
+  .gifts-trends__body{max-width:52ch;margin-block-start:var(--space-4);color:var(--color-text-muted);font-size:1.0625rem;line-height:1.65}
+  .gifts-trends__body strong,.gifts-trends__list strong{color:var(--color-text);font-weight:700}
+  .gifts-trends__list{display:grid;margin:var(--space-6) 0 0;padding:0;list-style:none}
+  .gifts-trends__list li{display:grid;grid-template-columns:1.25rem minmax(0,1fr);gap:var(--space-3);align-items:start;padding-block:var(--space-3);border-block-end:1px solid var(--color-border);font-size:1rem;line-height:1.5}
+  .gifts-trends__list i{margin-block-start:.1em;color:var(--color-vamo-red);font-size:1.25rem;line-height:1}
+  .gifts-trends__note{display:grid;grid-template-columns:1.25rem minmax(0,1fr);gap:var(--space-3);align-items:start;margin-block-start:var(--space-8);padding:var(--space-4) var(--space-5);border:1px solid var(--color-border);border-radius:var(--radius-surface);background:var(--color-white);font-size:.9375rem;line-height:1.5}
+  .gifts-trends__note :global(.check-mark){width:1.25rem;height:1.25rem;margin-block-start:.1em}
+  .gifts-trends__note > span > span{color:var(--color-vamo-red)}
+  .gifts-trends__video{overflow:hidden;border:1px solid var(--color-border);border-radius:var(--radius-surface);background:var(--color-vamo-black);aspect-ratio:9/16}
+  .gifts-trends__video iframe{display:block;width:100%;height:100%;border:0}
+  .gifts-gallery{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-vamo-black);color:var(--color-text-inverse)}
+  .gifts-gallery .section-label{color:var(--color-accent-on-dark)}
+  .gifts-section-heading--light h2{color:var(--color-text-inverse)}
+  .gifts-gallery__grid{columns:1;column-gap:var(--space-4);margin:var(--space-10) 0 0;padding:0;list-style:none}
+  .gifts-gallery__grid li{break-inside:avoid;margin-block-end:var(--space-4)}
+  .gifts-gallery__grid :global(img){display:block;width:100%;height:auto;border-radius:var(--radius-surface);background:var(--color-neutral-800)}
+  .gifts-process{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-neutral-100)}
+  .gifts-process__heading{display:grid;justify-items:center;gap:var(--space-4);max-width:52rem;margin-inline:auto;text-align:center}
+  .gifts-process__lead{max-width:44rem;color:var(--color-text-muted);font-size:1.0625rem;line-height:1.65;text-wrap:pretty}
+  .gifts-process__list{display:grid;margin:var(--space-12) 0 0;padding:0;border-block:1px dotted var(--color-border-strong);list-style:none}
+  .gifts-process__list li{display:grid;align-content:start;gap:var(--space-4);padding-block:var(--space-6);border-block-end:1px dotted var(--color-border-strong)}
+  .gifts-process__list li:last-child{border-block-end:0}
+  .gifts-process__number{display:grid;place-items:center;width:2.75rem;height:2.75rem;border:1.5px solid var(--color-vamo-red);border-radius:var(--radius-full);font-size:.8125rem;letter-spacing:.04em}
+  .gifts-process__list p{color:var(--color-text-muted);font-size:1rem;line-height:1.65}
+  .gifts-partners{padding-block:var(--layout-anchor-padding-mobile);border-block-start:1px solid var(--color-border);background:var(--color-cream)}
+  .gifts-partners__heading{display:grid;justify-items:center;gap:var(--space-4);max-width:52rem;margin-inline:auto;text-align:center}
+  .gifts-partners h2{font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
+  .gifts-partners__list{display:grid;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));gap:var(--space-4);margin:var(--space-10) 0 0;padding:0;list-style:none}
+  .gifts-partners__list li{display:grid;align-content:start;justify-items:center;gap:var(--space-3);padding:var(--space-6) var(--space-4);border:1px solid var(--color-border);border-radius:var(--radius-surface);background:var(--color-white);text-align:center}
+  .gifts-partners__logo{display:grid;place-items:center;height:2.75rem}
+  .gifts-partners__logo img{width:auto;height:auto;max-width:100%;max-height:2.5rem;object-fit:contain}
+  .gifts-partners__list h3{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:.8125rem;font-weight:700;letter-spacing:.06em;line-height:1.3}
+  .gifts-partners__list p{color:var(--color-text-muted);font-size:.875rem;line-height:1.55}
+  .gifts-partners__other{display:grid;gap:var(--space-2);width:fit-content;margin:var(--space-8) auto 0;padding-inline-start:var(--space-5);color:var(--color-text-muted);font-size:.9375rem;line-height:1.55;list-style:disc}
+  .gifts-partners__other strong{color:var(--color-text)}
+  .gifts-partners__note{margin-block-start:var(--space-6);color:var(--color-vamo-red);font-size:1rem;font-style:italic;line-height:1.6;text-align:center}
+  .gifts-inquiry{padding-block:var(--layout-anchor-padding-mobile);border-block-start:1px solid var(--color-border);background:var(--color-cream)}.gifts-inquiry__inner{display:grid;gap:var(--space-10)}.gifts-inquiry__copy{display:grid;align-content:start;gap:var(--space-5);max-width:36rem}.gifts-inquiry__form :global(#zapitvane){scroll-margin-block-start:var(--space-20)}
+  .gifts-inquiry__form :global(.contact-form){background:var(--color-white)}
+  .gifts-inquiry__phone{display:grid;justify-items:center;gap:var(--space-2);margin-block-start:var(--space-4);padding:var(--space-8) var(--space-6);border:1px solid var(--color-border);border-radius:var(--radius-surface);background:var(--color-white);text-align:center;text-decoration:none;transition:border-color var(--dur-2) ease}
+  .gifts-inquiry__phone i{color:var(--color-vamo-red);font-size:2.25rem;line-height:1}
+  .gifts-inquiry__phone-number{color:var(--color-vamo-red);font-family:var(--font-heading);font-size:clamp(1.75rem,2.6vw,2.5rem);font-weight:700;letter-spacing:-.02em;line-height:1.1}
+  .gifts-inquiry__phone-note{color:var(--color-vamo-red);font-family:var(--font-ui);font-size:.8125rem;font-weight:700;line-height:1.4}
+  .gifts-inquiry__phone:hover,.gifts-inquiry__phone:focus-visible{border-color:var(--color-vamo-red)}
+  .gifts-inquiry__channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:var(--space-4);margin:0;padding:0;list-style:none}
+  .gifts-inquiry__channels a{display:grid;justify-items:center;align-content:start;gap:var(--space-2);height:100%;padding:var(--space-6) var(--space-4);border:1px solid var(--color-border);border-radius:var(--radius-surface);background:var(--color-white);color:var(--color-text);text-align:center;text-decoration:none;transition:border-color var(--dur-2) ease}
+  .gifts-inquiry__channels i{color:var(--color-vamo-black);font-size:1.75rem;line-height:1}
+  .gifts-inquiry__channels strong{font-family:var(--font-ui);font-size:.9375rem;font-weight:700;line-height:1.3}
+  .gifts-inquiry__channels span{color:var(--color-text-muted);font-size:.875rem;line-height:1.5}
+  .gifts-inquiry__channels a:hover,.gifts-inquiry__channels a:focus-visible{border-color:var(--color-vamo-red)}
+  @media(min-width:40rem){.gifts-hero__actions{max-width:none}.gifts-hero__actions :global(.button){flex:none}}
+  @media(min-width:48rem){.gifts-shell{width:min(calc(100% - 2 * var(--layout-gutter-desktop)),var(--layout-content-max))}.gifts-hero__inner{padding-block:var(--layout-anchor-padding-desktop)}.gifts-hero__actions{order:1;margin-block-start:var(--space-10)}.gifts-why,.gifts-categories,.gifts-promo,.gifts-trends,.gifts-gallery,.gifts-process,.gifts-partners,.gifts-inquiry{padding-block:var(--layout-anchor-padding-desktop)}.gifts-trends__inner{grid-template-columns:minmax(0,1fr) minmax(18rem,24rem);gap:var(--space-12);align-items:start}.gifts-categories__list{grid-template-columns:repeat(2,minmax(0,1fr))}.gifts-categories__list li{padding:var(--space-8) var(--space-6)}.gifts-categories__list li:nth-child(odd){padding-inline-start:0}.gifts-categories__list li:nth-child(even){border-inline-start:1px dotted var(--color-border-strong);padding-inline-end:0}.gifts-gallery__grid{columns:2}.gifts-process__list{grid-template-columns:repeat(2,minmax(0,1fr))}.gifts-process__list li{padding:var(--space-8) var(--space-6);border-block-end:0}.gifts-process__list li:nth-child(odd){padding-inline-start:0}.gifts-process__list li:nth-child(even){border-inline-start:1px dotted var(--color-border-strong)}.gifts-process__list li:nth-child(-n+2){border-block-end:1px dotted var(--color-border-strong)}}
+  @media(min-width:64rem){.gifts-why__inner{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:var(--space-16);align-items:center}.gifts-inquiry__inner{grid-template-columns:minmax(0,.85fr) minmax(26rem,1.15fr);gap:var(--space-12);align-items:start}.gifts-gallery__grid{columns:3}.gifts-process__list{grid-template-columns:repeat(4,minmax(0,1fr))}.gifts-process__list li{padding:var(--space-8) var(--space-5)}.gifts-process__list li:nth-child(odd),.gifts-process__list li:nth-child(even){padding-inline-start:var(--space-5)}.gifts-process__list li:first-child{padding-inline-start:0}.gifts-process__list li:last-child{padding-inline-end:0}.gifts-process__list li:not(:first-child){border-inline-start:1px dotted var(--color-border-strong)}.gifts-process__list li:nth-child(-n+2){border-block-end:0}}
+</style>

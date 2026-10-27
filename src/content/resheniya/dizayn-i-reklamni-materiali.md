@@ -61,7 +61,7 @@ relatedLanding:
   title: "Рекламни материали и бизнес подаръци"
   description: "За конкретни брандирани продукти, подаръчни комплекти, тефтери и календари вижте отделната ни страница с възможности за вашата кампания."
   label: "Вижте рекламните материали"
-  href: "/reklamni-materiali-i-biznes-podaratsi/"
+  href: "/biznes-podaratsi/"
 order: 3
 icon: "paint-brush"
 featuredInSection: true

@@ -1,0 +1,242 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import Button from '../ui/Button.astro';
+
+export interface CatalogueItem {
+  label: string;
+  title: string;
+  description: string;
+  details: string;
+  href: string;
+  cover: ImageMetadata;
+  coverAlt: string;
+}
+
+interface Props {
+  items: CatalogueItem[];
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+  note?: string;
+  noteHref?: string;
+  noteLabel?: string;
+}
+
+const {
+  items,
+  id = 'catalog',
+  eyebrow = 'Каталози',
+  title = 'Разгледайте каталозите',
+  intro,
+  note,
+  noteHref,
+  noteLabel,
+} = Astro.props;
+---
+
+<section class="catalogues" id={id} aria-labelledby={`${id}-title`}>
+  <div class="catalogues__inner">
+    <div class="catalogues__heading">
+      <p class="catalogues__eyebrow">{eyebrow}</p>
+      <h2 id={`${id}-title`}>{title}</h2>
+      {intro && <p class="catalogues__intro">{intro}</p>}
+    </div>
+    <ul class="catalogues__grid">
+      {items.map((item) => (
+        <li class="catalogue-card">
+          <div class="catalogue-card__cover">
+            <Image
+              src={item.cover}
+              alt={item.coverAlt}
+              widths={[180, 360, 540]}
+              sizes="(min-width: 48rem) 9rem, 60vw"
+              loading="lazy"
+            />
+          </div>
+          <div class="catalogue-card__body">
+            <p class="catalogue-card__label">{item.label}</p>
+            <h3>{item.title}</h3>
+            <p class="catalogue-card__description">{item.description}</p>
+            <p class="catalogue-card__details">{item.details}</p>
+            <Button
+              href={item.href}
+              variant="ghost"
+              size="md"
+              class="catalogue-card__action"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Отворете каталога <span aria-hidden="true">↗</span>
+            </Button>
+          </div>
+        </li>
+      ))}
+    </ul>
+    {note && (
+      <p class="catalogues__note">
+        {note}
+        {noteHref && noteLabel && (
+          <>
+            {' '}
+            <a href={noteHref}>{noteLabel}</a>
+          </>
+        )}
+      </p>
+    )}
+  </div>
+</section>
+
+<style>
+  .catalogues {
+    scroll-margin-block-start: var(--space-6);
+    padding-block: var(--layout-anchor-padding-mobile);
+    background: var(--color-cream);
+  }
+  .catalogues__inner {
+    width: min(calc(100% - 2 * var(--layout-gutter-mobile)), var(--layout-content-max));
+    margin-inline: auto;
+  }
+  .catalogues__heading {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+    max-width: 52rem;
+  }
+  .catalogues__eyebrow {
+    margin: 0;
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+  .catalogues h2 {
+    margin: 0;
+    font-size: var(--type-section-title);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .catalogues__intro {
+    max-width: 60ch;
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  .catalogues__grid {
+    display: grid;
+    gap: var(--space-6);
+    margin: var(--space-10) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .catalogue-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    background: var(--color-white);
+  }
+  .catalogue-card__cover {
+    display: grid;
+    place-items: center;
+    padding: var(--space-5);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-neutral-100);
+  }
+  .catalogue-card__cover :global(img) {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 18rem;
+    border: 1px solid var(--color-neutral-200);
+  }
+  .catalogue-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--space-3);
+    padding: var(--space-6);
+  }
+  .catalogue-card__label {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .catalogue-card h3 {
+    margin: 0;
+    font-size: var(--type-card-title);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .catalogue-card__description {
+    max-width: 34rem;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .catalogue-card__details {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+  }
+  .catalogue-card__body :global(.catalogue-card__action) {
+    margin-block-start: auto;
+  }
+  .catalogues__note {
+    margin: var(--space-8) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+  .catalogues__note a {
+    color: var(--color-primary-hover);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .catalogues__note a:hover {
+    color: var(--color-text);
+  }
+
+  @media (min-width: 48rem) {
+    .catalogues {
+      padding-block: var(--layout-anchor-padding-desktop);
+    }
+    .catalogues__inner {
+      width: min(calc(100% - 2 * var(--layout-gutter-desktop)), var(--layout-content-max));
+    }
+    .catalogue-card {
+      grid-template-columns: 11rem minmax(0, 1fr);
+    }
+    .catalogue-card__cover {
+      border-block-end: 0;
+      border-inline-end: 1px solid var(--color-border);
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .catalogues__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-8);
+    }
+    .catalogue-card {
+      grid-template-columns: 10rem minmax(0, 1fr);
+    }
+  }
+</style>

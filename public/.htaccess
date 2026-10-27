@@ -15,6 +15,9 @@
 # https://vamo.bg, със запазване на пътя и параметрите на заявката.
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Старият адрес на лендинга запазва споделените връзки.
+  RewriteRule ^reklamni-materiali-i-biznes-podaratsi/?$ https://vamo.bg/biznes-podaratsi/ [R=301,L,NE]
   RewriteCond %{HTTP_HOST} ^www\.vamo\.bg$ [NC]
   RewriteRule ^ https://vamo.bg%{REQUEST_URI} [R=301,L,NE]
 
