@@ -210,7 +210,9 @@ const partners = [
           </Button>
           <Button href="#catalog" variant="ghost" size="lg" class="gifts-hero__secondary">Разгледайте каталога</Button>
         </div>
-        <Image class="gifts-hero__logo" src={vamoWhiteLogo} alt="" width={1200} height={360} widths={[180, 360]} sizes="200px" loading="eager" />
+        <a class="gifts-hero__home" href="/" aria-label="VAMO — към началната страница">
+          <Image class="gifts-hero__logo" src={vamoWhiteLogo} alt="" width={1200} height={360} widths={[180, 360]} sizes="200px" loading="eager" />
+        </a>
         <ul class="gifts-hero__features">
           {heroFeatures.map((feature) => (
             <li>
@@ -496,7 +498,8 @@ const partners = [
   .gifts-hero__lead{max-width:48rem;margin-block-start:var(--space-8);font-family:var(--font-body);font-size:1rem;font-weight:400;line-height:1.5;letter-spacing:.03em;text-wrap:balance}
   .gifts-hero__body{max-width:70ch;margin-block-start:var(--space-5);color:var(--color-text-inverse);font-size:1.125rem;line-height:1.65;text-wrap:pretty}
   .gifts-hero__body strong{font-weight:700}
-  .gifts-hero__logo{width:12rem;height:auto;margin-block-start:var(--space-6)}
+  .gifts-hero__home{display:block;width:12rem;margin-block-start:var(--space-6);border-radius:var(--radius-control)}
+  .gifts-hero__logo{width:100%;height:auto}
   .gifts-hero__features{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3) var(--space-4);margin:var(--space-6) 0 0;padding:0;list-style:none;color:var(--color-text-inverse);font-size:.8125rem;line-height:1.4;letter-spacing:.03em}
   .gifts-hero__features li{display:inline-flex;align-items:center;gap:var(--space-2)}
   .gifts-hero__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3);width:100%;max-width:34rem;margin-block-start:var(--space-6)}
@@ -546,7 +549,7 @@ const partners = [
   .gifts-promo__inner{display:grid;justify-items:center}
   .gifts-promo h2{max-width:32ch;font-size:var(--type-section-title);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:balance}
   .gifts-promo__lead{max-width:44rem;margin-block-start:var(--space-3);font-family:var(--font-ui);font-size:clamp(1rem,2vw,1.25rem);font-weight:600;line-height:1.35;text-wrap:balance}
-  .gifts-promo__body{max-width:70ch;margin-block-start:var(--space-5);color:var(--color-red-50);font-size:1rem;line-height:1.65;text-wrap:pretty}
+  .gifts-promo__body{width:100%;margin-block-start:var(--space-5);color:var(--color-red-50);font-size:1rem;line-height:1.65;text-wrap:pretty}
   .gifts-promo :global(.gifts-promo__cta){margin-block-start:var(--space-8);background-color:var(--color-white);color:var(--color-vamo-red);font-family:var(--font-ui)}
   .gifts-promo :global(.gifts-promo__cta:hover){background-color:var(--color-cream);color:var(--color-vamo-red)}
   .gifts-trends{padding-block:var(--layout-anchor-padding-mobile);background:var(--color-cream)}
