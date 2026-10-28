@@ -31,9 +31,11 @@ const {
   variant = 'standard',
   isPreview = false,
 } = Astro.props;
+
+const usesVideoPoster = !coverImage && Boolean(videoId);
 ---
 
-<article class:list={['project-showcase', `project-showcase--${variant}`, { 'project-showcase--preview': isPreview, 'project-showcase--video': Boolean(videoId) }]}>
+<article class:list={['project-showcase', `project-showcase--${variant}`, { 'project-showcase--preview': isPreview, 'project-showcase--video': usesVideoPoster }]}>
   {id && !isPreview ? (
     <a href={`/portfolio/${id}/`}>
       <div class:list={['project-showcase__media', { 'project-showcase__media--contain': coverPresentation === 'contain' }]}>
