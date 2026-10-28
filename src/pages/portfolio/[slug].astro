@@ -13,6 +13,41 @@ import NetworkPattern from '../../components/ui/NetworkPattern.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { ivanFirst } from '../../lib/expert-order';
 import { projectPosterUrl, projectVideoId } from '../../lib/project-poster';
+import sixtyYearsPirinOgImage from '../../assets/og/portfolio/60-godini-natsionalen-park-pirin.jpg';
+import digitalnaKartaPirinOgImage from '../../assets/og/portfolio/digitalna-karta-pirin.jpg';
+import gameOfBusinessOgImage from '../../assets/og/portfolio/game-of-business.jpg';
+import heatsafeOgImage from '../../assets/og/portfolio/heatsafe-logistika-i-moderirane.jpg';
+import hisarlakaOgImage from '../../assets/og/portfolio/hisarlaka-inteligenten-turizam.jpg';
+import kamBadeshtetoOgImage from '../../assets/og/portfolio/kam-badeshteto-logistika-vei.jpg';
+import kartalaBelitsaOgImage from '../../assets/og/portfolio/kartala-belitsa.jpg';
+import kartalaPrimaInvestOgImage from '../../assets/og/portfolio/kartala-prima-invest.jpg';
+import merkiPrevenciaOgImage from '../../assets/og/portfolio/merki-prevencia-navodnenia.jpg';
+import obshtestvenoObsazhdaneOgImage from '../../assets/og/portfolio/obshtestveno-obsazhdane-strumyani.jpg';
+import otgovornoOgImage from '../../assets/og/portfolio/otgovorno-otglezhdane-sandanski.jpg';
+import peperuditeOgImage from '../../assets/og/portfolio/peperudite-na-belasica-kniga.jpg';
+import pirinFilmsOgImage from '../../assets/og/portfolio/pirin-15-nauchnopopulyarni-filma.jpg';
+import planinskiZnatsiOgImage from '../../assets/og/portfolio/planinski-znatsi-platforma.jpg';
+import socialInteractionOgImage from '../../assets/og/portfolio/sotsialni-antropologichni-efekti-digitalna-interaktsia.jpg';
+import visotaOgImage from '../../assets/og/portfolio/visota-reklamni-materiali.jpg';
+
+const projectOgImages = {
+  '60-godini-natsionalen-park-pirin': sixtyYearsPirinOgImage,
+  'digitalna-karta-pirin': digitalnaKartaPirinOgImage,
+  'game-of-business': gameOfBusinessOgImage,
+  'heatsafe-logistika-i-moderirane': heatsafeOgImage,
+  'hisarlaka-inteligenten-turizam': hisarlakaOgImage,
+  'kam-badeshteto-logistika-vei': kamBadeshtetoOgImage,
+  'kartala-belitsa': kartalaBelitsaOgImage,
+  'kartala-prima-invest': kartalaPrimaInvestOgImage,
+  'merki-prevencia-navodnenia': merkiPrevenciaOgImage,
+  'obshtestveno-obsazhdane-strumyani': obshtestvenoObsazhdaneOgImage,
+  'otgovorno-otglezhdane-sandanski': otgovornoOgImage,
+  'peperudite-na-belasica-kniga': peperuditeOgImage,
+  'pirin-15-nauchnopopulyarni-filma': pirinFilmsOgImage,
+  'planinski-znatsi-platforma': planinskiZnatsiOgImage,
+  'sotsialni-antropologichni-efekti-digitalna-interaktsia': socialInteractionOgImage,
+  'visota-reklamni-materiali': visotaOgImage,
+} as const;
 
 export async function getStaticPaths() {
   const projects = await getCollection(
@@ -30,6 +65,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 const posterId = projectVideoId(project.data);
 const posterUrl = !project.data.coverImage && posterId ? projectPosterUrl(posterId) : undefined;
+const projectOgImage = projectOgImages[project.id as keyof typeof projectOgImages];
 const {
   title,
   seoTitle,
@@ -218,7 +254,7 @@ const breadcrumbSchema = {
 <BaseLayout
   title={seoTitle ?? title}
   description={seoDescription ?? description}
-  image={coverImage}
+  image={projectOgImage ?? coverImage}
   noindex={draft}
 >
   <script
