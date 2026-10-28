@@ -8,6 +8,89 @@ import ExpertNetworkSection from '../../components/sections/ExpertNetworkSection
 import ExpertProjectsSection from '../../components/sections/ExpertProjectsSection.astro';
 import CertificatesSection from '../../components/sections/CertificatesSection.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import adrianaKrastevaOgImage from '../../assets/og/experts/adriana-krasteva.jpg';
+import aleksandarStepanovOgImage from '../../assets/og/experts/aleksandar-stepanov.jpg';
+import blagoyGoshevOgImage from '../../assets/og/experts/blagoy-goshev.jpg';
+import desislavaMalinovaOgImage from '../../assets/og/experts/desislava-malinova.jpg';
+import dianaPavlovaOgImage from '../../assets/og/experts/diana-pavlova.jpg';
+import dinkaZlatevaOgImage from '../../assets/og/experts/dinka-zlateva.jpg';
+import galinaLobachevaOgImage from '../../assets/og/experts/galina-lobacheva.jpg';
+import gerganaIvanovaOgImage from '../../assets/og/experts/gergana-ivanova.jpg';
+import gerganaMitovaOgImage from '../../assets/og/experts/gergana-mitova.jpg';
+import iliyanaCvetanovaOgImage from '../../assets/og/experts/iliyana-cvetanova.jpg';
+import irenaGeorgievaOgImage from '../../assets/og/experts/irena-georgieva.jpg';
+import ivanRuykovOgImage from '../../assets/og/experts/ivan-ruykov.jpg';
+import ivanUzunovOgImage from '../../assets/og/experts/ivan-uzunov.jpg';
+import ivankaChobanovaOgImage from '../../assets/og/experts/ivanka-chobanova.jpg';
+import ivayloMilenkovOgImage from '../../assets/og/experts/ivaylo-milenkov.jpg';
+import ladaMelnichenkoOgImage from '../../assets/og/experts/lada-melnichenko.jpg';
+import lyubenDomozetskiOgImage from '../../assets/og/experts/lyuben-domozetski.jpg';
+import lyubomirLyubenovOgImage from '../../assets/og/experts/lyubomir-lyubenov.jpg';
+import magdelenaIlievaOgImage from '../../assets/og/experts/magdelena-ilieva.jpg';
+import mariaBlagoevaOgImage from '../../assets/og/experts/maria-blagoeva.jpg';
+import mariaCharakchievaOgImage from '../../assets/og/experts/maria-charakchieva.jpg';
+import metodiIlievOgImage from '../../assets/og/experts/metodi-iliev.jpg';
+import nikolayKostovOgImage from '../../assets/og/experts/nikolay-kostov.jpg';
+import nikolayKukolevOgImage from '../../assets/og/experts/nikolay-kukolev.jpg';
+import pavelStoynovOgImage from '../../assets/og/experts/pavel-stoynov.jpg';
+import radostinDimitrovOgImage from '../../assets/og/experts/radostin-dimitrov.jpg';
+import raynaPashovaOgImage from '../../assets/og/experts/rayna-pashova.jpg';
+import rosinkaProdanovaOgImage from '../../assets/og/experts/rosinka-prodanova.jpg';
+import rumyanaPopovaOgImage from '../../assets/og/experts/rumyana-popova.jpg';
+import simanaMarkovskaOgImage from '../../assets/og/experts/simana-markovska.jpg';
+import sofiaIlkovaOgImage from '../../assets/og/experts/sofia-ilkova.jpg';
+import stefkaAnastasovaChavdarovaOgImage from '../../assets/og/experts/stefka-anastasova-chavdarova.jpg';
+import tanyaKukolevaOgImage from '../../assets/og/experts/tanya-kukoleva.jpg';
+import teodoraSpasovaOgImage from '../../assets/og/experts/teodora-spasova.jpg';
+import toniGulevaOgImage from '../../assets/og/experts/toni-guleva.jpg';
+import tsonyaKrastevaOgImage from '../../assets/og/experts/tsonya-krasteva.jpg';
+import valentinaFidanovaKolarovaOgImage from '../../assets/og/experts/valentina-fidanova-kolarova.jpg';
+import ventseslavGalabovOgImage from '../../assets/og/experts/ventseslav-galabov.jpg';
+import yordanStoyanovOgImage from '../../assets/og/experts/yordan-stoyanov.jpg';
+import yuliaKoyundzhiyskaOgImage from '../../assets/og/experts/yulia-koyundzhiyska.jpg';
+
+const expertOgImages = {
+  'adriana-krasteva': adrianaKrastevaOgImage,
+  'aleksandar-stepanov': aleksandarStepanovOgImage,
+  'blagoy-goshev': blagoyGoshevOgImage,
+  'desislava-malinova': desislavaMalinovaOgImage,
+  'diana-pavlova': dianaPavlovaOgImage,
+  'dinka-zlateva': dinkaZlatevaOgImage,
+  'galina-lobacheva': galinaLobachevaOgImage,
+  'gergana-ivanova': gerganaIvanovaOgImage,
+  'gergana-mitova': gerganaMitovaOgImage,
+  'iliyana-cvetanova': iliyanaCvetanovaOgImage,
+  'irena-georgieva': irenaGeorgievaOgImage,
+  'ivan-ruykov': ivanRuykovOgImage,
+  'ivan-uzunov': ivanUzunovOgImage,
+  'ivanka-chobanova': ivankaChobanovaOgImage,
+  'ivaylo-milenkov': ivayloMilenkovOgImage,
+  'lada-melnichenko': ladaMelnichenkoOgImage,
+  'lyuben-domozetski': lyubenDomozetskiOgImage,
+  'lyubomir-lyubenov': lyubomirLyubenovOgImage,
+  'magdelena-ilieva': magdelenaIlievaOgImage,
+  'maria-blagoeva': mariaBlagoevaOgImage,
+  'maria-charakchieva': mariaCharakchievaOgImage,
+  'metodi-iliev': metodiIlievOgImage,
+  'nikolay-kostov': nikolayKostovOgImage,
+  'nikolay-kukolev': nikolayKukolevOgImage,
+  'pavel-stoynov': pavelStoynovOgImage,
+  'radostin-dimitrov': radostinDimitrovOgImage,
+  'rayna-pashova': raynaPashovaOgImage,
+  'rosinka-prodanova': rosinkaProdanovaOgImage,
+  'rumyana-popova': rumyanaPopovaOgImage,
+  'simana-markovska': simanaMarkovskaOgImage,
+  'sofia-ilkova': sofiaIlkovaOgImage,
+  'stefka-anastasova-chavdarova': stefkaAnastasovaChavdarovaOgImage,
+  'tanya-kukoleva': tanyaKukolevaOgImage,
+  'teodora-spasova': teodoraSpasovaOgImage,
+  'toni-guleva': toniGulevaOgImage,
+  'tsonya-krasteva': tsonyaKrastevaOgImage,
+  'valentina-fidanova-kolarova': valentinaFidanovaKolarovaOgImage,
+  'ventseslav-galabov': ventseslavGalabovOgImage,
+  'yordan-stoyanov': yordanStoyanovOgImage,
+  'yulia-koyundzhiyska': yuliaKoyundzhiyskaOgImage,
+} as const;
 
 export async function getStaticPaths() {
   const experts = await getCollection('eksperti');
@@ -22,6 +105,7 @@ export async function getStaticPaths() {
 
 const { expert } = Astro.props;
 const { Content } = await render(expert);
+const expertOgImage = expertOgImages[expert.id as keyof typeof expertOgImages];
 const {
   name,
   role,
@@ -94,7 +178,7 @@ const breadcrumbSchema = {
 <BaseLayout
   title={seoTitle ?? name}
   description={seoDescription ?? shortBio}
-  image={photo}
+  image={expertOgImage ?? photo}
 >
   <script
     slot="head"
