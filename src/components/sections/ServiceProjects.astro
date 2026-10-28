@@ -41,7 +41,7 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
       )}
 
       {supportingProjects.length > 0 && (
-        <div class="service-projects__supporting">
+        <div class:list={['service-projects__supporting', supportingProjects.length === 2 && 'service-projects__supporting--balanced']}>
           {supportingProjects.map((project) => (
             <ProjectShowcaseCard
               id={project.id}
@@ -151,6 +151,10 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
 
     .service-projects__grid--pair .service-projects__supporting {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .service-projects__supporting--balanced {
+      grid-template-rows: repeat(2, minmax(0, 1fr));
     }
   }
 </style>
