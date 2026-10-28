@@ -43,6 +43,23 @@ jobs:
       - name: Билд
         run: npm run build
 
+      # Оригиналните PDF файлове надвишават GitHub Git лимита за файл.
+      # Release assets ги пазят без промени; те остават достъпни на vamo.bg.
+      - name: Изтегляне на оригиналните каталози
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download catalogues-2026-2027 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern vamo-katalog-podaratsi-2026.pdf \
+            --pattern vamo-katalog-alexander-2027.pdf \
+            --dir ./dist/documents/catalogues/
+          cd ./dist/documents/catalogues/
+          sha256sum --check <<'CHECKSUMS'
+          25e623dc8ec8b070b55f615316fb3111e64d9da43451005b3b3ef9cf43e17cbd  vamo-katalog-podaratsi-2026.pdf
+          5725c4184b44600e277157a3cda7f1f957852fbdeb5051a09f7efa3cd9a810c9  vamo-katalog-alexander-2027.pdf
+          CHECKSUMS
+
       # Само блогът пази дата на промяна в схемата си — вижда scripts/add-sitemap-lastmod.mjs.
       - name: Lastmod в sitemap
         run: npm run sitemap:lastmod

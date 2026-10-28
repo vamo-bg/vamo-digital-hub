@@ -34,6 +34,8 @@ import produktRakavitsa from '../assets/reklamni-materiali/produkt-rakavitsa.web
 import produktHimikalka from '../assets/reklamni-materiali/produkt-himikalka.webp';
 import produktKalendar from '../assets/reklamni-materiali/produkt-kalendar.webp';
 import produktFenerche from '../assets/reklamni-materiali/produkt-fenerche.webp';
+import catalogPodaratsiCover from '../assets/reklamni-materiali/korica-katalog-podaratsi-2026.webp';
+import catalogAlexanderCover from '../assets/reklamni-materiali/korica-katalog-alexander-2027.webp';
 import catalogMalfiniCover from '../assets/reklamni-materiali/korica-katalog-malfini-2026.webp';
 import catalogKalendariCover from '../assets/reklamni-materiali/korica-katalog-kalendari-2027.webp';
 import partnerStricker from '../assets/reklamni-materiali/partner-stricker.webp';
@@ -61,6 +63,24 @@ const catalogues = [
     href: '/documents/catalogues/vamo-kalendari-2027.pdf',
     cover: catalogKalendariCover,
     coverAlt: 'Корица на каталог „Календарна кампания 2027“ на ВАМО',
+  },
+  {
+    label: 'ВАМО · 2026',
+    title: 'Рекламни подаръци 2026',
+    description: 'Продукти за персонализиране и фирмено брандиране – идеи за бизнес подаръци, офис, ежедневие и кампании. Каталогът е на български език.',
+    details: 'PDF · 316 страници · 58 MB',
+    href: '/documents/catalogues/vamo-katalog-podaratsi-2026.pdf',
+    cover: catalogPodaratsiCover,
+    coverAlt: 'Корица на каталог ВАМО 2026 с тефтер, термочаша и слушалки',
+  },
+  {
+    label: 'Alexander · 2027',
+    title: 'Рекламни материали Alexander 2027',
+    description: 'Чаши, бутилки, бележници, технологии, пишещи средства, чанти и текстил за брандиране. Каталогът е на български език.',
+    details: 'PDF · 428 страници · 332 MB',
+    href: '/documents/catalogues/vamo-katalog-alexander-2027.pdf',
+    cover: catalogAlexanderCover,
+    coverAlt: 'Начална страница със съдържанието на каталога Alexander 2027 и лого ВАМО',
   },
 ];
 
@@ -271,7 +291,7 @@ const partners = [
 
     <CataloguesSection
       items={catalogues}
-      intro="Актуалните каталози на ВАМО – облекло за брандиране от Malfini и календарната кампания за 2027 г. Отварят се в нов раздел за преглед или сваляне."
+      intro="Каталози за бизнес подаръци, рекламни материали, облекло и календари. Отварят се в нов раздел за преглед и изтегляне. Размерът на всеки PDF е посочен – по-големите файлове може да се зареждат по-бавно."
       note="Искате печатна версия или подборка за конкретна кампания?"
       noteHref="#zapitvane"
       noteLabel="Пишете ни"

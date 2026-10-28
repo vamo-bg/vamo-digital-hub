@@ -37,3 +37,8 @@ resources/answers/
 
 # Local tooling output
 .impeccable/
+
+# Original large catalogues are stored in the catalogues-2026-2027 GitHub release.
+# Deploy downloads them into dist/ before FTPS upload.
+public/documents/catalogues/vamo-katalog-podaratsi-2026.pdf
+public/documents/catalogues/vamo-katalog-alexander-2027.pdf
