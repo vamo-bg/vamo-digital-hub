@@ -20,6 +20,16 @@ import eventsLogisticsImage from '../../assets/service-sabitiya-logistika.png';
 import videoFilmImage from '../../assets/service-video-filmovo-proizvodstvo.png';
 import webDevelopmentImage from '../../assets/service-ueb-razrabotka.png';
 import organicDistributionImage from '../../assets/service-organichno-razprostranenie.png';
+import businessReadyScoreOgImage from '../../assets/og/solutions/business-ready-score.jpg';
+import communicationPrOgImage from '../../assets/og/solutions/komunikatsii-i-pr.jpg';
+import digitalStrategyOgImage from '../../assets/og/solutions/digitalna-strategiya.jpg';
+import designMaterialsOgImage from '../../assets/og/solutions/dizayn-i-reklamni-materiali.jpg';
+import euVisibilityOgImage from '../../assets/og/solutions/eu-visibility-compliance.jpg';
+import podcastInterviewOgImage from '../../assets/og/solutions/podkast-i-intervyu-formati.jpg';
+import eventsLogisticsOgImage from '../../assets/og/solutions/sabitiya-i-logistika.jpg';
+import videoFilmOgImage from '../../assets/og/solutions/video-i-filmovo-proizvodstvo.jpg';
+import webDevelopmentOgImage from '../../assets/og/solutions/ueb-razrabotka.jpg';
+import organicDistributionOgImage from '../../assets/og/solutions/organichno-razprostranenie.jpg';
 
 const solutionImages = {
   'business-ready-score': businessReadyScoreImage,
@@ -32,6 +42,19 @@ const solutionImages = {
   'video-i-filmovo-proizvodstvo': videoFilmImage,
   'ueb-razrabotka': webDevelopmentImage,
   'organichno-razprostranenie': organicDistributionImage,
+} as const;
+
+const solutionOgImages = {
+  'business-ready-score': businessReadyScoreOgImage,
+  'komunikatsii-i-pr': communicationPrOgImage,
+  'digitalna-strategiya': digitalStrategyOgImage,
+  'dizayn-i-reklamni-materiali': designMaterialsOgImage,
+  'eu-visibility-compliance': euVisibilityOgImage,
+  'podkast-i-intervyu-formati': podcastInterviewOgImage,
+  'sabitiya-i-logistika': eventsLogisticsOgImage,
+  'video-i-filmovo-proizvodstvo': videoFilmOgImage,
+  'ueb-razrabotka': webDevelopmentOgImage,
+  'organichno-razprostranenie': organicDistributionOgImage,
 } as const;
 
 // Огледално на resheniya/index.astro — снимката е декоративна (hero визуалът
@@ -59,6 +82,7 @@ const { Content } = await render(solution);
 const { title, description, seoTitle, seoDescription, heroStatement, heroDetails, problems, difference, process, inclusions, editorialSections, relatedLanding, ctaTitle, ctaLabel, expertIds } = solution.data;
 const hasStructuredContent = Boolean(problems || difference || process || inclusions);
 const solutionImage = solutionImages[solution.id as keyof typeof solutionImages];
+const solutionOgImage = solutionOgImages[solution.id as keyof typeof solutionOgImages];
 
 const relatedProjects = (
   await getCollection('portfolio', ({ data }) =>
@@ -106,7 +130,7 @@ const serviceSchema = {
 };
 ---
 
-<BaseLayout title={seoTitle ?? title} titleSuffix={false} description={seoDescription ?? description} image={solutionImage}>
+<BaseLayout title={seoTitle ?? title} titleSuffix={false} description={seoDescription ?? description} image={solutionOgImage ?? solutionImage}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)}></script>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(serviceSchema)}></script>
   <article>
