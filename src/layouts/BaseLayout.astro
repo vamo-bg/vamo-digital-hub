@@ -51,8 +51,8 @@ const canonicalUrl = new URL(canonical, Astro.site ?? Astro.url);
  * страница без своя картинка ползва общата — празният правоъгълник при
  * споделяне изглежда по-зле от всяка картинка.
  */
-/* Астро не увеличава изображения над оригинала, затова картинка, по-малка от
- * картичката, би излязла умалена. По-добре общата, отколкото размазана. */
+/* По-малките изображения се използват в оригиналния си размер, без увеличение.
+ * Общата картичка е резервен вариант само за страници без собствена снимка. */
 const canMakeCard =
   image && typeof image === 'object' && 'src' in image
     ? image.width >= 1200 && image.height >= 630
@@ -69,10 +69,14 @@ const socialImage = canMakeCard
   : null;
 
 const socialImageUrl = new URL(
-  socialImage?.src ?? (canMakeCard ? undefined : typeof image === 'string' || image instanceof URL ? image : undefined) ?? '/og-home.jpg',
+  socialImage?.src ?? (typeof image === 'string' || image instanceof URL ? image : image?.src) ?? '/og-home.jpg',
   Astro.site ?? Astro.url,
 );
-const hasGeneratedSocialImage = socialImage !== null || !image || (typeof image !== 'string' && !(image instanceof URL));
+const socialImageDimensions = socialImage || !image
+  ? { width: 1200, height: 630 }
+  : typeof image === 'object' && 'src' in image
+    ? { width: image.width, height: image.height }
+    : undefined;
 const hasHeader = Astro.slots.has('header');
 const hasFooter = Astro.slots.has('footer');
 const siteOrigin = new URL('/', Astro.site ?? Astro.url).href;
@@ -268,8 +272,8 @@ const websiteSchema = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
-    {hasGeneratedSocialImage && <meta property="og:image:width" content="1200" />}
-    {hasGeneratedSocialImage && <meta property="og:image:height" content="630" />}
+    {socialImageDimensions && <meta property="og:image:width" content={String(socialImageDimensions.width)} />}
+    {socialImageDimensions && <meta property="og:image:height" content={String(socialImageDimensions.height)} />}
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={socialPageTitle} />
