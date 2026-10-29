@@ -40,11 +40,11 @@ const breadcrumbSchema = { '@context': 'https://schema.org', '@type': 'Breadcrum
     <section class="blog-list" aria-label="Статии">
       <div class="blog-shell">
         <div class="blog-top">
-          {featuredPost && <div class="blog-featured"><BlogTeaser id={featuredPost.id} title={featuredPost.data.title} description={featuredPost.data.description} pubDate={featuredPost.data.pubDate} cover={featuredPost.data.cover} coverAlt={featuredPost.data.coverAlt} coverPresentation={featuredPost.data.coverPresentation} variant="feature" /></div>}
-          {archivePosts.length > 0 && <div class="blog-secondary">{archivePosts.slice(0, 2).map((post) => <BlogTeaser id={post.id} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate} cover={post.data.cover} coverAlt={post.data.coverAlt} coverPresentation={post.data.coverPresentation} variant="feature" />)}</div>}
+          {featuredPost && <div class="blog-featured"><BlogTeaser id={featuredPost.id} title={featuredPost.data.title} description={featuredPost.data.description} pubDate={featuredPost.data.pubDate} thumbnail={featuredPost.data.thumbnail} thumbnailAlt={featuredPost.data.thumbnailAlt} cover={featuredPost.data.cover} coverAlt={featuredPost.data.coverAlt} coverPresentation={featuredPost.data.coverPresentation} variant="feature" /></div>}
+          {archivePosts.length > 0 && <div class="blog-secondary">{archivePosts.slice(0, 2).map((post) => <BlogTeaser id={post.id} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate} thumbnail={post.data.thumbnail} thumbnailAlt={post.data.thumbnailAlt} cover={post.data.cover} coverAlt={post.data.coverAlt} coverPresentation={post.data.coverPresentation} variant="feature" />)}</div>}
         </div>
         <div class="blog-grid">
-          {archivePosts.slice(2).map((post) => <BlogTeaser id={post.id} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate} cover={post.data.cover} coverAlt={post.data.coverAlt} coverPresentation={post.data.coverPresentation} />)}
+          {archivePosts.slice(2).map((post) => <BlogTeaser id={post.id} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate} thumbnail={post.data.thumbnail} thumbnailAlt={post.data.thumbnailAlt} cover={post.data.cover} coverAlt={post.data.coverAlt} coverPresentation={post.data.coverPresentation} />)}
         </div>
         <nav class="blog-pagination" aria-label="Страници на блога">
           <span class="blog-pagination__current" aria-current="page">1</span>

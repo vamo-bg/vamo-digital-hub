@@ -343,6 +343,8 @@ const blog = defineCollection({
       seoDescription: shortDescription.optional(),
       ogTitle: z.string().min(1).optional(),
       socialImage: image().optional(),
+      thumbnail: image().optional(),
+      thumbnailAlt: z.string().min(1).optional(),
       cover: image().optional(),
       coverAlt: z.string().min(1).optional(),
       coverPresentation: z.enum(['cover', 'contain']).default('cover'),

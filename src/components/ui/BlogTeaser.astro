@@ -9,6 +9,8 @@ interface Props {
   cover?: ImageMetadata;
   coverAlt?: string;
   coverPresentation?: 'cover' | 'contain';
+  thumbnail?: ImageMetadata;
+  thumbnailAlt?: string;
   variant?: 'lead' | 'feature' | 'standard';
   isPreview?: boolean;
 }
@@ -18,12 +20,18 @@ const {
   title,
   description,
   pubDate,
-  cover,
-  coverAlt,
-  coverPresentation = 'cover',
+  cover: articleCover,
+  coverAlt: articleCoverAlt,
+  coverPresentation: articleCoverPresentation = 'cover',
+  thumbnail,
+  thumbnailAlt,
   variant = 'standard',
   isPreview = false,
 } = Astro.props;
+
+const cover = thumbnail ?? articleCover;
+const coverAlt = thumbnail ? thumbnailAlt ?? title : articleCoverAlt;
+const coverPresentation = thumbnail ? 'cover' : articleCoverPresentation;
 
 const formattedDate = pubDate
   ? new Intl.DateTimeFormat('bg-BG', {

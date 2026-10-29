@@ -10,6 +10,8 @@ readingTime: "4 минути"
 cover: "../../assets/blog/kartala-mladezhki-lager-2026.png"
 coverAlt: "Колаж с деца на планински преход, край река и на занимания на открито и логото на детски лагер „Картала“"
 coverPresentation: "contain"
+thumbnail: "../../assets/portfolio/kartala-prima-invest/gallery-01.jpg"
+thumbnailAlt: "Участници в лагер в Картала преминават по дървено мостче в иглолистна гора"
 featuredInSection: false
 sectionVariant: "standard"
 draft: false

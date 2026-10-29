@@ -69,6 +69,7 @@ Files served unchanged (favicons, robots files, and similar assets) belong in `p
 - UI copy and public content are Bulgarian-first.
 - Every page must supply a unique title and meta description to `BaseLayout`.
 - Place optimizable images in `src/assets/`; reserve `public/` for files that must keep their original filename.
+- Blog articles may set `thumbnail` and `thumbnailAlt` for a separate listing image. Cards on the blog index, homepage, and related-article lists use it with a filled crop; without it, they use `cover`. The article itself keeps `cover`, and social sharing uses `socialImage` or `cover` independently.
 - Do not introduce brand colours, fonts, spacing, or other visual values before mapping the approved VAMO Design System into `src/styles/tokens.css`.
 
 ## How Codex and GPT-5.6 were used
