@@ -67,7 +67,7 @@ const clientById = new Map(clients.map((client) => [client.id, client]));
       reviews.length > 0 ? (
         <ul class="reviews-grid" aria-label="Референции за VAMO">
           {reviews.map(({ project, quote, person, position, reference }, index) => {
-            const client = clientById.get(project.data.clientId);
+            const client = project.data.clientId ? clientById.get(project.data.clientId) : undefined;
 
             return (
               <li>

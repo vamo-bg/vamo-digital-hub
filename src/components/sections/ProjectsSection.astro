@@ -63,7 +63,7 @@ const shouldRender = visibleProjects.length > 0;
           <ProjectShowcaseCard
             id={project.id}
             title={project.data.title}
-            clientName={clientById.get(project.data.clientId)}
+            clientName={project.data.clientId ? clientById.get(project.data.clientId) : undefined}
             projectType={project.data.projectType}
             year={project.data.year}
             status={project.data.status}

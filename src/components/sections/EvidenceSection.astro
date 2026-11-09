@@ -16,7 +16,7 @@ const references = projects
       .map((reference) => ({
         ...reference,
         projectTitle: project.data.title,
-        clientName: clientById.get(project.data.clientId),
+        clientName: project.data.clientId ? clientById.get(project.data.clientId) : undefined,
       })),
   )
   .sort(

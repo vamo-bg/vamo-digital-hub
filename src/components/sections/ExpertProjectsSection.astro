@@ -24,7 +24,7 @@ const { expertName, projects, clientNames, serviceNames } = Astro.props;
         {projects.map((project, index) => (
           <ProjectArchiveCard
             project={project}
-            clientName={clientNames[project.data.clientId] ?? project.data.clientId}
+            clientName={project.data.clientId ? clientNames[project.data.clientId] ?? project.data.clientId : undefined}
             serviceNames={project.data.serviceIds
               .map((id) => serviceNames[id])
               .filter((name): name is string => name !== undefined)}

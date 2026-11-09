@@ -28,7 +28,7 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
         <ProjectShowcaseCard
           id={featuredProject.id}
           title={featuredProject.data.title}
-          clientName={clientNames[featuredProject.data.clientId]}
+          clientName={featuredProject.data.clientId ? clientNames[featuredProject.data.clientId] : undefined}
           projectType={featuredProject.data.projectType}
           year={featuredProject.data.year}
           status={featuredProject.data.status}
@@ -46,7 +46,7 @@ const [featuredProject, ...supportingProjects] = projects.slice(0, 3);
             <ProjectShowcaseCard
               id={project.id}
               title={project.data.title}
-              clientName={clientNames[project.data.clientId]}
+              clientName={project.data.clientId ? clientNames[project.data.clientId] : undefined}
               projectType={project.data.projectType}
               year={project.data.year}
               status={project.data.status}

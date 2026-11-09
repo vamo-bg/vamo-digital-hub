@@ -304,16 +304,18 @@ const breadcrumbSchema = {
         </div>
 
         <dl class="project-facts">
-          <div>
-            <dt>Клиент</dt>
-            <dd>
-              {client ? (
-                <a href={`/klienti/${client.id}/`}>{client.data.name}</a>
-              ) : (
-                clientId
-              )}
-            </dd>
-          </div>
+          {clientId && (
+            <div>
+              <dt>Клиент</dt>
+              <dd>
+                {client ? (
+                  <a href={`/klienti/${client.id}/`}>{client.data.name}</a>
+                ) : (
+                  clientId
+                )}
+              </dd>
+            </div>
+          )}
           {location && (
             <div>
               <dt>Място</dt>

@@ -188,7 +188,7 @@ const portfolio = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string().min(1),
-      clientId: z.string().min(1),
+      clientId: z.string().min(1).optional(),
       description: shortDescription,
       seoTitle: z.string().min(1).optional(),
       seoDescription: shortDescription.optional(),
