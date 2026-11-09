@@ -55,6 +55,12 @@ gallery:
   - image: "../../assets/portfolio/transformator-2026/gallery-02.jpeg"
     alt: "Участници в TRANSFORMATOR 2026 пред сградата на CleanTech Bulgaria"
     caption: "Среща на участниците в програмата"
+  - image: "../../assets/portfolio/transformator-2026/gallery-03.jpeg"
+    alt: "Слайд с участниците в TRANSFORMATOR 2026, сред които е VAMO"
+    caption: "Общността зад TRANSFORMATOR 2026"
+  - image: "../../assets/portfolio/transformator-2026/gallery-04.jpeg"
+    alt: "Банер на CleanTech Bulgaria и TRANSFORMATOR 2026 по време на събитие"
+    caption: "Среща на общността на програмата"
 referenceDocuments:
   - title: "Сертификат за преминато обучение в TRANSFORMATOR 2026"
     previewImage: "../../assets/portfolio/transformator-2026/certificate.jpeg"
